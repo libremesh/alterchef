@@ -14,7 +14,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, Fieldset
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
-from models import IncludePackages, IncludeFiles, FwProfile
+from models import IncludePackages, IncludeFiles, FwProfile, Network
 
 # We may add a description of each package, in the form ("pkgname", "description")
 SUGESTED_PACKAGES = ["iperf", "uhttpd", "mini-snmpd"]
@@ -69,6 +69,14 @@ class IncludeFileForm(BaseForm):
     @classmethod
     def from_instance(self, instance):
         return IncludePackagesForm({"include_exclude":instance.to_string()})
+
+class NetworkForm(forms.ModelForm):
+
+    class Meta:
+        model = Network
+        exclude = (
+            'slug', 'user',
+        )
 
 class FwProfileForm(forms.ModelForm):
 

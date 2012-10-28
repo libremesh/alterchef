@@ -1,0 +1,11 @@
+{% load i18n %}
+{% load url from future %}
+<dl class="dl-horizontal">
+    <dt>{% trans "Name" %}</dt><dd><a href={% url "network-detail" object.slug %}>{{ object.name }}</a></dd>
+    <dt>{% trans "Description" %}</dt><dd>{{ object.description }}</dd>
+    <dt>{% trans "Created by" %}</dt><dd>{{ object.user }}</dd>
+{% if request.user == object.user %}
+    <dt><a href={% url "network-edit" object.slug %}>{% trans "Edit" %}</a></dt>
+{% endif %}
+</dl>
+

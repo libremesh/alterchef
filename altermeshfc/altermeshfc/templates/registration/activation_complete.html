@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block content %}
+
+<h3>{% trans "Your account is now active" %}</h3>
+<p>{% trans "You may now" %} <a href="/accounts/login?next={{next}}">{% trans "login" %}</a></p>
+
+{% endblock %}
+

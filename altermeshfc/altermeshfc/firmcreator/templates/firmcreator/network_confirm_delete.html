@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "Delete Network" %}</h1>
+
+<h3 class="text-error">{% trans "Are you sure you want to delete this network? Consider that all firmware profiles will be deleted too." %}</h3>
+
+{% include "firmcreator/network_object.html" %}
+
+<form method="post" action=".">
+{% csrf_token %}
+<input type="submit" value="{% trans "Delete" %}" class="btn btn-danger"/>
+</form>
+
+{% endblock %}
+

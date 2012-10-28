@@ -3,6 +3,7 @@ import codecs
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from autoslug.fields import AutoSlugField
 
 class IncludePackages(object):
@@ -68,6 +69,12 @@ class Network(models.Model):
     slug = AutoSlugField(populate_from='name', always_update=False,
                          editable=False, blank=True)
     description = models.TextField(_('description'))
+
+    def get_absolute_url(self):
+        return reverse('network-detail', kwargs={'slug': self.slug})
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         verbose_name = _('network')

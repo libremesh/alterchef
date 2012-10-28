@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+{% load url from future %}
+
+{% block content %}
+<h1>Create Network</h1>
+
+<form class="form-horizontal" method="post" action=".">{% csrf_token %}
+
+{{ form|crispy }}
+<div class="form-actions">
+  <input type="submit" value="{% trans "Submit" %}" class="btn btn-primary">
+  {% if object %}<a href="{% url "network-delete" object.slug %}" class="btn btn-danger">{% trans "Delete" %}</a>{% endif %}
+</div>
+</form>
+
+{% endblock %}
+

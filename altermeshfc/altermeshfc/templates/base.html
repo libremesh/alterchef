@@ -18,18 +18,30 @@
 
 <h1>{% block title %}FW Creator{% endblock %}</h1>
 
+{% if user.is_authenticated %}
+    <a href="{% url "auth_logout" %}?next={{ request.path }}">{% trans "Log out" %}</a>
+  {% else %}
+  <a href="{% url "auth_login" %}?next={{ request.path }}">{% trans "Log in" %}</a>
+{% endif %}
+
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
     <h2>Sidebar</h2>
-    <ul class="nav nav-tabs nav-stacked">
+    <ul class="nav nav-list nav-stacked">
         <li><a href="/">{% trans "Home" %}</a></li>
-        <li><a href="{% url "crud_profile" %}">{% trans "Create Profile" %}</a></li>
+        <li class="nav-header">Networks</li>
+        <li><a href="{% url "network-create" %}">{% trans "Create Network" %}</a></li>
+        <li><a href="{% url "network-list" %}">{% trans "List Networks" %}</a></li>
+        <li class="nav-header">Firmware Profile</li>
+        <li><a href="{% url "profile-crud" %}">{% trans "Create FwProfile" %}</a></li>
     </ul>
     </div>
-    <div class="span10">
+    <div class="span8">
     {% block content %}{% endblock %}
     </div>
+    <div class="span2">
+    <div></div>
   </div>
 </div>
 
