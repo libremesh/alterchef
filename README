@@ -1,0 +1,4 @@
+Install
+=======
+
+To install the dependencies run ``pip install -r requeriments.txt``

@@ -1,0 +1,50 @@
+{% extends "firmcreator/base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block extra_head %}
+{{super}}
+<script type="text/javascript">
+$(function() {
+    $('#add_more').click(function() {
+        var form_idx = $('#id_include-files-TOTAL_FORMS').val();
+        $('#appendedFiles').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+        $('#id_include-files-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+    });
+
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>Create Profile</h1>
+<form class="form-horizontal" enctype="multipart/form-data" method="post" action=".">{% csrf_token %}
+
+{% crispy profile_form %}
+
+{% crispy include_packages_form %}
+
+<div id="empty_form" style="display:none">
+  {% crispy include_files_formset.empty_form include_files_formset.form.helper %}
+</div>
+
+<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#demo">
+    {% trans "Edit files" %}
+</button> <em class="text-error"> {% trans "Warning! Only for advanced users." %}</em>
+
+<div id="demo" class="collapse">
+  <h5>{% trans "You may write anything you want in the files. Take in consideration that some files contains variables in the form:" %}
+  &#123;&#123; VARNAME &#125;&#125;.</h5>
+  {% crispy include_files_formset include_files_formset.form.helper %}
+
+  <formset id="appendedFiles" class="inlineLabels"></formset>
+
+  <input type="button" value="{% trans "Add a file" %}" id="add_more" class="btn btn-warning">
+</div>
+
+<div class="form-actions">
+  <input type="button" value="{% trans "Submit" %}" class="btn btn-primary">
+</div>
+</form>
+
+{% endblock %}
+

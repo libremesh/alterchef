@@ -1,0 +1,37 @@
+{% load i18n %}
+{% load url from future %}
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8" />
+ <title>AlterMesh Firmware Creator</title>
+ <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+ <script src="{{ STATIC_URL}}js/jquery.min.js"></script>
+ <script src="{{ STATIC_URL}}js/bootstrap.min.js"></script>
+ <style>
+    textarea {font-family: 'DejaVu Sans Mono', monospace;}
+    input {font-family: 'DejaVu Sans Mono', monospace;}
+ </style>
+ {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<h1>{% block title %}FW Creator{% endblock %}</h1>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">
+    <h2>Sidebar</h2>
+    <ul class="nav nav-tabs nav-stacked">
+        <li><a href="/">{% trans "Home" %}</a></li>
+        <li><a href="{% url "crud_profile" %}">{% trans "Create Profile" %}</a></li>
+    </ul>
+    </div>
+    <div class="span10">
+    {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
