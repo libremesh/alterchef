@@ -4,7 +4,7 @@
 <html>
 <head>
  <meta charset="UTF-8" />
- <title>AlterMesh Firmware Creator</title>
+ <title>AlterMesh </title>
  <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
  <script src="{{ STATIC_URL}}js/jquery.min.js"></script>
  <script src="{{ STATIC_URL}}js/bootstrap.min.js"></script>
@@ -16,7 +16,7 @@
 </head>
 <body>
 
-<h1>{% block title %}FW Creator{% endblock %}</h1>
+<h1>{% block title %}AlterMesh Firmware Cheff{% endblock %}</h1>
 
 {% if user.is_authenticated %}
     <a href="{% url "auth_logout" %}?next={{ request.path }}">{% trans "Log out" %}</a>
@@ -34,7 +34,7 @@
         <li><a href="{% url "network-create" %}">{% trans "Create Network" %}</a></li>
         <li><a href="{% url "network-list" %}">{% trans "List Networks" %}</a></li>
         <li class="nav-header">Firmware Profile</li>
-        <li><a href="{% url "profile-crud" %}">{% trans "Create FwProfile" %}</a></li>
+        <li><a href="{% url "fwprofile-create-simple" %}">{% trans "Create Firmware Profile" %}</a></li>
     </ul>
     </div>
     <div class="span8">

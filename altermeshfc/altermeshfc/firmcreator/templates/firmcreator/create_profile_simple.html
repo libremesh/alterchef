@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+{% load url from future %}
+
+{% block extra_head %}
+<script type="text/javascript">
+$(function() {
+    $('#advanced_button').click(function() {
+        console.log("advanced");
+        $("#simple-form").attr("method", "get");
+        $("#simple-form").attr("action", "{% url "fwprofile-create-advanced" %}");
+        $('input[name="csrfmiddlewaretoken"]').remove();
+    });
+
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>Create Firmware Profile</h1>
+
+<form id="simple-form" class="form-horizontal" method="post" action=".">{% csrf_token %}
+{{ form|crispy }}
+<div class="form-actions">
+  <input type="submit" name="simple" value="{% trans "Submit" %}" class="btn btn-primary">
+  <input type="submit" id="advanced_button" name="advanced" value="{% trans "Advanced creation" %}" class="btn btn-danger">
+</div>
+</form>
+
+{% endblock %}
+

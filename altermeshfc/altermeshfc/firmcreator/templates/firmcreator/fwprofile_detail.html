@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block content %}
+<h1>Profile Detail</h1>
+<h2>{{object}}</h2>
+
+<dl class="dl-horizontal">
+    <dt>{% trans "Name" %}</dt><dd><a href={% url "fwprofile-detail" object.slug %}>{{ object.name }}</a></dd>
+    <dt>{% trans "Network" %}</dt><dd><a href={% url "network-detail" object.network.slug %}>{{ object.network }}</a></dd>
+    <dt>{% trans "Description" %}</dt><dd>{{ object.description }}</dd>
+    <dt>{% trans "Creation date" %}</dt><dd>{{ object.creation_date }}</dd>
+    <dt>{% trans "Created by" %}</dt><dd>{{ object.network.user }}</dd>
+{% if request.user == object.network.user %}
+    {% comment %} <dt><a href={% url "profile-edit" object.slug %}>{% trans "Edit" %}</a></dt>{% endcomment %}
+{% endif %}
+</dl>
+
+{% endblock %}
+

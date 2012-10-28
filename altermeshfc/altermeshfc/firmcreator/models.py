@@ -1,10 +1,13 @@
 import os
 import codecs
+import datetime
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from autoslug.fields import AutoSlugField
+from fields import JSONField
 
 class IncludePackages(object):
 
@@ -13,9 +16,9 @@ class IncludePackages(object):
         self.exclude = exclude or []
 
     @classmethod
-    def load(cls, file_obj):
+    def from_str(cls, string):
         ip = IncludePackages()
-        packages = file_obj.read().split()
+        packages = string.split()
         for package in packages:
             if package.startswith("-"):
                 ip.exclude.append(package[1:])
@@ -23,11 +26,21 @@ class IncludePackages(object):
                 ip.include.append(package)
         return ip
 
-    def to_string(self):
-        return " ".join(self.include) + " -" + " -".join(self.exclude)
+    @classmethod
+    def load(cls, file_obj):
+        return IncludePackages.from_str(file_obj.read())
+
+
+    def to_str(self):
+        out = ""
+        if self.include:
+            out += " ".join(self.include)
+        if self.exclude:
+            out += " -" + " -".join(self.exclude)
+        return  out
 
     def dump(self, file_obj):
-        file_obj.write(self.to_string())
+        file_obj.write(self.to_str())
 
 class IncludeFiles(object):
 
@@ -84,11 +97,26 @@ class Network(models.Model):
 class FwProfile(models.Model):
     network = models.ForeignKey(Network, verbose_name=_('network'))
     name = models.SlugField(_("name"), default="default", max_length=15)
+    slug = AutoSlugField(_("slug"), always_update=False,
+                         populate_from=lambda instance: instance._get_slug())
     description = models.TextField(_('description'))
-    creation_date = models.DateTimeField(_("creation date"), auto_now=True,
+    creation_date = models.DateTimeField(_("creation date"), default=datetime.datetime.now,
                                          editable=False)
+    #default = models.BooleanField(_('description'), default=False, blank=True, editable=False)
     path = models.CharField(editable=False, max_length=255)
+    based_on = models.ForeignKey("self", verbose_name=_('based on'), blank=True,
+                                 null=True, on_delete=models.SET_NULL,
+                                 help_text=_("Create fw profile based on this profile. Leave it on default if you are not sure."))
+    include_packages = models.TextField(_('include packages'), blank=True)
+    include_files = JSONField(_('include files'), default="{}")
+
+    def _get_slug(self):
+        return "%s-%s" % (self.network.slug, self.name)
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         verbose_name = _("firmware profile")
         verbose_name_plural = _("firmware profiles")
+        unique_together = ("network", "name")

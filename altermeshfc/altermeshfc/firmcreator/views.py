@@ -12,8 +12,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
 from django.utils.decorators import method_decorator
 
-from models import IncludeFiles, Network
-from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, NetworkForm
+from models import IncludeFiles, Network, FwProfile
+from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, NetworkForm, FwProfileSimpleForm
 
 class LoginRequiredMixin(object):
 
@@ -60,23 +60,79 @@ def index(request):
     })
 
 
+class FwProfileDetailView(DetailView):
+    model = FwProfile
+
+def create_profile_simple(request):
+
+    if request.method == "POST":
+        form = FwProfileSimpleForm(request.POST, request.FILES, user=request.user)
+        if form.is_valid():
+
+            based_on = form.cleaned_data.get("based_on")
+            fw_profile = form.save()
+            return redirect("fwprofile-detail", slug=fw_profile.slug)
+    else:
+        form = FwProfileSimpleForm(user=request.user)
+
+    return render(request, "firmcreator/create_profile_simple.html", {
+        'form': form,
+    })
 
 @login_required
-def crud_profile(request):
-    based_on = request.GET.get("based_on", None)
-    if based_on:
-        # buscar perfil
-        # cargar perfil
-        # FIXME
-        inc_files = IncludeFiles.load(os.path.join(based_on, "include_files"))
-        initial = [{"name":name, "content": content} for name, content in inc_files.files.iteritems()]
-        include_files_formset = IncludeFilesFormset(initial=initial, prefix="include-files")
+def create_profile_advanced(request):
+    if request.method == "POST":
+        profile_form = FwProfileForm(request.POST, user=request.user)
+        include_files_formset = IncludeFilesFormset(request.POST, prefix="include-files")
+        include_packages_form = IncludePackagesForm(request.POST)
+        if profile_form.is_valid() and include_files_formset.is_valid and \
+           include_packages_form.is_valid():
+            fw_profile = profile_form.save(user=request.user)
+            fw_profile.include_packages = include_packages_form.to_str()
+            files = {}
+            for f in include_files_formset.cleaned_data:
+                files[f["name"]] = f["content"]
+            fw_profile.include_files = files
+            fw_profile.save()
+            return redirect("fwprofile-detail", slug=fw_profile.slug)
+
     else:
-        include_files_formset = IncludeFilesFormset(prefix="include-files")
+        based_on = request.GET.get("based_on", None)
+        if based_on:
+            based_on = get_object_or_404(FwProfile, pk=based_on)
+            initial_files = [{"name":name, "content": content} for name, content in based_on.include_files.iteritems()]
+            include_files_formset = IncludeFilesFormset(initial=initial_files, prefix="include-files")
+            include_packages_form = IncludePackagesForm.from_str(based_on.include_packages)
+        else:
+            include_files_formset = IncludeFilesFormset(prefix="include-files")
+            include_packages_form = IncludePackagesForm()
+        profile_form = FwProfileForm(request.GET, user=request.user)
+
     return render(request, "firmcreator/crud_profile.html", {
         'include_files_formset': include_files_formset,
-        'include_packages_form': IncludePackagesForm(),
-        'profile_form': FwProfileForm(),
+        'include_packages_form': include_packages_form,
+        'profile_form': profile_form,
     })
 
 
+
+import re
+import string
+
+class DjTemplate(string.Template):
+    delimiter = '{{'
+    pattern = r'''
+    \{\{(?:
+    (?P<escaped>\{\{)|
+    (?P<named>[_a-z][_a-z0-9]*)\}\}|
+    (?P<braced>[_a-z][_a-z0-9]*)\}\}|
+    (?P<invalid>)
+    )
+    '''
+
+t = DjTemplate("""
+{{{{
+{{var}}
+""")
+
+t.substitute(var='replacement')

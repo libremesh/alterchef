@@ -42,8 +42,24 @@ class IncludePackagesForm(BaseForm):
 
     @classmethod
     def from_instance(self, instance):
-        return IncludePackagesForm({"include_exclude":instance.to_string()})
+        return IncludePackagesForm({"include_exclude":instance.to_str()})
 
+    @classmethod
+    def from_str(self, string):
+        ip = IncludePackages.from_str(string)
+        optional_packages = []
+        for package in ip.include[:]:
+            if package in SUGESTED_PACKAGES:
+                optional_packages.append(package)
+                ip.include.remove(package)
+        return IncludePackagesForm({"include_exclude":ip.to_str(), "optional_packages": optional_packages})
+
+    def to_str(self):
+        optional_packages = self.cleaned_data.get("optional_packages")
+        include_exclude = self.cleaned_data.get("include_exclude")
+        ip = IncludePackages.from_str(include_exclude)
+        ip.include = set(ip.include + optional_packages)
+        return ip.to_str()
 
 class IncludeFileForm(BaseForm):
 
@@ -68,7 +84,7 @@ class IncludeFileForm(BaseForm):
 
     @classmethod
     def from_instance(self, instance):
-        return IncludePackagesForm({"include_exclude":instance.to_string()})
+        return IncludePackagesForm({"include_exclude":instance.to_str()})
 
 class NetworkForm(forms.ModelForm):
 
@@ -78,11 +94,13 @@ class NetworkForm(forms.ModelForm):
             'slug', 'user',
         )
 
-class FwProfileForm(forms.ModelForm):
+class FwProfileSimpleForm(forms.ModelForm):
 
-    base_profile = forms.CharField(
-        help_text = _("Create fw profile based on this profile. Leave it on default if you are not sure.")
-    )
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user') # user is required to generate AudioSeries choices
+        super(FwProfileSimpleForm, self).__init__(*args, **kwargs)
+        instance = kwargs.get('instance', None)
+        self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))
 
     helper = FormHelper()
     helper.form_tag = False
@@ -91,7 +109,34 @@ class FwProfileForm(forms.ModelForm):
     class Meta:
         model = FwProfile
         exclude = (
-            'cretion_date', 'path',
+            'cretion_date', 'path', 'include_packages', 'include_files',
+        )
+
+class FwProfileForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user') # user is required to generate AudioSeries choices
+        super(FwProfileForm, self).__init__(*args, **kwargs)
+        instance = kwargs.get('instance', None)
+        self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))
+
+
+    def save(self, user, *args, **kwargs):
+        kwargs['commit'] = False
+        obj = super(FwProfileForm, self).save(*args, **kwargs)
+        obj.user = user
+        obj.save()
+        self.save_m2m()
+        return obj
+
+    helper = FormHelper()
+    helper.form_tag = False
+    helper.form_class = 'form-horizontal'
+
+    class Meta:
+        model = FwProfile
+        exclude = (
+            'cretion_date', 'path', 'include_files', 'include_packages'
         )
 
 IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0)

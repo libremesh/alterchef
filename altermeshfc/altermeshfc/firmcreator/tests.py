@@ -33,6 +33,10 @@ class IncludePackagesTest(TestCase):
         form = IncludePackagesForm.from_instance(ip)
         self.assertTrue(form.is_valid())
 
+    def test_string(self):
+        ip = IncludePackages.from_str("")
+        self.assertEqual(ip.to_str(), "")
+
 
 class IncludeFilesTest(TestCase):
 

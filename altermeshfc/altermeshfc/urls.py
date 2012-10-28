@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 
-from altermeshfc.firmcreator.views import NetworkCreateView, NetworkDetailView, NetworkListView, NetworkUpdateView, NetworkDeleteView
+from altermeshfc.firmcreator.views import NetworkCreateView, NetworkDetailView, NetworkListView, \
+                                           NetworkUpdateView, NetworkDeleteView, FwProfileDetailView
 
 urlpatterns = patterns('',
     url(r'^$', 'altermeshfc.firmcreator.views.index', name="index"),
@@ -12,8 +13,13 @@ urlpatterns = patterns('',
     url(r'^network/(?P<slug>[\w-]+)/edit/$', NetworkUpdateView.as_view(), name= 'network-edit'),
     url(r'^network/(?P<slug>[\w-]+)/delete/$', NetworkDeleteView.as_view(), name= 'network-delete'),
 
-    url(r'^profile/create/$', 'altermeshfc.firmcreator.views.crud_profile',
-        name="profile-crud"),
+    url(r'^fwprofile/create/$', 'altermeshfc.firmcreator.views.create_profile_simple',
+        name="fwprofile-create-simple"),
+    url(r'^fwprofile/create-advanced/$', 'altermeshfc.firmcreator.views.create_profile_advanced',
+        name="fwprofile-create-advanced"),
+    #url(r'^fwprofile/(?P<slug>[\w-]+)/edit/$', ProfileUpdateView.as_view(), name= 'fwprofile-edit'),
+    url(r'^fwprofile/(?P<slug>[\w-]+)/$', FwProfileDetailView.as_view(), name= 'fwprofile-detail'),
+
 
     # url(r'^admin/', include(admin.site.urls)),
 )
