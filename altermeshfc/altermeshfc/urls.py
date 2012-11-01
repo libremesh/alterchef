@@ -21,5 +21,9 @@ urlpatterns = patterns('',
     url(r'^fwprofile/(?P<slug>[\w-]+)/$', FwProfileDetailView.as_view(), name= 'fwprofile-detail'),
 
 
+    url(r'^cook/(?P<profile_id>\d+)/$', 'altermeshfc.firmcreator.views.cook', name='cook'),
+
+    url(r'^ls/(?P<path>.*)$', 'altermeshfc.list_dir.views.list_dir', name="list-dir"),
+
     # url(r'^admin/', include(admin.site.urls)),
 )

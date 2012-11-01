@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'altermeshfc.firmcreator',
+    'altermeshfc.list_dir',
 
     'crispy_forms',
     'django.contrib.admin',
