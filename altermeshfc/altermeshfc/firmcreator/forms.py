@@ -140,3 +140,24 @@ class FwProfileForm(forms.ModelForm):
         )
 
 IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0)
+
+COMMON_DEVICES = (
+    ('TLMR3020', 'TP-LINK TL-MR3020'),
+    ('TLMR3220', 'TP-LINK TL-MR3220'),
+    ('TLMR3420', 'TP-LINK TL-MR3420'),
+    ('UBNT', 'Ubiquiti Bullet M'),
+    ('UBNT2', 'Ubiquiti Bullet 2, NanoStation 2, NanoLoco 2'),
+)
+
+def get_supported_devices():
+    return {"ar71xx": ["TLMR3020", ]}
+
+class CookFirmwareForm(forms.Form):
+    common_devices = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                               required=False,
+                                               choices=COMMON_DEVICES,
+                                               label=_("Common devices"))
+    other_devices = forms.CharField(required=False, label=_("Other devices"),
+                                    widget=forms.Textarea,
+                                    help_text=_("List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 UBNT TLWA701</code>"),
+                                    )

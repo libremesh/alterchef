@@ -10,16 +10,19 @@ from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
-from django.utils.decorators import method_decorator
 
+from utils import LoginRequiredMixin
 from models import IncludeFiles, Network, FwProfile
-from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, NetworkForm, FwProfileSimpleForm
+from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
+                   NetworkForm, FwProfileSimpleForm, CookFirmwareForm
 
-class LoginRequiredMixin(object):
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(NetworkEdit, self).dispatch(*args, **kwargs)
+def index(request):
+    return render(request, "firmcreator/index.html", {
+    })
+
+##
+# Network Views
 
 class NetworkCreateView(CreateView, LoginRequiredMixin):
     model = Network
@@ -54,11 +57,8 @@ class NetworkDetailView(DetailView):
 class NetworkListView(ListView):
     model = Network
 
-
-def index(request):
-    return render(request, "firmcreator/index.html", {
-    })
-
+##
+# Profile Views
 
 class FwProfileDetailView(DetailView):
     model = FwProfile
@@ -106,7 +106,7 @@ def create_profile_advanced(request):
         else:
             include_files_formset = IncludeFilesFormset(prefix="include-files")
             include_packages_form = IncludePackagesForm()
-        profile_form = FwProfileForm(request.GET, user=request.user)
+        profile_form = FwProfileForm(request.GET or None, user=request.user)
 
     return render(request, "firmcreator/crud_profile.html", {
         'include_files_formset': include_files_formset,
@@ -115,24 +115,12 @@ def create_profile_advanced(request):
     })
 
 
+@login_required
+def cook(request, slug):
+    profile = get_object_or_404(FwProfile, slug=slug)
 
-import re
-import string
 
-class DjTemplate(string.Template):
-    delimiter = '{{'
-    pattern = r'''
-    \{\{(?:
-    (?P<escaped>\{\{)|
-    (?P<named>[_a-z][_a-z0-9]*)\}\}|
-    (?P<braced>[_a-z][_a-z0-9]*)\}\}|
-    (?P<invalid>)
-    )
-    '''
-
-t = DjTemplate("""
-{{{{
-{{var}}
-""")
-
-t.substitute(var='replacement')
+    return render(request, "firmcreator/cook.html", {
+        "profile": profile,
+        "form": CookFirmwareForm(),
+    })

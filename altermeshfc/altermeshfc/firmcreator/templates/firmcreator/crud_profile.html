@@ -27,19 +27,15 @@ $(function() {
   {% crispy include_files_formset.empty_form include_files_formset.form.helper %}
 </div>
 
-<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#demo">
-    {% trans "Edit files" %}
-</button> <em class="text-error"> {% trans "Warning! Only for advanced users." %}</em>
 
-<div id="demo" class="collapse">
-  <h5>{% trans "You may write anything you want in the files. Take in consideration that some files contains variables in the form:" %}
-  &#123;&#123; VARNAME &#125;&#125;.</h5>
-  {% crispy include_files_formset include_files_formset.form.helper %}
+<h5>{% trans "You may write anything you want in the files. Take in consideration that some files contains variables in the form:" %}
+&#123;&#123; VARNAME &#125;&#125;.</h5>
+{% crispy include_files_formset include_files_formset.form.helper %}
 
-  <formset id="appendedFiles" class="inlineLabels"></formset>
+<formset id="appendedFiles" class="inlineLabels"></formset>
 
-  <input type="button" value="{% trans "Add a file" %}" id="add_more" class="btn btn-warning">
-</div>
+<input type="button" value="{% trans "Add a file" %}" id="add_more" class="btn btn-info">
+
 
 <div class="form-actions">
   <input type="submit" value="{% trans "Create" %}" class="btn btn-primary">

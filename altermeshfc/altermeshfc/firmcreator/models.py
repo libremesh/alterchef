@@ -68,6 +68,9 @@ class IncludeFiles(object):
 
 class FwProfile(object):
 
+    def __init__(self):
+        pass
+
     def read_profile(self):
         raise NotImplemented
 
@@ -114,9 +117,33 @@ class FwProfile(models.Model):
         return "%s-%s" % (self.network.slug, self.name)
 
     def __unicode__(self):
-        return self.name
+        return "%s-%s" % (unicode(self.network), self.name)
+
+    def load_from_disk(self, from_path):
+        pass
+
+    def write_to_disk(self, to_path):
+        #ip = IncludePackages.from_str(self.include_packages)
+        #ip.dump(open(self.path))
+        #inc_files = IncludeFiles(self.include_files)
+        pass
 
     class Meta:
         verbose_name = _("firmware profile")
         verbose_name_plural = _("firmware profiles")
         unique_together = ("network", "name")
+
+STATUSES = (
+    ("WAITING", _("waiting")),
+    ("STARTED", _("started")),
+    ("FINISHED", _("finished")),
+)
+
+
+class FwJob(models.Model):
+    status = models.CharField(verbose_name=_('satus'), choices=STATUSES, default="WAITING",
+                              max_length=10)
+    profile = models.ForeignKey(FwProfile, verbose_name=_('profile'))
+    user = models.ForeignKey(User, editable=False, verbose_name=_('user'))
+    job_data = JSONField(_('job data'), default="{}")
+

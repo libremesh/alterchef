@@ -13,6 +13,11 @@ TEST_DATA_PATH = path.join(path.dirname(__file__), "test_data")
 PROFILES_PATH =  path.abspath(path.join(TEST_DATA_PATH, "profiles"))
 TEST_PROFILE_PATH = path.join(PROFILES_PATH, "test.org.ar")
 
+class ViewsTest(TestCase):
+    def test_index(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+
 class IncludePackagesTest(TestCase):
     def test_read_from_disk(self):
         ip = IncludePackages.load(open(path.join(TEST_PROFILE_PATH, "include_packages")))
