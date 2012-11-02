@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
 
 from utils import LoginRequiredMixin
-from models import IncludeFiles, Network, FwProfile
+from models import IncludeFiles, Network, FwProfile, FwJob
 from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
                    NetworkForm, FwProfileSimpleForm, CookFirmwareForm
 
@@ -115,12 +115,30 @@ def create_profile_advanced(request):
     })
 
 
+def serialize_job():
+    return {}
+
 @login_required
 def cook(request, slug):
     profile = get_object_or_404(FwProfile, slug=slug)
 
+    context = {"profile": profile}
+    jobs = FwJob.objects.filter(profile=profile, status__in=["WAITING", "STARTED"])
+    if jobs:
+        context["job"] = jobs[0]
+    else:
+        if request.method == "POST":
+            form = CookFirmwareForm(request.POST)
+            if form.is_valid():
+                # TODO:
+                # Retrieve data from profile, network and form and create a suitable
+                # job
+                job_data = serialize_job()
+                job = FwJob.objects.create(status="WAITING", profile=profile,
+                                           user=request.user, job_data=job_data)
+                return redirect("fwprofile-detail", slug=profile.slug)
+        else:
+            form = CookFirmwareForm()
+        context["form"] = form
 
-    return render(request, "firmcreator/cook.html", {
-        "profile": profile,
-        "form": CookFirmwareForm(),
-    })
+    return render(request, "firmcreator/cook.html", context)
