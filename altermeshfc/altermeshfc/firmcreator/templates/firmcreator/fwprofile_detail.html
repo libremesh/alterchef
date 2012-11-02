@@ -12,10 +12,8 @@
     <dt>{% trans "Description" %}</dt><dd>{{ object.description }}</dd>
     <dt>{% trans "Creation date" %}</dt><dd>{{ object.creation_date }}</dd>
     <dt>{% trans "Created by" %}</dt><dd>{{ object.network.user }}</dd>
-{% if request.user == object.network.user %}
-    {% comment %} <dt><a href={% url "profile-edit" object.slug %}>{% trans "Edit" %}</a></dt>{% endcomment %}
-{% endif %}
 </dl>
+{% if request.user == object.network.user %} <a class="btn btn-primary" href="{% url "fwprofile-edit-advanced" object.slug %}">{% trans "Edit" %}</a>{% endif %}
 
 {% endblock %}
 

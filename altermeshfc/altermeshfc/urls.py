@@ -15,8 +15,10 @@ urlpatterns = patterns('',
 
     url(r'^fwprofile/create/$', 'altermeshfc.firmcreator.views.create_profile_simple',
         name="fwprofile-create-simple"),
-    url(r'^fwprofile/create-advanced/$', 'altermeshfc.firmcreator.views.create_profile_advanced',
+    url(r'^fwprofile/create-advanced/$', 'altermeshfc.firmcreator.views.crud_profile_advanced',
         name="fwprofile-create-advanced"),
+    url(r'^fwprofile/(?P<slug>[\w-]+)/edit/$', 'altermeshfc.firmcreator.views.crud_profile_advanced',
+        name="fwprofile-edit-advanced"),
     #url(r'^fwprofile/(?P<slug>[\w-]+)/edit/$', ProfileUpdateView.as_view(), name='fwprofile-edit'),
     url(r'^fwprofile/(?P<slug>[\w-]+)/$', FwProfileDetailView.as_view(), name='fwprofile-detail'),
 

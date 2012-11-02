@@ -80,9 +80,10 @@ def create_profile_simple(request):
     })
 
 @login_required
-def create_profile_advanced(request):
+def crud_profile_advanced(request, slug=None):
+    instance = get_object_or_404(FwProfile, slug=slug) if slug else None
     if request.method == "POST":
-        profile_form = FwProfileForm(request.POST, user=request.user)
+        profile_form = FwProfileForm(request.POST, user=request.user, instance=instance)
         include_files_formset = IncludeFilesFormset(request.POST, prefix="include-files")
         include_packages_form = IncludePackagesForm(request.POST)
         if profile_form.is_valid() and include_files_formset.is_valid and \
@@ -100,18 +101,22 @@ def create_profile_advanced(request):
         based_on = request.GET.get("based_on", None)
         if based_on:
             based_on = get_object_or_404(FwProfile, pk=based_on)
-            initial_files = [{"name":name, "content": content} for name, content in based_on.include_files.iteritems()]
-            include_files_formset = IncludeFilesFormset(initial=initial_files, prefix="include-files")
-            include_packages_form = IncludePackagesForm.from_str(based_on.include_packages)
-        else:
-            include_files_formset = IncludeFilesFormset(prefix="include-files")
-            include_packages_form = IncludePackagesForm()
-        profile_form = FwProfileForm(request.GET or None, user=request.user)
+
+        def get_initial_files(obj):
+            return [{"name":name, "content": content} for name, content in obj.include_files.iteritems()]
+
+        inherited = instance or based_on
+        initial_files = get_initial_files(inherited) if inherited else None
+        include_files_formset = IncludeFilesFormset(initial=initial_files, prefix="include-files")
+        include_packages_form = IncludePackagesForm.from_str(inherited.include_packages if inherited else "")
+
+        profile_form = FwProfileForm(request.GET or None, instance=instance, user=request.user)
 
     return render(request, "firmcreator/crud_profile.html", {
         'include_files_formset': include_files_formset,
         'include_packages_form': include_packages_form,
         'profile_form': profile_form,
+        'object': instance,
     })
 
 

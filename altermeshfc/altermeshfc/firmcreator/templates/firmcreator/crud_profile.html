@@ -39,8 +39,8 @@ $(function() {
 
 
 <div class="form-actions">
-  <input type="submit" value="{% trans "Create" %}" class="btn btn-primary">
-  <input type="submit" name="cook" value="{% trans "Create and cook firmware" %}" class="btn btn-warning">
+  <input type="submit" value="{% if object %}{% trans "Edit" %}{% else %}{% trans "Create" %}{% endif %}" class="btn btn-primary">
+  <input type="submit" name="cook" value="{% if object %}{% trans "Edit" %}{% else %}{% trans "Create" %}{% endif %}{% trans " and cook firmware" %}" class="btn btn-warning">
 </div>
 </form>
 
