@@ -9,7 +9,7 @@
 
 {{ form|crispy }}
 <div class="form-actions">
-  <input type="submit" value="{% trans "Submit" %}" class="btn btn-primary">
+  <input type="submit" value="{% if object %}{% trans "Save" %}{% else %}{% trans "Create" %}{% endif %}" class="btn btn-primary">
   {% if object %}<a href="{% url "network-delete" object.slug %}" class="btn btn-danger">{% trans "Delete" %}</a>{% endif %}
 </div>
 </form>

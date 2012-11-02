@@ -8,7 +8,14 @@
 <h1>{{object}}</h1>
 
 {% include "firmcreator/fwprofile_object.html" %}
-{% if request.user == object.network.user %} <a class="btn btn-primary" href="{% url "fwprofile-edit-advanced" object.slug %}">{% trans "Edit" %}</a>{% endif %}
+
+<div class="form-actions">
+{% if request.user == object.network.user %}
+<a class="btn btn-primary" href="{% url "fwprofile-edit-advanced" object.slug %}">{% trans "Edit" %}</a>
+<a class="btn btn-warning" href="{% url "cook" object.slug %}">{% trans "Cook" %}</a>
+<a class="btn btn-danger" href="{% url "fwprofile-delete" object.slug %}">{% trans "Delete" %}</a>
+{% endif %}
+</div>
 
 {% endblock %}
 
