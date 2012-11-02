@@ -97,7 +97,7 @@ class NetworkForm(forms.ModelForm):
 class FwProfileSimpleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user') # user is required to generate AudioSeries choices
+        user = kwargs.pop('user')
         super(FwProfileSimpleForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))
@@ -115,7 +115,7 @@ class FwProfileSimpleForm(forms.ModelForm):
 class FwProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user') # user is required to generate AudioSeries choices
+        user = kwargs.pop('user')
         super(FwProfileForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))

@@ -74,6 +74,7 @@ class FwProfileDeleteView(DeleteView, LoginRequiredMixin):
         else:
             raise Http404
 
+@login_required
 def create_profile_simple(request):
 
     if request.method == "POST":
