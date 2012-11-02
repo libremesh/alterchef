@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n crispy_forms_tags %}
+{% load url from future %}
 
 {% block extra_head %}
 {{super}}
@@ -41,6 +42,7 @@ $(function() {
 <div class="form-actions">
   <input type="submit" value="{% if object %}{% trans "Edit" %}{% else %}{% trans "Create" %}{% endif %}" class="btn btn-primary">
   <input type="submit" name="cook" value="{% if object %}{% trans "Edit" %}{% else %}{% trans "Create" %}{% endif %}{% trans " and cook firmware" %}" class="btn btn-warning">
+  {% if object %}<a href="{% url "fwprofile-delete" object.slug %}" class="btn btn-danger">{% trans "Delete" %}</a>{% endif %}
 </div>
 </form>
 

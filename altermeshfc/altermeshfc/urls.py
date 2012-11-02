@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, include, url
 
 from altermeshfc.firmcreator.views import NetworkCreateView, NetworkDetailView, NetworkListView, \
-                                           NetworkUpdateView, NetworkDeleteView, FwProfileDetailView
+                                           NetworkUpdateView, NetworkDeleteView, FwProfileDetailView, \
+                                           FwProfileDeleteView
 
 urlpatterns = patterns('',
     url(r'^$', 'altermeshfc.firmcreator.views.index', name="index"),
@@ -19,8 +20,8 @@ urlpatterns = patterns('',
         name="fwprofile-create-advanced"),
     url(r'^fwprofile/(?P<slug>[\w-]+)/edit/$', 'altermeshfc.firmcreator.views.crud_profile_advanced',
         name="fwprofile-edit-advanced"),
-    #url(r'^fwprofile/(?P<slug>[\w-]+)/edit/$', ProfileUpdateView.as_view(), name='fwprofile-edit'),
     url(r'^fwprofile/(?P<slug>[\w-]+)/$', FwProfileDetailView.as_view(), name='fwprofile-detail'),
+    url(r'^fwprofile/(?P<slug>[\w-]+)/delete/$', FwProfileDeleteView.as_view(), name='fwprofile-delete'),
 
 
     url(r'^cook/(?P<slug>[\w-]+)/$', 'altermeshfc.firmcreator.views.cook', name='cook'),

@@ -63,6 +63,17 @@ class NetworkListView(ListView):
 class FwProfileDetailView(DetailView):
     model = FwProfile
 
+class FwProfileDeleteView(DeleteView, LoginRequiredMixin):
+    model = FwProfile
+    success_url = reverse_lazy('network-list')
+
+    def get_object(self, queryset=None):
+        object = super(FwProfileDeleteView, self).get_object(queryset)
+        if object.network.user == self.request.user:
+            return object
+        else:
+            raise Http404
+
 def create_profile_simple(request):
 
     if request.method == "POST":

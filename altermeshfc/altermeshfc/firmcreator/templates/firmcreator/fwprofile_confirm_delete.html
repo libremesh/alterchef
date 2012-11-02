@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete Profile" %}{% endblock %}
+
+{% block content %}
+
+<h3 class="text-error">{% trans "Are you sure you want to delete this profile?" %}</h3>
+
+{% include "firmcreator/fwprofile_object.html" %}
+
+<form method="post" action=".">
+{% csrf_token %}
+<input type="submit" value="{% trans "Delete" %}" class="btn btn-danger"/>
+</form>
+
+{% endblock %}
+
