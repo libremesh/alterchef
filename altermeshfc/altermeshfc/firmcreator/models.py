@@ -128,6 +128,10 @@ class FwProfile(models.Model):
         #inc_files = IncludeFiles(self.include_files)
         pass
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('fwprofile-detail', [self.slug])
+
     class Meta:
         verbose_name = _("firmware profile")
         verbose_name_plural = _("firmware profiles")

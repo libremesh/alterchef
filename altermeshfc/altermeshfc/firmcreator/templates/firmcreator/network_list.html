@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load i18n crispy_forms_tags %}
 
+{% block title %}{% trans "List Networks" %}{% endblock %}
+
 {% block content %}
-<h1>{% trans "List Networks" %}</h1>
+
 
 {% for object in object_list %}
   {% include "firmcreator/network_object.html" %}

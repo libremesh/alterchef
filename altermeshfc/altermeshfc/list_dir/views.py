@@ -36,15 +36,18 @@ def _list_dir(path):
 LIST_DIR_ROOT = "/home/san/somecode/altermeshfc/" # absolute path with trailing slash
 
 def list_dir(request, path):
-    path = os.path.abspath(os.path.join(LIST_DIR_ROOT, path))
+    abspath = os.path.abspath(os.path.join(LIST_DIR_ROOT, path))
 
-    if not path_inside_root(path, LIST_DIR_ROOT):
+    if not path_inside_root(abspath, LIST_DIR_ROOT):
         raise Http404
 
-    if os.path.isfile(path):
-        mimetype = mimetypes.guess_type(path)[0]
-        response = HttpResponse(FileWrapper(open(path)), content_type=mimetype)
-        response['Content-Length'] = os.path.getsize(path)
+    if os.path.isfile(abspath):
+        mimetype = mimetypes.guess_type(abspath)[0]
+        response = HttpResponse(FileWrapper(open(abspath)), content_type=mimetype)
+        response['Content-Length'] = os.path.getsize(abspath)
         response['Content-Disposition'] = 'attachment'
         return response
-    return render(request, "list_dir/list_base.html", {"list":_list_dir(path)})
+    return render(request, "list_dir/list_base.html", {
+        "list":_list_dir(abspath),
+        "path": path,
+    })

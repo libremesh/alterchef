@@ -16,8 +16,6 @@
 </head>
 <body>
 
-<h1>{% block title %}AlterMesh Firmware Cheff{% endblock %}</h1>
-
 {% if user.is_authenticated %}
     <a href="{% url "auth_logout" %}?next={{ request.path }}">{% trans "Log out" %}</a>
   {% else %}
@@ -38,6 +36,9 @@
     </ul>
     </div>
     <div class="span8">
+      <div class="page-header">
+        <h1>{% block title %}{% trans "AlterMesh Firmware Cheff" %}{% endblock %}</h1>
+      </div>
     {% block content %}{% endblock %}
     </div>
     <div class="span2">

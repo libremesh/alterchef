@@ -16,8 +16,9 @@ $(function() {
 </script>
 {% endblock %}
 
+{% block title %}{% trans "Create Firmware Profile" %}{% endblock %}
+
 {% block content %}
-<h1>Create Firmware Profile</h1>
 
 <form id="simple-form" class="form-horizontal" method="post" action=".">{% csrf_token %}
 {{ form|crispy }}
