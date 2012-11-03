@@ -1,0 +1,17 @@
+
+config autoconf 'batmesh'
+	option force_autoconf '1'
+
+config autoconf 'radio0'
+	option public_essid 'test.org.ar'
+	option mesh0_essid 'mesh1ah.ts'
+	option mesh0_bssid 'ca:fe:ca:fe:24:01'
+	option mesh0_channel '1'
+
+config autoconf 'radio1'
+	option mesh1_essid 'mesh11ah.ts'
+	option mesh1_bssid 'ca:fe:ca:fe:24:11'
+	option mesh1_channel '11'
+
+config autoconf 'wireless'
+	option mcast_rate '36000'

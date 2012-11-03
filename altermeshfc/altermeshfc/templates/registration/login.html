@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+{% load url from future %}
+
+{% block content %}
+
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<form method="post" action="{% url 'auth_login' %}">
+
+{% csrf_token %}
+{{ form|crispy }}
+
+<input type="submit" value="login" class="btn btn-primary"/>
+<input type="hidden" name="next" value="{{ next }}" />
+<span class="register">{% blocktrans %}
+If you have not yet created an account you need to
+<a href="/accounts/register?next={{next}}">register</a>
+before you may login.
+{% endblocktrans %}
+</span>
+</form>
+
+{% endblock %}
+
