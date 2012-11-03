@@ -178,6 +178,7 @@ class FwJob(models.Model):
             job.status = "STARTED"
             job.profile.write_to_disk()
             commands = make_commands(job.profile.network.name,
+                                     job.profile.name,
                                      job.job_data["devices"],
                                      job.job_data["revision"])
             job.job_data["commands"] = commands
@@ -197,7 +198,7 @@ class FwJob(models.Model):
         except Exception:
             traceback.print_exc(file=sys.stdout)
 
-def make_commands(networkname, devices, revision):
+def make_commands(networkname, profilename, devices, revision):
     archs = defaultdict(list)
     for device in devices:
         arch = get_arch(device)
@@ -206,8 +207,8 @@ def make_commands(networkname, devices, revision):
                 device = device.split("NONE%s" % arch)[1]
             archs[arch].append(device)
 
-    return ["%s %s %s %s %s" % (settings.MAKE_SNAPSHOT, revision, arch, networkname, \
-                                " ".join(devices)) for (arch, devices) in archs.iteritems()]
+    return ["%s %s %s %s %s %s" % (settings.MAKE_SNAPSHOT, revision, arch, networkname, \
+                                   profilename, " ".join(devices)) for (arch, devices) in archs.iteritems()]
 
 def get_arch(device):
     for arch, devices in ARCHS.iteritems():

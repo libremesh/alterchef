@@ -125,6 +125,6 @@ class JobsTest(TestCase):
 
     def test_make_commands(self):
         from models import make_commands
-        commands = make_commands("quintanalibre.org.ar", ["TLMR3220", "NONEatherosDefault"], "33333")
-        self.assertTrue("33333 ar71xx quintanalibre.org.ar TLMR3220" in commands[0])
-        self.assertTrue("33333 atheros quintanalibre.org.ar Default" in commands[1])
+        commands = make_commands("quintanalibre.org.ar", "profile1", ["TLMR3220", "NONEatherosDefault"], "33333")
+        self.assertTrue("33333 ar71xx quintanalibre.org.ar profile1 TLMR3220" in commands[0])
+        self.assertTrue("33333 atheros quintanalibre.org.ar profile1 Default" in commands[1])
