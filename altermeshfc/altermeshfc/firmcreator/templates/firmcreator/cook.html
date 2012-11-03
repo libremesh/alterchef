@@ -16,7 +16,13 @@
 {% endif %}
 
 {% if job %}
-<h2 class="text-error">{% trans "Cheff is already cooking this profile, please be patient!" %} </h2>
+<div class="alert alert-error alert-block">
+<h2>{% trans "Cheff is already cooking this profile, please be patient!" %} </h2>
+</div>
+
+<a class="btn" href="{{ profile.get_absolute_url }}">{% trans "Return" %}</a>
+
+
 {% endif %}
 
 {% endblock %}

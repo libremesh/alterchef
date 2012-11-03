@@ -6,8 +6,11 @@ import tempfile
 import subprocess
 
 from django.test import TestCase
-from models import IncludePackages, IncludeFiles
-from forms import IncludePackagesForm
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+
+from models import IncludePackages, IncludeFiles, FwJob, FwProfile, Network
+from forms import IncludePackagesForm, CookFirmwareForm
 
 TEST_DATA_PATH = path.join(path.dirname(__file__), "test_data")
 PROFILES_PATH =  path.abspath(path.join(TEST_DATA_PATH, "profiles"))
@@ -69,3 +72,59 @@ class IncludeFilesTest(TestCase):
         self.assertEqual(diff, "")
         shutil.rmtree(dest_dir) # cleaning up
 
+class JobsTest(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user("ninja", "e@a.com", "password")
+        self.network = Network.objects.create(name="quintanalibre.org.ar", user=self.user)
+        self.profile = FwProfile.objects.create(network=self.network)
+        self.client.login(username="ninja", password="password")
+        self.cook_url = reverse('cook', kwargs={'slug': self.profile.slug})
+
+    def _test_process_some_jobs(self):
+        fwjob = FwJob.objects.create(profile=self.profile, user=self.user)
+        fwjob = FwJob.objects.create(profile=self.profile, user=self.user)
+
+        import time
+        self.assertEqual(len(FwJob.started.all()), 0)
+        self.assertEqual(len(FwJob.waiting.all()), 2)
+        FwJob.process_jobs()
+        time.sleep(0.5)
+        self.assertEqual(len(FwJob.started.all()), 1)
+        self.assertEqual(len(FwJob.waiting.all()), 1)
+        FwJob.process_jobs()
+        time.sleep(0.5)
+
+        self.assertEqual(len(FwJob.started.all()), 1)
+        self.assertEqual(len(FwJob.waiting.all()), 0)
+        FwJob.process_jobs()
+        time.sleep(0.5)
+        self.assertEqual(len(FwJob.started.all()), 0)
+        self.assertEqual(len(FwJob.waiting.all()), 0)
+
+    def _test_cook(self):
+        response = self.client.get(self.cook_url)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(self.cook_url, {"other_devices":"TLMR3020", "openwrt_revision": "stable"})
+        self.assertEqual(response.status_code, 302)
+
+        self.assertEqual(len(FwJob.started.all()), 0)
+        self.assertEqual(len(FwJob.waiting.all()), 1)
+        FwJob.process_jobs()
+        self.assertEqual(len(FwJob.started.all()), 1)
+        self.assertEqual(len(FwJob.waiting.all()), 0)
+
+    def test_empty_cook(self):
+        response = self.client.post(self.cook_url, {})
+        self.assertContains(response, "You must select at least one device.")
+
+    def test_inyect_cook(self):
+        response = self.client.post(self.cook_url, {"other_devices": "MR320;comando"})
+        self.assertContains(response, "Devices must contains only alphanumeric characters.")
+
+    def test_make_commands(self):
+        from models import make_commands
+        commands = make_commands("quintanalibre.org.ar", ["TLMR3220", "NONEatherosDefault"], "33333")
+        self.assertTrue("33333 ar71xx quintanalibre.org.ar TLMR3220" in commands[0])
+        self.assertTrue("33333 atheros quintanalibre.org.ar Default" in commands[1])

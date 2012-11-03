@@ -146,7 +146,7 @@ COMMON_DEVICES = (
     ('TLMR3220', 'TP-LINK TL-MR3220'),
     ('TLMR3420', 'TP-LINK TL-MR3420'),
     ('UBNT', 'Ubiquiti Bullet M'),
-    ('UBNT2', 'Ubiquiti Bullet 2, NanoStation 2, NanoLoco 2'),
+    ('NONEatherosDefault', 'Ubiquiti Bullet 2, NanoStation 2, NanoLoco 2'),
 )
 
 def get_supported_devices():
@@ -161,3 +161,23 @@ class CookFirmwareForm(forms.Form):
                                     widget=forms.Textarea,
                                     help_text=_("List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 UBNT TLWA701</code>"),
                                     )
+    openwrt_revision = forms.SlugField(required=True, initial="stable")
+
+    def get_devices(self):
+        return self.cleaned_data["common_devices"] + self.cleaned_data["other_devices"].split()
+
+    def clean(self):
+        cleaned_data = super(CookFirmwareForm, self).clean()
+        common_devices = cleaned_data.get("common_devices")
+        other_devices = cleaned_data.get("other_devices")
+
+        if not (common_devices or other_devices):
+            raise forms.ValidationError(_("You must select at least one device."))
+
+        devices = self.get_devices()
+        if not all(map(lambda x: x.isalnum(), devices)):
+            raise forms.ValidationError(_("Devices must contains only alphanumeric characters."))
+
+        return cleaned_data
+
+

@@ -10,6 +10,7 @@ from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
+from django.template import Context, Template
 
 from utils import LoginRequiredMixin
 from models import IncludeFiles, Network, FwProfile, FwJob
@@ -104,7 +105,9 @@ def crud_profile_advanced(request, slug=None):
             fw_profile.include_packages = include_packages_form.to_str()
             files = {}
             for f in include_files_formset.cleaned_data:
-                files[f["name"]] = f["content"]
+                t = Template(f["content"])
+                c = Context({"profile": profile, "network":network}, autoescape=False)
+                files[f["name"]] = t.render(c)
             fw_profile.include_files = files
             fw_profile.save()
             return redirect("fwprofile-detail", slug=fw_profile.slug)
@@ -132,9 +135,6 @@ def crud_profile_advanced(request, slug=None):
     })
 
 
-def serialize_job():
-    return {}
-
 @login_required
 def cook(request, slug):
     profile = get_object_or_404(FwProfile, slug=slug)
@@ -147,15 +147,32 @@ def cook(request, slug):
         if request.method == "POST":
             form = CookFirmwareForm(request.POST)
             if form.is_valid():
-                # TODO:
-                # Retrieve data from profile, network and form and create a suitable
-                # job
-                job_data = serialize_job()
+                devices = form.get_devices()
+                job_data = {
+                    "devices": devices,
+                    "revision": form.cleaned_data["openwrt_revision"],
+                    "profile_id": profile.pk,
+                    "user_id": request.user.pk
+                }
                 job = FwJob.objects.create(status="WAITING", profile=profile,
                                            user=request.user, job_data=job_data)
-                return redirect("fwprofile-detail", slug=profile.slug)
+                return redirect("cook-started", slug=profile.slug)
         else:
             form = CookFirmwareForm()
         context["form"] = form
 
     return render(request, "firmcreator/cook.html", context)
+
+@login_required
+def cook_started(request, slug):
+    profile = get_object_or_404(FwProfile, slug=slug)
+    context = {"profile": profile}
+    return render(request, "firmcreator/cook_started.html", context)
+
+def process_jobs(request):
+    FwJob.process_jobs()
+    started = FwJob.objects.filter(status="STARTED")
+    waiting = FwJob.objects.filter(status="WAITING")
+    return HttpResponse("Waiting: %s<br/>Started: %s" % (["%s" % j for j in waiting],
+                                                         ["%s" % j for j in started]))
+

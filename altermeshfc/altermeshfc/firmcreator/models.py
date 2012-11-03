@@ -1,13 +1,19 @@
 import os
 import codecs
 import datetime
+import subprocess
+from collections import defaultdict
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from autoslug.fields import AutoSlugField
+
 from fields import JSONField
+from utils import to_thread
+
+from django.conf import settings
 
 class IncludePackages(object):
 
@@ -42,6 +48,7 @@ class IncludePackages(object):
     def dump(self, file_obj):
         file_obj.write(self.to_str())
 
+
 class IncludeFiles(object):
 
     def __init__(self, files=None):
@@ -65,17 +72,6 @@ class IncludeFiles(object):
                 os.makedirs(to_dir)
             with codecs.open(os.path.join(to_dir, filename), "w", "utf-8") as f:
                 f.write(filecontent)
-
-class FwProfile(object):
-
-    def __init__(self):
-        pass
-
-    def read_profile(self):
-        raise NotImplemented
-
-    def write_profile(self):
-        raise NotImplemented
 
 
 class Network(models.Model):
@@ -122,11 +118,16 @@ class FwProfile(models.Model):
     def load_from_disk(self, from_path):
         pass
 
-    def write_to_disk(self, to_path):
-        #ip = IncludePackages.from_str(self.include_packages)
-        #ip.dump(open(self.path))
-        #inc_files = IncludeFiles(self.include_files)
-        pass
+    def write_to_disk(self):
+        to_path = os.path.join(settings.NETWORK_INCLUDES_PATH, self.network.name, self.name)
+        if not os.path.exists(to_path):
+            os.makedirs(to_path)
+
+        ip = IncludePackages.from_str(self.include_packages)
+        ip.dump(open(os.path.join(to_path, "include_packages"), "w"))
+
+        inc_files = IncludeFiles(self.include_files)
+        inc_files.dump(os.path.join(to_path, "include_files"))
 
     @models.permalink
     def get_absolute_url(self):
@@ -137,11 +138,20 @@ class FwProfile(models.Model):
         verbose_name_plural = _("firmware profiles")
         unique_together = ("network", "name")
 
+
 STATUSES = (
     ("WAITING", _("waiting")),
     ("STARTED", _("started")),
     ("FINISHED", _("finished")),
 )
+
+class StartedManager(models.Manager):
+    def get_query_set(self):
+        return super(StartedManager, self).get_query_set().filter(status='STARTED')
+
+class WaitingManager(models.Manager):
+    def get_query_set(self):
+        return super(WaitingManager, self).get_query_set().filter(status='WAITING')
 
 
 class FwJob(models.Model):
@@ -150,4 +160,72 @@ class FwJob(models.Model):
     profile = models.ForeignKey(FwProfile, verbose_name=_('profile'))
     user = models.ForeignKey(User, editable=False, verbose_name=_('user'))
     job_data = JSONField(_('job data'), default="{}")
+
+    started = StartedManager()
+    waiting = WaitingManager()
+    objects = models.Manager()
+
+    def __unicode__(self):
+        return unicode(self.profile)
+
+    @classmethod
+    def process_jobs(cls):
+        started = FwJob.objects.filter(status="STARTED")
+        waiting = FwJob.objects.filter(status="WAITING")
+
+        if not started and waiting:
+            job = waiting[0]
+            job.status = "STARTED"
+            job.profile.write_to_disk()
+            commands = make_commands(job.profile.network.name,
+                                     job.job_data["devices"],
+                                     job.job_data["revision"])
+            job.job_data["commands"] = commands
+            job.save()
+            job.process()  # runs in another thread
+
+    @to_thread
+    def process(self, *args, **kwargs):
+        print args, kwargs, self.status, self.job_data
+        for command in self.job_data["commands"]:
+            print command
+            subprocess.call(command.split())
+        self.status = "FINISHED"
+        import sys, traceback
+        try:
+            self.save()
+        except Exception:
+            traceback.print_exc(file=sys.stdout)
+
+def make_commands(networkname, devices, revision):
+    archs = defaultdict(list)
+    for device in devices:
+        arch = get_arch(device)
+        if arch:
+            if device.startswith("NONE%s" % arch):
+                device = device.split("NONE%s" % arch)[1]
+            archs[arch].append(device)
+
+    return ["%s %s %s %s %s" % (settings.MAKE_SNAPSHOT, revision, arch, networkname, \
+                                " ".join(devices)) for (arch, devices) in archs.iteritems()]
+
+def get_arch(device):
+    for arch, devices in ARCHS.iteritems():
+        if device in devices:
+            return arch
+
+ARCHS = {
+    "ar71xx": set([
+            "ath5k","ALFAAP96","HORNETUB","ALFANX","ALL0305","ALL0258N","ALL0315N","AP113","AP121","AP121MINI","AP136","AP81","AP83","AP96","DB120","PB42",
+            "PB44","PB92","A02RBW300N","WZRHPG300NH","WZRHPG300NH2","WZRHPAG300H","WZRHPG450H","WHRG301N","WHRHPG300N","WHRHPGN",
+            "WLAEAG300N","WP543","WPE72","DIR600A1","DIR601A1","DIR615C1","DIR615E4","DIR825B1","EWDORIN","JA76PF","JA76PF2",
+            "JWAP003","WRT160NL","WRT400N","WNDR3700","OM2P","MZKW04NU","MZKW300NH","RW2458N","TLMR11U","TLMR3020","TLMR3040",
+            "TLMR3220","TLMR3420","TLWR703","TLWA701","TLWA901","TLWDR4300","TLWR740","TLWR741","TLWR743","TLWR841","TLWR842",
+            "TLWR941","TLWR1041","TLWR1043","TLWR2543","TEW632BRP","TEW652BRP","TEW673GRU","TEW712BR","UBNTRS","UBNTRSPRO",
+            "UBNTUNIFI","UBNT","ZCN1523H28","ZCN1523H516","NBG_460N_550N_550NH"]),
+    "atheros": set(["NONEatherosDefault"]),
+}
+
+
+
 

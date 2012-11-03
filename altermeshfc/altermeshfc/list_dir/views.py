@@ -7,6 +7,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.servers.basehttp import FileWrapper
 from django.http import Http404
 
+from django.conf import settings
+
+
 def path_inside_root(path, root):
     """True if path is the tree from root.
     Ej: path_inside_root("/foo/bar", "/foo") -> True
@@ -33,12 +36,10 @@ def _list_dir(path):
     context = {'directories': directories, 'files': files}
     return render_to_string('list_dir/list.html', context)
 
-LIST_DIR_ROOT = "/home/san/somecode/altermeshfc/" # absolute path with trailing slash
-
 def list_dir(request, path):
-    abspath = os.path.abspath(os.path.join(LIST_DIR_ROOT, path))
+    abspath = os.path.abspath(os.path.join(settings.LIST_DIR_ROOT, path))
 
-    if not path_inside_root(abspath, LIST_DIR_ROOT):
+    if not path_inside_root(abspath, settings.LIST_DIR_ROOT):
         raise Http404
 
     if os.path.isfile(abspath):
