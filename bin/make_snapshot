@@ -13,6 +13,7 @@ hwprofiles="${@:-Default}"
 root_dir="/home/openwrt"
 imagebuilder_dir="$root_dir/openwrt/image_builders/OpenWrt-ImageBuilder-${platform}*_${rev}"
 [ -f $imagebuilder_dir/.config ] || { echo "ImageBuilder for revision '$rev' and platform '$platform' not found!" ; usage ; exit 4 ; }
+rev="$(sed -n "s/.*OpenWrt version:.*(\(.*\))/\1/p" $imagebuilder_dir/.config)"
 dest_base="$root_dir/snapshots/$network/$rev"
 dest="$dest_base/$netprofile/$platform"
 bin_dir=bin/$platform/
@@ -30,20 +31,23 @@ make clean
 for i in $hwprofiles ; do
   make image --quiet PROFILE="$i" PACKAGES="$packages" FILES="$files_dir" || exit 1
 done
-
 cd $bin_dir
-for i in *.bin ; do
-  if [ -e "$i" ] ; then 
-    cp -p "$i" "$dest/${i%.bin}-${rev}-${network}-${netprofile}.bin"
-    rename -f 's/-(factory|sysupgrade)-(.*).bin/-$2-$1.bin/' "$dest/${i%.bin}-${rev}-${network}-${netprofile}.bin"
-    ln -nsf "${dest##$dest_base/}/${i%.bin}-${rev}-${network}-${netprofile}.bin" $dest_base/
+for file in *.bin ; do
+  if [ -e "$file" ] ; then 
+    cp -p "$file" "$dest/"
+    rename -f 's/((-factory|-sysupgrade)?).bin/-'"${rev}-${network}-${netprofile}"'$1.bin/' "$dest/$file"
   fi
 done
-for i in *.img ; do
-  if [ -e "$i" ] ; then
-    cp -p "$i" "$dest/${i%.img}-${rev}-${network}-${netprofile}.img"
-    ln -nsf "${dest##$dest_base/}/${i%.img}-${rev}-${network}-${netprofile}.img" $dest_base/
+for file in *.img ; do
+  if [ -e "$file" ] ; then
+    cp -p "$file" "$dest/${file%.img}-${rev}-${network}-${netprofile}.img"
   fi
 done
 ( cd $dest/ && rm -f md5sums && md5sum * >md5sums 2>/dev/null )
+
+for file in ${dest}/*${rev}-${network}-${netprofile}*.{img,bin} ; do
+  [ -e "$file" ] && ln -nsf "${file##$dest_base/}" $dest_base/
+done
 ( cd $dest_base/ && rm -f md5sums && md5sum *.img *.bin >md5sums 2>/dev/null)
+
+( cd ${dest_base%/$rev} && ln -nsf $(ls -d1 r* |tail -n1) stable )
