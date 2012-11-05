@@ -1,5 +1,6 @@
 import os
 import mimetypes
+import datetime
 
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
@@ -26,12 +27,12 @@ def _list_dir(path):
     except StopIteration:
         raise Http404
     directories = []
-    import datetime
+
     def get_attrs(name):
         stat = os.stat(os.path.join(path, name))
         return {"name": name, "stat": stat, "mtime": datetime.datetime.fromtimestamp(stat.st_mtime)}
-    files = map(get_attrs, fnames)
-    directories = map(get_attrs, dnames)
+    files = map(get_attrs, sorted(fnames))
+    directories = map(get_attrs, sorted(dnames))
 
     context = {'directories': directories, 'files': files}
     return render_to_string('list_dir/list.html', context)
