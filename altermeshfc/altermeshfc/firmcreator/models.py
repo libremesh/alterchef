@@ -227,6 +227,16 @@ ARCHS = {
     "atheros": set(["NONEatherosDefault"]),
 }
 
+import threading
 
+def thread_process_jobs():
+    import time, random
+    sleep = random.randint(5, 15)
+    while True:
+        FwJob.process_jobs()
+        time.sleep(sleep)
 
+process_jobs_thread = threading.Thread(target=thread_process_jobs)
+process_jobs_thread.daemon = True
+process_jobs_thread.start()
 
