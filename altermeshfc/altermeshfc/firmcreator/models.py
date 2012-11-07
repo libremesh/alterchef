@@ -115,16 +115,19 @@ class FwProfile(models.Model):
     def __unicode__(self):
         return "%s-%s" % (unicode(self.network), self.name)
 
-    def load_from_disk(self, from_path):
-        pass
+    def load_includes_from_disk(self, from_path):
+        inc_files = IncludeFiles.load(os.path.join(from_path, "include_files"))
+        inc_packages = IncludePackages.load(open(os.path.join(from_path, "include_packages")))
+        self.include_packages = inc_packages.to_str()
+        self.include_files = include_files.files
 
     def write_to_disk(self):
         to_path = os.path.join(settings.NETWORK_INCLUDES_PATH, self.network.name, self.name)
         if not os.path.exists(to_path):
             os.makedirs(to_path)
 
-        ip = IncludePackages.from_str(self.include_packages)
-        ip.dump(open(os.path.join(to_path, "include_packages"), "w"))
+        inc_packages = IncludePackages.from_str(self.include_packages)
+        inc_packages.dump(open(os.path.join(to_path, "include_packages"), "w"))
 
         inc_files = IncludeFiles(self.include_files)
         inc_files.dump(os.path.join(to_path, "include_files"))
