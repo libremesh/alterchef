@@ -3,6 +3,7 @@ import os
 import datetime
 
 from django import forms
+from django.conf import settings
 from django.forms.widgets import TextInput, Textarea, FileInput, DateInput
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType

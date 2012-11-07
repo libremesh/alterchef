@@ -77,6 +77,10 @@ class FwProfileDeleteView(DeleteView, LoginRequiredMixin):
 
 @login_required
 def create_profile_simple(request):
+    form_kwargs = {}
+    default_profile_slug = getattr(settings, "DEFAULT_PROFILE_SLUG", None)
+    if default_profile_slug:
+        form_kwargs['initial'] = {'based_on': FwProfile.objects.get(slug=default_profile_slug)}
 
     if request.method == "POST":
         form = FwProfileSimpleForm(request.POST, request.FILES, user=request.user)
@@ -86,7 +90,7 @@ def create_profile_simple(request):
             fw_profile = form.save()
             return redirect("fwprofile-detail", slug=fw_profile.slug)
     else:
-        form = FwProfileSimpleForm(user=request.user)
+        form = FwProfileSimpleForm(user=request.user, **form_kwargs)
 
     return render(request, "firmcreator/create_profile_simple.html", {
         'form': form,

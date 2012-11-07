@@ -171,6 +171,14 @@ ACCOUNT_ACTIVATION_DAYS = 7
 
 LOGIN_REDIRECT_URL = "/"
 
+# path to the snapshot generator
 MAKE_SNAPSHOT = "bash /tmp/make_snapshot"
+
+# path to the dir that will hold the include_files and include_packages used by MAKE_SNAPSHOT
 NETWORK_INCLUDES_PATH = "/tmp/network_includes"
-LIST_DIR_ROOT = "/tmp/snapshots/"
+
+# path to snapshots directory to use as /ls/
+LIST_DIR_ROOT = "/tmp/"
+
+# set a default profile to use as based_on when creating a new profile
+DEFAULT_PROFILE_SLUG = '' #'altermesh-default'
