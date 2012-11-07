@@ -64,6 +64,11 @@ class NetworkListView(ListView):
 class FwProfileDetailView(DetailView):
     model = FwProfile
 
+    def get_context_data(self, **kwargs):
+        context = super(FwProfileDetailView, self).get_context_data(**kwargs)
+        context['pending_jobs'] = self.object.fwjob_set.exclude(status="FINISHED")
+        return context
+
 class FwProfileDeleteView(DeleteView, LoginRequiredMixin):
     model = FwProfile
     success_url = reverse_lazy('network-list')

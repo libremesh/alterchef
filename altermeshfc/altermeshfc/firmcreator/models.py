@@ -169,7 +169,7 @@ class FwJob(models.Model):
     objects = models.Manager()
 
     def __unicode__(self):
-        return unicode(self.profile)
+        return u"%s (%s)" % (self.profile, self.status)
 
     @classmethod
     def process_jobs(cls):
