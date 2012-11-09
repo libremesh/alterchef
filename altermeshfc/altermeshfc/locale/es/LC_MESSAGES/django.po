@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-09 13:47-0300\n"
+"POT-Creation-Date: 2012-11-09 14:54-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,8 +35,8 @@ msgid ""
 "list of packages to include or exclude. i.e. to include foo and baz, and "
 "exclude bar: <tt>foo -bar baz</tt>"
 msgstr ""
-"listado de paquetes a incluir o excluir. por ej. para incluir foo"
-"y baz y excluir bar: <tt>foo -bar baz</tt>"
+"listado de paquetes a incluir o excluir. por ej. para incluir fooy baz y "
+"excluir bar: <tt>foo -bar baz</tt>"
 
 #: firmcreator/forms.py:80
 msgid "File"
@@ -64,7 +64,8 @@ msgstr "Debe seleccionar al menos un dispositivo."
 
 #: firmcreator/forms.py:179
 msgid "PROFILE devices must contain only alphanumeric characters."
-msgstr "Los nombres de dispositivos sólo pueden contener caracateres alfanuméricos."
+msgstr ""
+"Los nombres de dispositivos sólo pueden contener caracateres alfanuméricos."
 
 #: firmcreator/models.py:79 firmcreator/models.py:98
 msgid "name"
@@ -178,7 +179,7 @@ msgstr "el Chef está cocinando! demorará unos minutos."
 
 #: firmcreator/templates/firmcreator/create_profile_simple.html:19
 #: firmcreator/templates/firmcreator/crud_profile.html:19
-#: templates/base.html:35
+#: templates/base.html:34
 msgid "Create Firmware Profile"
 msgstr "Crear Perfil de Firmware"
 
@@ -199,8 +200,8 @@ msgid ""
 "You may write anything you want in the files. Take in consideration that "
 "some files contains variables in the form:"
 msgstr ""
-"Puedes escribir lo que desees en los archivos. Ten en consideración "
-"que algunos archivos contienen variables en el formato:"
+"Puedes escribir lo que desees en los archivos. Ten en consideración que "
+"algunos archivos contienen variables en el formato:"
 
 #: firmcreator/templates/firmcreator/crud_profile.html:39
 msgid "Add a file"
@@ -245,9 +246,9 @@ msgid ""
 "date. Please wait the Chef to finish them to ensure you download the latest "
 "files."
 msgstr ""
-"Este perfil tiene las siguientes órdenes pendiendes y en consecuencia "
-"sus archivos pueden no estar al día. Por favor aguarda a que el Chef las "
-"procese para asegurarte de estar descargando los últimos archivos."
+"Este perfil tiene las siguientes órdenes pendiendes y en consecuencia sus "
+"archivos pueden no estar al día. Por favor aguarda a que el Chef las procese "
+"para asegurarte de estar descargando los últimos archivos."
 
 #: firmcreator/templates/firmcreator/fwprofile_detail.html:25
 #: firmcreator/templates/firmcreator/network_detail.html:11
@@ -303,7 +304,7 @@ msgid " Network"
 msgstr "Red"
 
 #: firmcreator/templates/firmcreator/network_list.html:4
-#: templates/base.html:33
+#: templates/base.html:32
 msgid "List Networks"
 msgstr "Listar Redes"
 
@@ -323,17 +324,26 @@ msgstr "Salir"
 msgid "Log in"
 msgstr "Ingresar"
 
-#: templates/base.html:30
+#: templates/base.html:29
 msgid "Home"
 msgstr "Inicio"
 
-#: templates/base.html:32
+#: templates/base.html:30
+msgid "Networks"
+msgstr "Redes"
+
+#: templates/base.html:31
 msgid "Create Network"
 msgstr "Crear Red"
 
-#: templates/base.html:40
+#: templates/base.html:33
+
+msgid "Firmware Profiles"
+msgstr "Perfiles de Firmware"
+
+#: templates/base.html:39
 msgid "AlterMesh Firmware Chef"
-msgstr "Chef de Firmwares basados en AlterMesh"
+msgstr "Chef de Firmwares AlterMesh"
 
 #: templates/registration/activate.html:7
 msgid "The activation key you posted is invalid."
@@ -432,8 +442,8 @@ msgid ""
 "Please check your e-mail and follow the provided link in order to complete "
 "your account activation"
 msgstr ""
-"Por favor revisa tu correo y sigue el vínculo provisto para completar "
-"la activación de tu cuenta"
+"Por favor revisa tu correo y sigue el vínculo provisto para completar la "
+"activación de tu cuenta"
 
 #: templates/registration/registration_form.html:4
 msgid "Registration"
