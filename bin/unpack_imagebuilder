@@ -31,5 +31,5 @@ if tar -xjf $bindir/$imagebuilder.tar.bz2 ; then
   ls -ld $(pwd)/${imagebuilder}_$rev $releasedir/${imagebuilder}_$rev.tar.bz2 $releasedir/config $releasedir/packages
   echo "After testing this revision, you can update 'stable' links"
   echo "cd $imagebuildersdir && ln -nsf ${imagebuilder}_$rev ${imagebuilder}_stable"
-  echo "cd $snapshotsdir ; ln -nsf $rev current"
+  echo "cd $snapshotsdir ; ln -nsf $rev stable"
 fi
