@@ -18,7 +18,7 @@ from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 from models import IncludePackages, IncludeFiles, FwProfile, Network
 
 # We may add a description of each package, in the form ("pkgname", "description")
-SUGESTED_PACKAGES = ["iperf", "uhttpd", "mini-snmpd"]
+SUGESTED_PACKAGES = ["iperf", "mini-snmpd", "uhttpd", "curl"]
 
 class BaseForm(forms.Form):
     helper = FormHelper()
@@ -31,13 +31,13 @@ class IncludePackagesForm(BaseForm):
         label = _("Optional packages"),
         choices = [(p, p) for p in SUGESTED_PACKAGES],
         widget = forms.CheckboxSelectMultiple,
-        help_text = _("This packages are not needed but you may enjoy from them."),
+        help_text = _("These packages are not essential, but pretty useful."),
         required = False,
     )
 
     include_exclude = forms.CharField(
         label = _("Extra include/exclude packages"),
-        help_text = _("list of packages to include and exclude in the following form to include foo and baz and exclude bar: <tt>foo -bar baz</tt>"),
+        help_text = _("list of packages to include or exclude. i.e. to include foo and baz, and exclude bar: <tt>foo -bar baz</tt>"),
         required = False,
     )
 
@@ -65,7 +65,7 @@ class IncludePackagesForm(BaseForm):
 class IncludeFileForm(BaseForm):
 
     name = forms.CharField(
-        help_text="eg: /etc/conf/batmesh"
+        help_text="eg: /etc/config/batmesh"
     )
 
     content = forms.CharField(
@@ -176,7 +176,7 @@ class CookFirmwareForm(forms.Form):
 
         devices = self.get_devices()
         if not all(map(lambda x: x.isalnum(), devices)):
-            raise forms.ValidationError(_("Devices must contains only alphanumeric characters."))
+            raise forms.ValidationError(_("PROFILE devices must contain only alphanumeric characters."))
 
         return cleaned_data
 
