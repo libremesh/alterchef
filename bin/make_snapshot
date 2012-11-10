@@ -19,7 +19,7 @@ dest="$dest_base/$netprofile/$platform"
 bin_dir=bin/$platform/
 network_includes="$root_dir/network_includes/$network/$netprofile" 
 
-rm -rf $dest_base/*${rev}-${network}-${netprofile}*.{img,bin}
+rm -rf $dest_base/*${platform}*${rev}-${network}-${netprofile}*.{img,bin}
 rm -rf "$dest" ; mkdir -p "$dest"
 [ -e "$network_includes/include_packages" ] && cp -p $network_includes/include_packages $dest/
 [ -d "$network_includes/include_files" ] && rsync -a --delete $network_includes/include_files/ $dest/include_files/
@@ -36,14 +36,15 @@ cd $bin_dir
 for file in *.bin ; do
   if [ -e "$file" ] ; then 
     cp -p "$file" "$dest/"
-    rename -f 's/((-factory|-sysupgrade)?).bin/-'"${rev}-${network}-${netprofile}"'$1.bin/' "$dest/$file"
-    rename -f 's#/openwrt-#/altermesh-#' "$dest/$file"
+    rename -f 's/((-factory|-sysupgrade)?).bin/-'"${rev}-${network}-${netprofile}"'$1.bin/;
+               s#/openwrt-#/altermesh-#' "$dest/$file"
   fi
 done
 for file in *.img ; do
   if [ -e "$file" ] ; then
-    cp -p "$file" "$dest/${file%.img}-${rev}-${network}-${netprofile}.img"
-    rename -f 's#/openwrt-#/altermesh-#' "$dest/$file"
+    cp -p "$file" "$dest/"
+    rename -f 's/.img$/-${rev}-${network}-${netprofile}.img/;
+               s#/openwrt-#/altermesh-#' "$dest/$file"
   fi
 done
 ( cd $dest/ && rm -f md5sums && md5sum * >md5sums 2>/dev/null )
