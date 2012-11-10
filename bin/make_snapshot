@@ -37,13 +37,13 @@ for file in *.bin ; do
   if [ -e "$file" ] ; then 
     cp -p "$file" "$dest/"
     rename -f 's/((-factory|-sysupgrade)?).bin/-'"${rev}-${network}-${netprofile}"'$1.bin/' "$dest/$file"
-    rename -f 's/^openwrt-/altermesh-/' "$dest/$file"
+    rename -f 's#/openwrt-#/altermesh-#' "$dest/$file"
   fi
 done
 for file in *.img ; do
   if [ -e "$file" ] ; then
     cp -p "$file" "$dest/${file%.img}-${rev}-${network}-${netprofile}.img"
-    rename -f 's/^openwrt-/altermesh-/' "$dest/$file"
+    rename -f 's#/openwrt-#/altermesh-#' "$dest/$file"
   fi
 done
 ( cd $dest/ && rm -f md5sums && md5sum * >md5sums 2>/dev/null )
