@@ -1,0 +1,53 @@
+#!/bin/bash
+usage () {
+  echo "Usage: $0 <rev> <platform> <networkname> <netprofile> [HW_Profile1] [HW_Profile2] [...]" 
+}
+
+[ $# -lt 3 ] && { usage ;  exit 2 ; }
+rev="$1" ; shift
+platform="$1" ; shift
+network="$1" ; shift
+netprofile="$1" ; shift
+hwprofiles="${@:-Default}"
+
+root_dir="/home/openwrt"
+imagebuilder_dir="$root_dir/openwrt/image_builders/OpenWrt-ImageBuilder-${platform}*_${rev}"
+[ -f $imagebuilder_dir/.config ] || { echo "ImageBuilder for revision '$rev' and platform '$platform' not found!" ; usage ; exit 4 ; }
+rev="$(sed -n "s/.*OpenWrt version:.*(\(.*\))/\1/p" $imagebuilder_dir/.config)"
+dest_base="$root_dir/snapshots/$network/$rev"
+dest="$dest_base/$netprofile/$platform"
+bin_dir=bin/$platform/
+network_includes="$root_dir/network_includes/$network/$netprofile" 
+
+mkdir -p "$dest"
+[ -e "$network_includes/include_packages" ] && cp -p $network_includes/include_packages $dest/
+[ -d "$network_includes/include_files" ] && rsync -a --delete $network_includes/include_files/ $dest/include_files/
+[ -d "$dest/include_files" ] && files_dir="$dest/include_files"
+
+packages="$(cat "$dest/include_packages" 2>/dev/null)"
+
+cd $imagebuilder_dir
+make clean
+for i in $hwprofiles ; do
+  make image --quiet PROFILE="$i" PACKAGES="$packages" FILES="$files_dir" || exit 1
+done
+cd $bin_dir
+for file in *.bin ; do
+  if [ -e "$file" ] ; then 
+    cp -p "$file" "$dest/"
+    rename -f 's/((-factory|-sysupgrade)?).bin/-'"${rev}-${network}-${netprofile}"'$1.bin/' "$dest/$file"
+  fi
+done
+for file in *.img ; do
+  if [ -e "$file" ] ; then
+    cp -p "$file" "$dest/${file%.img}-${rev}-${network}-${netprofile}.img"
+  fi
+done
+( cd $dest/ && rm -f md5sums && md5sum * >md5sums 2>/dev/null )
+
+for file in ${dest}/*${rev}-${network}-${netprofile}*.{img,bin} ; do
+  [ -e "$file" ] && ln -nsf "${file##$dest_base/}" $dest_base/
+done
+( cd $dest_base/ && rm -f md5sums && md5sum *.img *.bin >md5sums 2>/dev/null)
+
+( cd ${dest_base%/$rev} && ln -nsf $(ls -d1 r* |tail -n1) stable )

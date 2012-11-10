@@ -1,0 +1,10 @@
+Install
+=======
+
+To install the dependencies run ``pip install -r requeriments.txt``
+
+
+TODO
+====
+
+* Handle jobs when application crash or stops.

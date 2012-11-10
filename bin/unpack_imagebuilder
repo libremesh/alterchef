@@ -1,0 +1,35 @@
+#!/bin/bash
+
+platform="$1" ; shift ; [ "$platform" == "" ] && { echo "Usage: $0 <platform>. Please read the source code, sorry!" ; exit 1 ; }
+
+rootdir="/home/openwrt"
+snapshotsdir="$rootdir/snapshots"
+bindir="$rootdir/openwrt/trunk/bin/$platform"
+imagebuildersdir="$rootdir/openwrt/image_builders"
+imagebuilder="$(basename $bindir/OpenWrt-ImageBuilder-*86.tar.bz2)"
+imagebuilder="${imagebuilder%%.tar.bz2}"
+
+cd $imagebuildersdir || { echo Please adapt hardcoded strings in source code! ; exit 1 ; }
+if tar -xjf $bindir/$imagebuilder.tar.bz2 ; then
+  rev="$(sed -n "s/.*OpenWrt version:.*(\(.*\))/\1/p" $imagebuilder/.config)"
+  [ -z "$rev" ] && exit 1 
+
+  mv $bindir/$imagebuilder.tar.bz2 $bindir/${imagebuilder}_$rev.tar.bz2
+
+  rm -rf ${imagebuilder}_$rev 
+  mv $imagebuilder ${imagebuilder}_$rev
+
+  echo "Unpacked ${imagebuilder}_$rev"
+
+  (cd ${imagebuilder}_$rev ; make package_index >/dev/null )
+
+  releasedir="$snapshotsdir/$rev/$platform/"
+  mkdir -p $releasedir
+  cp -p $bindir/${imagebuilder}_$rev.tar.bz2 $releasedir
+  cp -p ${imagebuilder}_$rev/.config $releasedir/config
+  rsync -a --delete ${imagebuilder}_${rev:?}/packages $releasedir
+  ls -ld $(pwd)/${imagebuilder}_$rev $releasedir/${imagebuilder}_$rev.tar.bz2 $releasedir/config $releasedir/packages
+  echo "After testing this revision, you can update 'stable' links"
+  echo "cd $imagebuildersdir && ln -nsf ${imagebuilder}_$rev ${imagebuilder}_stable"
+  echo "cd $snapshotsdir ; ln -nsf $rev stable"
+fi

@@ -1,0 +1,5 @@
+config 'mesh' 'bat0'
+       option 'interfaces' 'mesh0 mesh1 mesh2'
+       option 'bridge_loop_avoidance' '0'
+       option 'gw_mode' 'client'
+       option 'gw_sel_class' '1'
