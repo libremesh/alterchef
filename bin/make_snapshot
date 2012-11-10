@@ -19,6 +19,7 @@ dest="$dest_base/$netprofile/$platform"
 bin_dir=bin/$platform/
 network_includes="$root_dir/network_includes/$network/$netprofile" 
 
+rm -rf $dest_base/*${rev}-${network}-${netprofile}*.{img,bin}
 rm -rf "$dest" ; mkdir -p "$dest"
 [ -e "$network_includes/include_packages" ] && cp -p $network_includes/include_packages $dest/
 [ -d "$network_includes/include_files" ] && rsync -a --delete $network_includes/include_files/ $dest/include_files/
