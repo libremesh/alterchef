@@ -4,7 +4,7 @@ import datetime
 import subprocess
 from collections import defaultdict
 
-from django.db import models
+from django.db import models, DatabaseError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -173,9 +173,11 @@ class FwJob(models.Model):
 
     @classmethod
     def process_jobs(cls):
-        started = FwJob.objects.filter(status="STARTED")
-        waiting = FwJob.objects.filter(status="WAITING")
-
+        try:
+            started = FwJob.objects.filter(status="STARTED")
+            waiting = FwJob.objects.filter(status="WAITING")
+        except DatabaseError:
+            return
         if not started and waiting:
             job = waiting[0]
             job.status = "STARTED"
