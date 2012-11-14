@@ -72,6 +72,11 @@ class IncludeFilesTest(TestCase):
         self.assertEqual(diff, "")
         shutil.rmtree(dest_dir) # cleaning up
 
+class NetworkTest(TestCase):
+    def test_create_network_anonymous(self):
+         response = self.client.get(reverse('network-create'))
+         self.assertEqual(response.status_code, 302)
+
 class JobsTest(TestCase):
 
     def setUp(self):

@@ -3,7 +3,7 @@
 platform="$1" ; shift ; [ "$platform" == "" ] && { echo "Usage: $0 <platform>. Please read the source code, sorry!" ; exit 1 ; }
 
 rootdir="/home/openwrt"
-snapshotsdir="$rootdir/snapshots"
+downloadsdir="$rootdir/downloads"
 bindir="$rootdir/openwrt/trunk/bin/$platform"
 imagebuildersdir="$rootdir/openwrt/image_builders"
 imagebuilder="$(basename $bindir/OpenWrt-ImageBuilder-*86.tar.bz2)"
@@ -23,7 +23,7 @@ if tar -xjf $bindir/$imagebuilder.tar.bz2 ; then
 
   (cd ${imagebuilder}_$rev ; make package_index >/dev/null )
 
-  releasedir="$snapshotsdir/$rev/$platform/"
+  releasedir="$downloadsdir/$rev/$platform/"
   mkdir -p $releasedir
   cp -p $bindir/${imagebuilder}_$rev.tar.bz2 $releasedir
   cp -p ${imagebuilder}_$rev/.config $releasedir/config
@@ -31,5 +31,5 @@ if tar -xjf $bindir/$imagebuilder.tar.bz2 ; then
   ls -ld $(pwd)/${imagebuilder}_$rev $releasedir/${imagebuilder}_$rev.tar.bz2 $releasedir/config $releasedir/packages
   echo "After testing this revision, you can update 'stable' links"
   echo "cd $imagebuildersdir && ln -nsf ${imagebuilder}_$rev ${imagebuilder}_stable"
-  echo "cd $snapshotsdir ; ln -nsf $rev stable"
+  echo "cd $downloadsdir ; ln -nsf $rev stable"
 fi

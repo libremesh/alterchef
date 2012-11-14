@@ -16,34 +16,38 @@
 </head>
 <body>
 
+
+
 <div id="login" style="float:right; margin-right: 30px;margin-top: 30px;">
-{% if user.is_authenticated %}
-    <a href="{% url "auth_logout" %}?next={{ request.path }}">{% trans "Log out" %}</a>
+ <div class="btn-group">
+  {% if user.is_authenticated %}
+    <a class="btn btn-primary" href="#"><i class="icon-user icon-white"></i> {{ user }}</a>
+    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li><a href="{% url "auth_logout" %}?next={{ request.path }}"><i class="icon-arrow-left"></i> {% trans "Log out" %}</a></li>
+      </ul>
   {% else %}
-  <a href="{% url "auth_login" %}?next={{ request.path }}">{% trans "Log in" %}</a>
-{% endif %}
+    <a class="btn btn-primary" href="{% url "auth_login" %}?next={{ request.path }}"><i class="icon-user icon-white"></i> {% trans "Log in" %}</a>
+  {% endif %}
+ </div>
 </div>
 
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
-    <ul class="nav nav-list nav-stacked">
+    <ul class="nav nav-list nav-stacked" style="margin: 30px 0 0;">
         <li><a href="/">{% trans "Home" %}</a></li>
         <li class="nav-header">{% trans 'Networks' %}</li>
         <li><a href="{% url "network-create" %}">{% trans "Create Network" %}</a></li>
         <li><a href="{% url "network-list" %}">{% trans "List Networks" %}</a></li>
-        <li class="nav-header">{% trans 'Firmware Profiles' %}</li>
-        <li><a href="{% url "fwprofile-create-simple" %}">{% trans "Create Firmware Profile" %}</a></li>
     </ul>
     </div>
-    <div class="span8">
+    <div class="span9">
       <div class="page-header">
         <h3>{% block title %}{% trans "AlterMesh Firmware Chef" %}{% endblock %}</h3>
       </div>
     {% block content %}{% endblock %}
     </div>
-    <div class="span2">
-    <div></div>
   </div>
 </div>
 

@@ -1,31 +1,28 @@
 {% extends "base.html" %}
-{% load i18n crispy_forms_tags %}
+{% load i18n %}
 
 {% block title %}{% trans "Diff for profiles"%} <em>{{profile}}</em>{% endblock %}
 
 {% block content %}
 <style>{{ style|safe }}</style>
-
-Added:
+<h2>{% trans "Files diff" %}</h2>
+<h3>{% trans "Added" %}</h3>
 {% for filename, code in added %}
-<label>filename</label>
-<div>
+<div class="pre-scrollable">
 {{ code|safe }}
 </div>
 {% endfor %}
 
-Removed:
+<h3>{% trans "Removed" %}</h3>
 {% for filename, code in removed %}
-<label>filename</label>
-<div>
+<div class="pre-scrollable">
 {{ code|safe }}
 </div>
 {% endfor %}
 
-Changed:
+<h3>{% trans "Changed" %}</h3>
 {% for filename, code in changed %}
-<label>filename</label>
-<div>
+<div class="pre-scrollable">
 {{ code|safe }}
 </div>
 {% endfor %}

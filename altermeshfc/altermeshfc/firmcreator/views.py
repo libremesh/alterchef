@@ -11,6 +11,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
 from django.template import Context, Template
+from django.utils.text import normalize_newlines
+import pygments
+from pygments.lexers import DiffLexer
+from pygments.formatters import HtmlFormatter
+from difflib import unified_diff
 
 from utils import LoginRequiredMixin
 from models import IncludeFiles, Network, FwProfile, FwJob
@@ -25,14 +30,14 @@ def index(request):
 ##
 # Network Views
 
-class NetworkCreateView(CreateView, LoginRequiredMixin):
+class NetworkCreateView(LoginRequiredMixin, CreateView):
     model = Network
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(NetworkCreateView, self).form_valid(form)
 
-class NetworkUpdateView(UpdateView, LoginRequiredMixin):
+class NetworkUpdateView(LoginRequiredMixin, UpdateView):
     model = Network
     def get_object(self, queryset=None):
         object = super(NetworkUpdateView, self).get_object(queryset)
@@ -41,7 +46,7 @@ class NetworkUpdateView(UpdateView, LoginRequiredMixin):
         else:
             raise Http404
 
-class NetworkDeleteView(DeleteView, LoginRequiredMixin):
+class NetworkDeleteView(LoginRequiredMixin, DeleteView):
     model = Network
     success_url = reverse_lazy('network-list')
 
@@ -82,20 +87,25 @@ class FwProfileDeleteView(DeleteView, LoginRequiredMixin):
 
 @login_required
 def create_profile_simple(request):
-    form_kwargs = {}
+    initial = {}
     default_profile_slug = getattr(settings, "DEFAULT_PROFILE_SLUG", None)
     if default_profile_slug:
-        form_kwargs['initial'] = {'based_on': FwProfile.objects.get(slug=default_profile_slug)}
+        initial['based_on'] = FwProfile.objects.get(slug=default_profile_slug)
 
     if request.method == "POST":
         form = FwProfileSimpleForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
-
             based_on = form.cleaned_data.get("based_on")
             fw_profile = form.save()
+            fw_profile.include_files = based_on.include_files
+            fw_profile.include_packages = based_on.include_packages
+            fw_profile.save()
             return redirect("fwprofile-detail", slug=fw_profile.slug)
     else:
-        form = FwProfileSimpleForm(user=request.user, **form_kwargs)
+        network = request.GET.get("network", None)
+        if network:
+            initial['network'] = get_object_or_404(Network, pk=network)
+        form = FwProfileSimpleForm(user=request.user, initial=initial)
 
     return render(request, "firmcreator/create_profile_simple.html", {
         'form': form,
@@ -114,10 +124,7 @@ def crud_profile_advanced(request, slug=None):
             fw_profile.include_packages = include_packages_form.to_str()
             files = {}
             for f in include_files_formset.cleaned_data:
-                t = Template(f["content"])
-                c = Context({"profile": fw_profile, "network": fw_profile.network,
-                             "PUBLIC_ESSID": fw_profile.network.name}, autoescape=False)
-                files[f["name"]] = t.render(c)
+                files[f["name"]] = normalize_newlines(f["content"])
             fw_profile.include_files = files
             fw_profile.save()
             return redirect("fwprofile-detail", slug=fw_profile.slug)
@@ -186,25 +193,27 @@ def process_jobs(request):
     return HttpResponse("Waiting: %s<br/>Started: %s" % (["%s" % j for j in waiting],
                                                          ["%s" % j for j in started]))
 
+
 def diff(request, src_profile, dest_profile):
     src_profile = get_object_or_404(FwProfile, slug=src_profile)
     dest_profile = get_object_or_404(FwProfile, slug=dest_profile)
-    import pygments
-    from pygments.lexers import DiffLexer
-    from pygments.formatters import HtmlFormatter
+
     html_formatter = HtmlFormatter()
     style = html_formatter.get_style_defs()
-    from difflib import unified_diff
 
     def add_rm_chg(src, dest):
         return dest - src, src - dest, src.intersection(dest)
 
-    added, removed, changed = add_rm_chf(set(src_profile.include_files),
-                                         set(dest_prhofile.include_files))
+    added, removed, changed = add_rm_chg(set(src_profile.include_files),
+                                         set(dest_profile.include_files))
+
+    for filename in changed.copy():
+        if src_profile.include_files[filename] == dest_profile.include_files[filename]:
+            changed.remove(filename)
 
     def highlight_diff(filename):
-        out = "\n".join(unified_diff(src_profile.include_files[filename].splitlines(),
-                                     dest_profile.include_files[filename].splitlines(),
+        out = "\n".join(unified_diff(src_profile.include_files.get(filename, "").splitlines(),
+                                     dest_profile.include_files.get(filename, "").splitlines(),
                                      filename, filename))
         return pygments.highlight(out, DiffLexer(), html_formatter)
 

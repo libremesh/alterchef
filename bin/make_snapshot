@@ -14,17 +14,18 @@ root_dir="/home/openwrt"
 imagebuilder_dir="$root_dir/openwrt/image_builders/OpenWrt-ImageBuilder-${platform}*_${rev}"
 [ -f $imagebuilder_dir/.config ] || { echo "ImageBuilder for revision '$rev' and platform '$platform' not found!" ; usage ; exit 4 ; }
 rev="$(sed -n "s/.*OpenWrt version:.*(\(.*\))/\1/p" $imagebuilder_dir/.config)"
-dest_base="$root_dir/snapshots/$network/$rev"
+dest_base="$root_dir/downloads/$network/$rev"
 dest="$dest_base/$netprofile/$platform"
 bin_dir=bin/$platform/
 network_includes="$root_dir/network_includes/$network/$netprofile" 
 
-mkdir -p "$dest"
+rm -rf $dest_base/*${platform}*${rev}-${network}-${netprofile}*.{img,bin}
+rm -rf "$dest" ; mkdir -p "$dest"
 [ -e "$network_includes/include_packages" ] && cp -p $network_includes/include_packages $dest/
 [ -d "$network_includes/include_files" ] && rsync -a --delete $network_includes/include_files/ $dest/include_files/
 [ -d "$dest/include_files" ] && files_dir="$dest/include_files"
 
-packages="$(cat "$dest/include_packages" 2>/dev/null)"
+packages="$(cat "$dest/include_packages" | sed ':a;N;$!ba;s/\n/ /g' 2>/dev/null)"
 
 cd $imagebuilder_dir
 make clean
@@ -35,12 +36,15 @@ cd $bin_dir
 for file in *.bin ; do
   if [ -e "$file" ] ; then 
     cp -p "$file" "$dest/"
-    rename -f 's/((-factory|-sysupgrade)?).bin/-'"${rev}-${network}-${netprofile}"'$1.bin/' "$dest/$file"
+    rename -f 's/((-factory|-sysupgrade)?).bin/-'"${rev}-${network}-${netprofile}"'$1.bin/;
+               s#/openwrt-#/altermesh-#' "$dest/$file"
   fi
 done
 for file in *.img ; do
   if [ -e "$file" ] ; then
-    cp -p "$file" "$dest/${file%.img}-${rev}-${network}-${netprofile}.img"
+    cp -p "$file" "$dest/"
+    rename -f 's/.img$/-${rev}-${network}-${netprofile}.img/;
+               s#/openwrt-#/altermesh-#' "$dest/$file"
   fi
 done
 ( cd $dest/ && rm -f md5sums && md5sum * >md5sums 2>/dev/null )

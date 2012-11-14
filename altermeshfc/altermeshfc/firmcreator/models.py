@@ -4,11 +4,13 @@ import datetime
 import subprocess
 from collections import defaultdict
 
-from django.db import models
+from django.db import models, DatabaseError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from autoslug.fields import AutoSlugField
+from django.utils.text import normalize_newlines
+from django.template import Context, Template
 
 from fields import JSONField
 from utils import to_thread
@@ -71,7 +73,7 @@ class IncludeFiles(object):
             if not os.path.exists(to_dir):
                 os.makedirs(to_dir)
             with codecs.open(os.path.join(to_dir, filename), "w", "utf-8") as f:
-                f.write(filecontent)
+                f.write(normalize_newlines(filecontent))
 
 
 class Network(models.Model):
@@ -119,7 +121,7 @@ class FwProfile(models.Model):
         inc_files = IncludeFiles.load(os.path.join(from_path, "include_files"))
         inc_packages = IncludePackages.load(open(os.path.join(from_path, "include_packages")))
         self.include_packages = inc_packages.to_str()
-        self.include_files = include_files.files
+        self.include_files = inc_files.files
 
     def write_to_disk(self):
         to_path = os.path.join(settings.NETWORK_INCLUDES_PATH, self.network.name, self.name)
@@ -128,8 +130,13 @@ class FwProfile(models.Model):
 
         inc_packages = IncludePackages.from_str(self.include_packages)
         inc_packages.dump(open(os.path.join(to_path, "include_packages"), "w"))
+        files = {}
+        for fname, content in self.include_files.iteritems():
+            t = Template(content)
+            c = Context({"NETWORK_NAME": self.network.name}, autoescape=False)
+            files[fname] = normalize_newlines(t.render(c))
 
-        inc_files = IncludeFiles(self.include_files)
+        inc_files = IncludeFiles(files)
         inc_files.dump(os.path.join(to_path, "include_files"))
 
     @models.permalink
@@ -173,9 +180,11 @@ class FwJob(models.Model):
 
     @classmethod
     def process_jobs(cls):
-        started = FwJob.objects.filter(status="STARTED")
-        waiting = FwJob.objects.filter(status="WAITING")
-
+        try:
+            started = FwJob.objects.filter(status="STARTED")
+            waiting = FwJob.objects.filter(status="WAITING")
+        except DatabaseError:
+            return
         if not started and waiting:
             job = waiting[0]
             job.status = "STARTED"
