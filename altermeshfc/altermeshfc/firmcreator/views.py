@@ -117,7 +117,7 @@ def crud_profile_advanced(request, slug=None):
             for f in include_files_formset.cleaned_data:
                 t = Template(f["content"])
                 c = Context({"profile": fw_profile, "network": fw_profile.network,
-                             "PUBLIC_ESSID": fw_profile.network.name}, autoescape=False)
+                             "NETWORK_NAME": fw_profile.network.name}, autoescape=False)
                 files[f["name"]] = normalize_newlines(t.render(c))
             fw_profile.include_files = files
             fw_profile.save()
