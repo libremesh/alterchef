@@ -129,8 +129,13 @@ class FwProfile(models.Model):
 
         inc_packages = IncludePackages.from_str(self.include_packages)
         inc_packages.dump(open(os.path.join(to_path, "include_packages"), "w"))
+        files = {}
+        for fname, content in self.include_files.iteritems():
+            t = Template(content)
+            c = Context({"NETWORK_NAME": self.network.name}, autoescape=False)
+            files[fname] = normalize_newlines(t.render(c))
 
-        inc_files = IncludeFiles(self.include_files)
+        inc_files = IncludeFiles(files)
         inc_files.dump(os.path.join(to_path, "include_files"))
 
     @models.permalink
