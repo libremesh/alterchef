@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from autoslug.fields import AutoSlugField
+from django.utils.text import normalize_newlines
 
 from fields import JSONField
 from utils import to_thread
@@ -71,7 +72,7 @@ class IncludeFiles(object):
             if not os.path.exists(to_dir):
                 os.makedirs(to_dir)
             with codecs.open(os.path.join(to_dir, filename), "w", "utf-8") as f:
-                f.write(filecontent)
+                f.write(normalize_newlines(filecontent))
 
 
 class Network(models.Model):
@@ -119,7 +120,7 @@ class FwProfile(models.Model):
         inc_files = IncludeFiles.load(os.path.join(from_path, "include_files"))
         inc_packages = IncludePackages.load(open(os.path.join(from_path, "include_packages")))
         self.include_packages = inc_packages.to_str()
-        self.include_files = include_files.files
+        self.include_files = inc_files.files
 
     def write_to_disk(self):
         to_path = os.path.join(settings.NETWORK_INCLUDES_PATH, self.network.name, self.name)

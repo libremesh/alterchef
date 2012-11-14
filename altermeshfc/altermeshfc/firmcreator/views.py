@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
 from django.template import Context, Template
+from django.utils.text import normalize_newlines
 
 from utils import LoginRequiredMixin
 from models import IncludeFiles, Network, FwProfile, FwJob
@@ -117,7 +118,7 @@ def crud_profile_advanced(request, slug=None):
                 t = Template(f["content"])
                 c = Context({"profile": fw_profile, "network": fw_profile.network,
                              "PUBLIC_ESSID": fw_profile.network.name}, autoescape=False)
-                files[f["name"]] = t.render(c)
+                files[f["name"]] = normalize_newlines(t.render(c))
             fw_profile.include_files = files
             fw_profile.save()
             return redirect("fwprofile-detail", slug=fw_profile.slug)
