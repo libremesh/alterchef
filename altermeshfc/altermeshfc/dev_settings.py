@@ -182,3 +182,5 @@ LIST_DIR_ROOT = "/tmp/"
 
 # set a default profile to use as based_on when creating a new profile
 DEFAULT_PROFILE_SLUG = '' #'altermesh-default'
+
+LOCALE_PATHS = (os.path.join(PROJECT_PATH, 'locale'), )
