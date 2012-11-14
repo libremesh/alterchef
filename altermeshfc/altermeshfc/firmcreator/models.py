@@ -97,7 +97,7 @@ class Network(models.Model):
 
 class FwProfile(models.Model):
     network = models.ForeignKey(Network, verbose_name=_('network'))
-    name = models.SlugField(_("name"), default="default", max_length=15)
+    name = models.SlugField(_("name"), default="node", max_length=15)
     slug = AutoSlugField(_("slug"), always_update=False,
                          populate_from=lambda instance: instance._get_slug())
     description = models.TextField(_('description'))

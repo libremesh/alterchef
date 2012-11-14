@@ -38,6 +38,7 @@ class IncludePackagesForm(BaseForm):
     include_exclude = forms.CharField(
         label = _("Extra include/exclude packages"),
         help_text = _("list of packages to include or exclude. i.e. to include foo and baz, and exclude bar: <tt>foo -bar baz</tt>"),
+        widget=forms.Textarea,
         required = False,
     )
 
@@ -158,7 +159,6 @@ class CookFirmwareForm(forms.Form):
                                                choices=COMMON_DEVICES,
                                                label=_("Common devices"))
     other_devices = forms.CharField(required=False, label=_("Other devices"),
-                                    widget=forms.Textarea,
                                     help_text=_("List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 UBNT TLWA701</code>"),
                                     )
     openwrt_revision = forms.SlugField(required=True, initial="stable")
