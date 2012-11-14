@@ -26,14 +26,14 @@ def index(request):
 ##
 # Network Views
 
-class NetworkCreateView(CreateView, LoginRequiredMixin):
+class NetworkCreateView(LoginRequiredMixin, CreateView):
     model = Network
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(NetworkCreateView, self).form_valid(form)
 
-class NetworkUpdateView(UpdateView, LoginRequiredMixin):
+class NetworkUpdateView(LoginRequiredMixin, UpdateView):
     model = Network
     def get_object(self, queryset=None):
         object = super(NetworkUpdateView, self).get_object(queryset)
@@ -42,7 +42,7 @@ class NetworkUpdateView(UpdateView, LoginRequiredMixin):
         else:
             raise Http404
 
-class NetworkDeleteView(DeleteView, LoginRequiredMixin):
+class NetworkDeleteView(LoginRequiredMixin, DeleteView):
     model = Network
     success_url = reverse_lazy('network-list')
 
