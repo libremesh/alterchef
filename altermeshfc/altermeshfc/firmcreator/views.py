@@ -186,3 +186,36 @@ def process_jobs(request):
     return HttpResponse("Waiting: %s<br/>Started: %s" % (["%s" % j for j in waiting],
                                                          ["%s" % j for j in started]))
 
+def diff(request, src_profile, dest_profile):
+    src_profile = get_object_or_404(FwProfile, slug=src_profile)
+    dest_profile = get_object_or_404(FwProfile, slug=dest_profile)
+    import pygments
+    from pygments.lexers import DiffLexer
+    from pygments.formatters import HtmlFormatter
+    html_formatter = HtmlFormatter()
+    style = html_formatter.get_style_defs()
+    from difflib import unified_diff
+
+    def add_rm_chg(src, dest):
+        return dest - src, src - dest, src.intersection(dest)
+
+    added, removed, changed = add_rm_chf(set(src_profile.include_files),
+                                         set(dest_prhofile.include_files))
+
+    def highlight_diff(filename):
+        out = "\n".join(unified_diff(src_profile.include_files[filename].splitlines(),
+                                     dest_profile.include_files[filename].splitlines(),
+                                     filename, filename))
+        return pygments.highlight(out, DiffLexer(), html_formatter)
+
+    changed = [(filename, highlight_diff(filename)) for filename in changed]
+    added = [(filename, highlight_diff(filename)) for filename in added]
+    removed = [(filename, highlight_diff(filename)) for filename in removed]
+
+
+    return render(request, "firmcreator/diff.html", {
+        'style': style,
+        'added': added,
+        'changed': changed,
+        'removed': removed,
+    })

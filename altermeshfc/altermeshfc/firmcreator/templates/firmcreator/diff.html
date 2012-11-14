@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block title %}{% trans "Diff for profiles"%} <em>{{profile}}</em>{% endblock %}
+
+{% block content %}
+<style>{{ style|safe }}</style>
+
+Added:
+{% for filename, code in added %}
+<label>filename</label>
+<div>
+{{ code|safe }}
+</div>
+{% endfor %}
+
+Removed:
+{% for filename, code in removed %}
+<label>filename</label>
+<div>
+{{ code|safe }}
+</div>
+{% endfor %}
+
+Changed:
+{% for filename, code in changed %}
+<label>filename</label>
+<div>
+{{ code|safe }}
+</div>
+{% endfor %}
+{% endblock %}
+

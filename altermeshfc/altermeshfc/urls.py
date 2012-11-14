@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     url(r'^fwprofile/(?P<slug>[\w-]+)/$', FwProfileDetailView.as_view(), name='fwprofile-detail'),
     url(r'^fwprofile/(?P<slug>[\w-]+)/delete/$', FwProfileDeleteView.as_view(), name='fwprofile-delete'),
 
+    url(r'^diff/(?P<src_profile>[\w-]+)/(?P<dest_profile>[\w-]+)/$', 'altermeshfc.firmcreator.views.diff', name='fwprofile-diff'),
+
 
     url(r'^cook/(?P<slug>[\w-]+)/$', 'altermeshfc.firmcreator.views.cook', name='cook'),
     url(r'^cook/(?P<slug>[\w-]+)/started/$', 'altermeshfc.firmcreator.views.cook_started', name='cook-started'),

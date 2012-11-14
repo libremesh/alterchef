@@ -180,4 +180,6 @@ class CookFirmwareForm(forms.Form):
 
         return cleaned_data
 
-
+class DiffProfileForm(forms.Form):
+    src = forms.ModelChoiceField(queryset=FwProfile.objects.all())
+    dest = forms.ModelChoiceField(queryset=FwProfile.objects.all())
