@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from autoslug.fields import AutoSlugField
 from django.utils.text import normalize_newlines
+from django.template import Context, Template
 
 from fields import JSONField
 from utils import to_thread
