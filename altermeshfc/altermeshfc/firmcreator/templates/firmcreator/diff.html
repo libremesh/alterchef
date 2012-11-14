@@ -3,28 +3,38 @@
 
 {% block title %}{% trans "Diff for profiles"%} <em>{{profile}}</em>{% endblock %}
 
+{% block extra_head %}
+{{  block.super }}
+<script>
+$(function(){
+  $("pre").addClass("pre-scrollable");
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <style>{{ style|safe }}</style>
 <h2>{% trans "Files diff" %}</h2>
 <h3>{% trans "Added" %}</h3>
 {% for filename, code in added %}
-<div class="pre-scrollable">
+<div>
 {{ code|safe }}
 </div>
 {% endfor %}
 
 <h3>{% trans "Removed" %}</h3>
 {% for filename, code in removed %}
-<div class="pre-scrollable">
+<div>
 {{ code|safe }}
 </div>
 {% endfor %}
 
 <h3>{% trans "Changed" %}</h3>
 {% for filename, code in changed %}
-<div class="pre-scrollable">
+<div>
 {{ code|safe }}
 </div>
 {% endfor %}
+
 {% endblock %}
 
