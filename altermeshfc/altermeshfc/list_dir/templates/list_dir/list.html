@@ -1,0 +1,23 @@
+<table class="table table-striped">
+  <tbody>
+    <tr>
+      <td><a href="../"><i class="icon-folder-open"></i>..</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+    {% for dir in directories %}
+    <tr>
+      <td><a href="{{ dir.name }}/"><i class="icon-folder-open"></i> {{ dir.name }}</a></td>
+      <td>{{ dir.mtime }}</td>
+      <td></td>
+    </tr>
+    {% endfor %}
+    {% for file in files %}
+    <tr>
+      <td><a href="{{ file.name }}"><i class="icon-file"></i> {{ file.name }}</a></td>
+      <td>{{ file.mtime }}</td>
+      <td>{{ file.stat.st_size|filesizeformat }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

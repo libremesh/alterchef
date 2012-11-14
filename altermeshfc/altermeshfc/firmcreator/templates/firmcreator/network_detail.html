@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans "Network Detail" %}{% endblock %}
+
+{% block content %}
+<h1>{{ object }}</h1>
+{% include "firmcreator/network_object.html" %}
+
+{% if request.user == object.user %} <a class="btn btn-primary" href="{% url "network-edit" object.slug %}">{% trans "Edit" %}</a>{% endif %}
+
+{% endblock %}
+

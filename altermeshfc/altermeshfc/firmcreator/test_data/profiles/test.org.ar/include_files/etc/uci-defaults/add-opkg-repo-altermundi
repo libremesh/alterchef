@@ -1,0 +1,7 @@
+#!/bin/sh
+rev=$(cat /etc/openwrt_version)
+line="src/gz altermundi http://openwrt.altermundi.net/snapshots/$rev/ar71xx/packages"
+file="/etc/opkg.conf"
+
+sed "\|^src/gz altermundi |d" -i $file
+echo "$line" >> $file

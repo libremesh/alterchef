@@ -1,0 +1,5 @@
+#!/bin/sh
+timezone="ART3"
+
+uci set system.@system[0].timezone="$timezone"
+uci commit system

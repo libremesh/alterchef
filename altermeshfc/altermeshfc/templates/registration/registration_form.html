@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block title %}{% trans "Registration"%}{% endblock %}
+
+{% block content%}
+<form action="" method="post" class="uniForm login">{% csrf_token %}
+{{ form|crispy }}
+<input type="submit" value="{% trans "login"|capfirst %}" class="btn btn-primary">
+</form>
+{% endblock %}

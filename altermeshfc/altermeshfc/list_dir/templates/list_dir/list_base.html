@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Index of " %}/{{ path }}{% endblock %}
+
+{% block content %}
+
+{{ list }}
+
+{% endblock %}

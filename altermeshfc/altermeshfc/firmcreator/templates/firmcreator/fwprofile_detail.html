@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans "Profile Detail" %}{% endblock %}
+
+{% block content %}
+<h1>{{object}}</h1>
+
+{% include "firmcreator/fwprofile_object.html" %}
+
+{% if pending_jobs %}
+<div class="alert alert-error">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <strong>{% trans "Warning!" %}</strong>{% trans "This profile has the following pending jobs, so the files may not be up to date. Please wait the Chef to finish them to ensure you download the latest files." %}
+  <ul>
+  {% for job in pending_jobs %}
+    <li>{{ job }}</li>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
+<div class="form-actions">
+{% if request.user == object.network.user %}
+<a class="btn btn-primary" href="{% url "fwprofile-edit-advanced" object.slug %}">{% trans "Edit" %}</a>
+<a class="btn btn-warning" href="{% url "cook" object.slug %}">{% trans "Cook" %}</a>
+<a class="btn btn-danger" href="{% url "fwprofile-delete" object.slug %}">{% trans "Delete" %}</a>
+{% endif %}
+<a class="btn btn-inverse" href="/ls/{{ object.network.name }}/stable/">{% trans "Download Firmware" %}</a>
+</div>
+
+
+
+{% endblock %}
+
