@@ -18,7 +18,7 @@ from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 from models import IncludePackages, IncludeFiles, FwProfile, Network
 
 # We may add a description of each package, in the form ("pkgname", "description")
-SUGESTED_PACKAGES = ["iperf", "mini-snmpd", "uhttpd", "curl"]
+SUGESTED_PACKAGES = ["iperf", "mini-snmpd"]
 
 class BaseForm(forms.Form):
     helper = FormHelper()
@@ -110,7 +110,7 @@ class FwProfileSimpleForm(forms.ModelForm):
     class Meta:
         model = FwProfile
         exclude = (
-            'cretion_date', 'path', 'include_packages', 'include_files',
+            'creation_date', 'path', 'include_packages', 'include_files',
         )
 
 class FwProfileForm(forms.ModelForm):
@@ -137,7 +137,7 @@ class FwProfileForm(forms.ModelForm):
     class Meta:
         model = FwProfile
         exclude = (
-            'cretion_date', 'path', 'include_files', 'include_packages'
+            'creation_date', 'path', 'include_files', 'include_packages'
         )
 
 IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0)
