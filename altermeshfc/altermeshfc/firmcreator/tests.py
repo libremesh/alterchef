@@ -133,3 +133,24 @@ class JobsTest(TestCase):
         commands = make_commands("quintanalibre.org.ar", "profile1", ["TLMR3220", "NONEatherosDefault"], "33333")
         self.assertTrue("33333 ar71xx quintanalibre.org.ar profile1 TLMR3220" in commands[0])
         self.assertTrue("33333 atheros quintanalibre.org.ar profile1 Default" in commands[1])
+
+
+class DiffTests(TestCase):
+
+    def test_diff_view(self):
+        user = User.objects.create_user("ninja", "e@a.com", "password")
+        network = Network.objects.create(name="quintanalibre.org.ar", user=user)
+        profile1 = FwProfile.objects.create(network=network, name="p1", include_packages="pkg_two\npkg_three\n",
+                                            include_files={"/foo": "foo\nfoo\n", "/bar": "bar\nbar\n"})
+        profile2 = FwProfile.objects.create(network=network, name="p2", include_packages="pkg_one\npkg_two\n",
+                                            include_files={"/bar": "spam\nbar\n", "/baz": "baz"})
+        response = self.client.get(reverse("fwprofile-diff", args=(profile1.slug, profile2.slug)))
+
+        self.assertContains(response, "-foo", status_code=200)
+        self.assertContains(response, "-bar", status_code=200)
+        self.assertContains(response, "+spam", status_code=200)
+        self.assertContains(response, "+baz", status_code=200)
+
+        self.assertContains(response, "+pkg_one", status_code=200)
+        self.assertContains(response, "-pkg_three", status_code=200)
+

@@ -72,6 +72,10 @@ class FwProfileDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(FwProfileDetailView, self).get_context_data(**kwargs)
         context['pending_jobs'] = self.object.fwjob_set.exclude(status="FINISHED")
+        profiles = FwProfile.objects.all().exclude(slug=self.object.slug)
+        if self.object.based_on:
+            profiles = profiles.exclude(slug=self.object.based_on.slug)
+        context['profiles'] = profiles
         return context
 
 class FwProfileDeleteView(DeleteView, LoginRequiredMixin):
@@ -204,27 +208,39 @@ def diff(request, src_profile, dest_profile):
     def add_rm_chg(src, dest):
         return dest - src, src - dest, src.intersection(dest)
 
-    added, removed, changed = add_rm_chg(set(src_profile.include_files),
-                                         set(dest_profile.include_files))
+    def _highlight(diff):
+        return pygments.highlight(diff, DiffLexer(), html_formatter)
 
-    for filename in changed.copy():
+    packages_added, packages_removed, packages_same = add_rm_chg(set(src_profile.include_packages.split()),
+                                                                 set(dest_profile.include_packages.split()))
+
+    packages_old = list(packages_removed) + list(packages_same)
+    packages_new = list(packages_added) + list(packages_same)
+    packages_diff = _highlight("\n".join(unified_diff(packages_old, packages_new)))
+
+    files_added, files_removed, files_changed = add_rm_chg(set(src_profile.include_files),
+                                                           set(dest_profile.include_files))
+
+    for filename in files_changed.copy():
         if src_profile.include_files[filename] == dest_profile.include_files[filename]:
-            changed.remove(filename)
+            files_changed.remove(filename)
 
     def highlight_diff(filename):
         out = "\n".join(unified_diff(src_profile.include_files.get(filename, "").splitlines(),
                                      dest_profile.include_files.get(filename, "").splitlines(),
                                      filename, filename))
-        return pygments.highlight(out, DiffLexer(), html_formatter)
+        return _highlight(out)
 
-    changed = [(filename, highlight_diff(filename)) for filename in changed]
-    added = [(filename, highlight_diff(filename)) for filename in added]
-    removed = [(filename, highlight_diff(filename)) for filename in removed]
-
+    files_changed = [(filename, highlight_diff(filename)) for filename in files_changed]
+    files_added = [(filename, highlight_diff(filename)) for filename in files_added]
+    files_removed = [(filename, highlight_diff(filename)) for filename in files_removed]
 
     return render(request, "firmcreator/diff.html", {
         'style': style,
-        'added': added,
-        'changed': changed,
-        'removed': removed,
+        'files_added': files_added,
+        'files_changed': files_changed,
+        'files_removed': files_removed,
+        'packages_diff': packages_diff,
+        'inverse_diff': reverse("fwprofile-diff", args=(dest_profile.slug, src_profile.slug)),
+
     })

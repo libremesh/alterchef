@@ -8,6 +8,20 @@
 <h1>{{object}}</h1>
 
 {% include "firmcreator/fwprofile_object.html" %}
+<dl class="dl-horizontal">
+  <dt>{% trans "compare with" %}</dt>
+  <dd>
+    <select ONCHANGE="location = this.options[this.selectedIndex].value;">
+      <option value="#" selected="selected"> - - - - - </option>
+      {% if object.based_on %}
+      <option value="{% url 'fwprofile-diff' object.slug object.based_on.slug %}"> {{ object.based_on }} (base)</option>
+      {% endif %}
+      {% for profile in profiles %}
+      <option value="{% url 'fwprofile-diff' object.slug profile.slug %}"> {{ profile }}</option>
+      {% endfor %}
+    </select>
+  </dd>
+</dl>
 
 {% if pending_jobs %}
 <div class="alert alert-error">
