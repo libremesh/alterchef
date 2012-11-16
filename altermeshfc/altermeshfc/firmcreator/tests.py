@@ -122,11 +122,11 @@ class JobsTest(TestCase):
 
     def test_empty_cook(self):
         response = self.client.post(self.cook_url, {})
-        self.assertContains(response, "You must select at least one device.")
+        self.assertContains(response, CookFirmwareForm.ERROR_ONE_DEVICE)
 
     def test_inyect_cook(self):
         response = self.client.post(self.cook_url, {"other_devices": "MR320;comando"})
-        self.assertContains(response, "Devices must contains only alphanumeric characters.")
+        self.assertContains(response, CookFirmwareForm.ERROR_ALPHANUMERIC)
 
     def test_make_commands(self):
         from models import make_commands

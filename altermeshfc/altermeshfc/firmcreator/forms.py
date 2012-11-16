@@ -172,14 +172,13 @@ class CookFirmwareForm(forms.Form):
         other_devices = cleaned_data.get("other_devices")
 
         if not (common_devices or other_devices):
-            raise forms.ValidationError(_("You must select at least one device."))
+            raise forms.ValidationError(self.ERROR_ONE_DEVICE)
 
         devices = self.get_devices()
         if not all(map(lambda x: x.isalnum(), devices)):
-            raise forms.ValidationError(_("PROFILE devices must contain only alphanumeric characters."))
+            raise forms.ValidationError(self.ERROR_ALPHANUMERIC)
 
         return cleaned_data
 
-class DiffProfileForm(forms.Form):
-    src = forms.ModelChoiceField(queryset=FwProfile.objects.all())
-    dest = forms.ModelChoiceField(queryset=FwProfile.objects.all())
+    ERROR_ONE_DEVICE = _("You must select at least one device.")
+    ERROR_ALPHANUMERIC = _("PROFILE devices must contain only alphanumeric characters.")
