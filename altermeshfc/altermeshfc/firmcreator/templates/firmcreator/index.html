@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 {% load i18n crispy_forms_tags %}
 
+{% block title %}{% trans "Welcome to our firmware kitchen" %}{% endblock %}
+
 {% block content %}
 
-<h2>Bienvenida/o a nuestra cocina de firmwares</h2>
-
-<p>Para crear el firmware de tu red, sólo necesitas seguir estos pasos:</p>
+<p>{% trans "To create a firmware for your network you only need to follow this steps" %}:</p>
 <ul>
   <li>
-    <a href="/accounts/register?next=/">registrarte</a>
+    <a href="/accounts/register?next=/">{% trans "register" %}</a>
   </li>
   <li>
-    <a href="/network/create/">crear tu red</a>
+    <a href="/network/create/">{% trans "create your network" %}</a>
   </li>
   <li>
-    <a href="/fwprofile/create/">crear un perfil de firmware</a>
+    <a href="/fwprofile/create/">{% trans "create your firmware profile" %}</a>
   </li>
 </ul>
 
