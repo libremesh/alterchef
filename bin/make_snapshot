@@ -3,6 +3,9 @@ usage () {
   echo "Usage: $0 <rev> <platform> <networkname> <netprofile> [HW_Profile1] [HW_Profile2] [...]" 
 }
 
+date >> /tmp/make_snapshot.log
+echo $0 "$@" >> /tmp/make_snapshot.log
+
 [ $# -lt 3 ] && { usage ;  exit 2 ; }
 rev="$1" ; shift
 platform="$1" ; shift
