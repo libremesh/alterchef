@@ -18,7 +18,7 @@ from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 from models import IncludePackages, IncludeFiles, FwProfile, Network
 
 # We may add a description of each package, in the form ("pkgname", "description")
-SUGESTED_PACKAGES = ["iperf", "mini-snmpd"]
+SUGESTED_PACKAGES = ["iperf", "mini-snmpd", "altermap-agent"]
 
 class BaseForm(forms.Form):
     helper = FormHelper()
