@@ -45,7 +45,7 @@ class IncludePackages(object):
             out += " ".join(self.include)
         if self.exclude:
             out += " -" + " -".join(self.exclude)
-        return  out
+        return "\n".join(out.split())
 
     def dump(self, file_obj):
         file_obj.write(self.to_str())
