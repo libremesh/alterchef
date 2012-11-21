@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans "Job Detail" %}{% endblock %}
+
+{% block content %}
+<h1>{{ object }}</h1>
+
+<dl class="dl-horizontal">
+    <dt>{% trans "Network" %}</dt><dd><a href="{% url 'network-detail' object.profile.network.slug %}">{{ object.profile.network.name }}</a></dd>
+    <dt>{% trans "Profile" %}</dt><dd><a href="{% url 'fwprofile-detail' object.profile.slug %}">{{ object.profile.name }}</a></dd>
+    <dt>{% trans "Created by" %}</dt><dd>{{ object.user }}</dd>
+    <dt>{% trans "Status" %}</dt><dd {% if object.status == "FAILED" %}class="text-error"{% endif %}>{{ object.status }}</dd>
+    {% if object.build_log %}
+      <pre>
+      {{ object.build_log }}
+      </pre>
+    {% endif %}
+</dl>
+{% endblock %}
+

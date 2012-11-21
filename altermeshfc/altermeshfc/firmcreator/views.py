@@ -71,7 +71,11 @@ class FwProfileDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(FwProfileDetailView, self).get_context_data(**kwargs)
-        context['pending_jobs'] = self.object.fwjob_set.exclude(status="FINISHED")
+        context['pending_jobs'] = FwJob.objects.filter(status__in = ["WAITING", "STARTED"], profile=self.object)
+        jobs = FwJob.objects.filter(profile=self.object).order_by('-pk')[:1]
+        if jobs and jobs[0].status == "FAILED":
+            context['failed_job'] = jobs[0]
+
         profiles = FwProfile.objects.all().exclude(slug=self.object.slug)
         if self.object.based_on:
             profiles = profiles.exclude(slug=self.object.based_on.slug)
@@ -190,13 +194,9 @@ def cook_started(request, slug):
     context = {"profile": profile}
     return render(request, "firmcreator/cook_started.html", context)
 
-def process_jobs(request):
-    FwJob.process_jobs()
-    started = FwJob.objects.filter(status="STARTED")
-    waiting = FwJob.objects.filter(status="WAITING")
-    return HttpResponse("Waiting: %s<br/>Started: %s" % (["%s" % j for j in waiting],
-                                                         ["%s" % j for j in started]))
-
+def view_jobs(request):
+    jobs = FwJob.objects.select_related().all()[:100]
+    return render(request, "firmcreator/fwjob_list.html", {"jobs": jobs})
 
 def diff(request, src_profile, dest_profile):
     src_profile = get_object_or_404(FwProfile, slug=src_profile)
@@ -244,3 +244,8 @@ def diff(request, src_profile, dest_profile):
         'inverse_diff': reverse("fwprofile-diff", args=(dest_profile.slug, src_profile.slug)),
 
     })
+
+
+class FwJobDetailView(DetailView):
+    model = FwJob
+    queryset = FwJob.objects.all()

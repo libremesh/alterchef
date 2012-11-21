@@ -11,6 +11,8 @@ from django.core.urlresolvers import reverse
 from autoslug.fields import AutoSlugField
 from django.utils.text import normalize_newlines
 from django.template import Context, Template
+from django.core.mail import mail_managers
+from django.contrib.sites.models import Site
 
 from fields import JSONField
 from utils import to_thread
@@ -111,6 +113,7 @@ class FwProfile(models.Model):
     include_packages = models.TextField(_('include packages'), blank=True)
     include_files = JSONField(_('include files'), default="{}")
 
+
     def _get_slug(self):
         return "%s-%s" % (self.network.slug, self.name)
 
@@ -153,16 +156,25 @@ STATUSES = (
     ("WAITING", _("waiting")),
     ("STARTED", _("started")),
     ("FINISHED", _("finished")),
+    ("FAILED", _("failed")),
 )
 
-class StartedManager(models.Manager):
+class StatusManager(models.Manager):
+    _status = None
     def get_query_set(self):
-        return super(StartedManager, self).get_query_set().filter(status='STARTED')
+        return super(StatusManager, self).get_query_set().filter(status=self._status)
 
-class WaitingManager(models.Manager):
-    def get_query_set(self):
-        return super(WaitingManager, self).get_query_set().filter(status='WAITING')
+class StartedManager(StatusManager):
+    _status = 'STARTED'
 
+class WaitingManager(StatusManager):
+    _status = 'WAITING'
+
+class FinishedManager(StatusManager):
+    _status = 'FINISHED'
+
+class FailedManager(StatusManager):
+    _status = 'FAILED'
 
 class FwJob(models.Model):
     status = models.CharField(verbose_name=_('satus'), choices=STATUSES, default="WAITING",
@@ -170,16 +182,23 @@ class FwJob(models.Model):
     profile = models.ForeignKey(FwProfile, verbose_name=_('profile'))
     user = models.ForeignKey(User, editable=False, verbose_name=_('user'))
     job_data = JSONField(_('job data'), default="{}")
-
+    build_log = models.TextField(_('build log'), blank=True)
+    creation_date = models.DateTimeField(_("creation date"), default=datetime.datetime.now,
+                                         editable=False)
     started = StartedManager()
     waiting = WaitingManager()
+    finished = FinishedManager()
+    failed = FailedManager()
     objects = models.Manager()
+
+    class Meta:
+        ordering = ['-pk']
 
     def __unicode__(self):
         return u"%s (%s)" % (self.profile, self.status)
 
     @classmethod
-    def process_jobs(cls):
+    def process_jobs(cls, sync=False):
         try:
             started = FwJob.objects.filter(status="STARTED")
             waiting = FwJob.objects.filter(status="WAITING")
@@ -195,22 +214,38 @@ class FwJob(models.Model):
                                      job.job_data["revision"])
             job.job_data["commands"] = commands
             job.save()
-            job.process()  # runs in another thread
+            job.process(sync)  # runs in another thread
 
-    @to_thread
-    def process(self, *args, **kwargs):
-        print args, kwargs, self.status, self.job_data
+
+    def process(self, sync=False):
+        if sync:
+            self._process()
+        else:
+            to_thread(self._process)()
+
+    def _process(self, *args, **kwargs):
+        output = u"%s\n" % self.job_data
         for command in self.job_data["commands"]:
-            print command
-            subprocess.call(command.split())
-        self.status = "FINISHED"
-        import sys, traceback
-        try:
-            self.save()
-        except Exception:
-            traceback.print_exc(file=sys.stdout)
+            output += command + "\n"
+            p = subprocess.Popen(command.split(), stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT)
+            output += p.communicate()[0].decode("utf-8")
 
-def make_commands(networkname, profilename, devices, revision):
+            if p.returncode != 0:
+                job_url = reverse('fwjob-detail', kwargs={'pk': self.pk})
+                domain = Site.objects.all()[0].domain
+                email_msg = "Cook failed for job http://%s%s" % (domain, job_url)
+                mail_managers("[Chef] Cook failed", email_msg, fail_silently=True)
+                self.status = "FAILED"
+                self.build_log = output
+                self.save()
+                return
+        self.status = "FINISHED"
+        self.save()
+
+
+
+def _make_commands(networkname, profilename, devices, revision):
     archs = defaultdict(list)
     for device in devices:
         arch = get_arch(device)
@@ -221,6 +256,9 @@ def make_commands(networkname, profilename, devices, revision):
 
     return ["%s %s %s %s %s %s" % (settings.MAKE_SNAPSHOT, revision, arch, networkname, \
                                    profilename, " ".join(devices)) for (arch, devices) in archs.iteritems()]
+
+def make_commands(networkname, profilename, devices, revision):
+    return _make_commands(networkname, profilename, devices, revision)
 
 def get_arch(device):
     for arch, devices in ARCHS.iteritems():

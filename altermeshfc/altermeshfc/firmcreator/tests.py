@@ -9,6 +9,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
+import models
 from models import IncludePackages, IncludeFiles, FwJob, FwProfile, Network
 from forms import IncludePackagesForm, CookFirmwareForm
 
@@ -85,27 +86,35 @@ class JobsTest(TestCase):
         self.profile = FwProfile.objects.create(network=self.network)
         self.client.login(username="ninja", password="password")
         self.cook_url = reverse('cook', kwargs={'slug': self.profile.slug})
+        self.job_data = {"devices": ["TLMR3220"], "revision": "stable"}
 
-    def _test_process_some_jobs(self):
-        fwjob = FwJob.objects.create(profile=self.profile, user=self.user)
-        fwjob = FwJob.objects.create(profile=self.profile, user=self.user)
+    def tearDown(self):
+        models.make_commands = models._make_commands
 
+    def test_process_some_jobs(self):
+        fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
+        fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
+
+        models.make_commands = lambda *x: ["sleep 0.1"]
         import time
         self.assertEqual(len(FwJob.started.all()), 0)
         self.assertEqual(len(FwJob.waiting.all()), 2)
-        FwJob.process_jobs()
-        time.sleep(0.5)
-        self.assertEqual(len(FwJob.started.all()), 1)
-        self.assertEqual(len(FwJob.waiting.all()), 1)
-        FwJob.process_jobs()
-        time.sleep(0.5)
 
-        self.assertEqual(len(FwJob.started.all()), 1)
-        self.assertEqual(len(FwJob.waiting.all()), 0)
-        FwJob.process_jobs()
-        time.sleep(0.5)
-        self.assertEqual(len(FwJob.started.all()), 0)
-        self.assertEqual(len(FwJob.waiting.all()), 0)
+        FwJob.process_jobs(sync=True)
+        self.assertEqual(len(FwJob.waiting.all()), 1)
+        self.assertEqual(len(FwJob.finished.all()), 1)
+
+        FwJob.process_jobs(sync=True)
+        self.assertEqual(len(FwJob.finished.all()), 2)
+
+    def test_failed_job(self):
+        fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
+        models.make_commands = lambda *x: ["ls /inexistent"]
+
+        FwJob.process_jobs(sync=True)
+        self.assertEqual(len(FwJob.failed.all()), 1)
+        fwjob = FwJob.objects.get(pk=fwjob.pk)
+        self.assertTrue("No such file or directory" in fwjob.build_log)
 
     def _test_cook(self):
         response = self.client.get(self.cook_url)
@@ -133,6 +142,18 @@ class JobsTest(TestCase):
         commands = make_commands("quintanalibre.org.ar", "profile1", ["TLMR3220", "NONEatherosDefault"], "33333")
         self.assertTrue("33333 ar71xx quintanalibre.org.ar profile1 TLMR3220" in commands[0])
         self.assertTrue("33333 atheros quintanalibre.org.ar profile1 Default" in commands[1])
+
+    def test_view_jobs(self):
+        self.assertContains(self.client.get(reverse("view-jobs")), "List Jobs")
+
+    def test_job_detail(self):
+        fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
+        self.assertContains(self.client.get(reverse("fwjob-detail", kwargs={"pk": fwjob.pk})), "WAITING")
+        fwjob.status = "FAILED"
+        fwjob.build_log = "the log"
+        fwjob.save()
+        self.assertContains(self.client.get(reverse("fwjob-detail", kwargs={"pk": fwjob.pk})), "the log")
+
 
 
 class DiffTests(TestCase):

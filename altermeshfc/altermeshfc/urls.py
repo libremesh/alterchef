@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 
 from altermeshfc.firmcreator.views import NetworkCreateView, NetworkDetailView, NetworkListView, \
                                            NetworkUpdateView, NetworkDeleteView, FwProfileDetailView, \
-                                           FwProfileDeleteView
+                                           FwProfileDeleteView, FwJobDetailView
 
 urlpatterns = patterns('',
     url(r'^$', 'altermeshfc.firmcreator.views.index', name="index"),
@@ -23,6 +23,9 @@ urlpatterns = patterns('',
     url(r'^fwprofile/(?P<slug>[\w-]+)/$', FwProfileDetailView.as_view(), name='fwprofile-detail'),
     url(r'^fwprofile/(?P<slug>[\w-]+)/delete/$', FwProfileDeleteView.as_view(), name='fwprofile-delete'),
 
+    url(r'^fwjob/list/$', 'altermeshfc.firmcreator.views.view_jobs', name="view-jobs"),
+    url(r'^fwjob/(?P<pk>\d+)/$', FwJobDetailView.as_view(), name='fwjob-detail'),
+
     url(r'^diff/(?P<src_profile>[\w-]+)/(?P<dest_profile>[\w-]+)/$', 'altermeshfc.firmcreator.views.diff', name='fwprofile-diff'),
 
 
@@ -30,8 +33,6 @@ urlpatterns = patterns('',
     url(r'^cook/(?P<slug>[\w-]+)/started/$', 'altermeshfc.firmcreator.views.cook_started', name='cook-started'),
 
     url(r'^ls/(?P<path>.*)$', 'altermeshfc.list_dir.views.list_dir', name="list-dir"),
-
-    url(r'^process_jobs/$', 'altermeshfc.firmcreator.views.process_jobs', name="process-jobs"),
 
     # url(r'^admin/', include(admin.site.urls)),
 )

@@ -22,16 +22,22 @@
     </select>
   </dd>
 </dl>
-
-{% if pending_jobs %}
+{% if pending_jobs or failed_job %}
 <div class="alert alert-error">
   <button type="button" class="close" data-dismiss="alert">×</button>
-  <strong>{% trans "Warning!" %}</strong>{% trans "This profile has the following pending jobs, so the files may not be up to date. Please wait the Chef to finish them to ensure you download the latest files." %}
-  <ul>
-  {% for job in pending_jobs %}
-    <li>{{ job }}</li>
-  {% endfor %}
-  </ul>
+  <strong>{% trans "Warning!" %}</strong>
+  {% if pending_jobs %}
+    {% trans "This profile has the following pending jobs, so the files may not be up to date. Please wait the Chef to finish them to ensure you download the latest files." %}
+    <ul>
+    {% for job in pending_jobs %}
+      <li>{{ job }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  {% if failed_job %}
+  {% trans "The last cook of this profile has failed." %}
+  <a href="{% url "fwjob-detail" failed_job.pk %}">{{ failed_job }}</a>
+  {% endif %}
 </div>
 {% endif %}
 <div class="form-actions">
