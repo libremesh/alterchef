@@ -46,7 +46,7 @@ done
 for file in *.img ; do
   if [ -e "$file" ] ; then
     cp -p "$file" "$dest/"
-    rename -f 's/.img$/-${rev}-${network}-${netprofile}.img/;
+    rename -f 's/.img$/-'"${rev}-${network}-${netprofile}"'.img/;
                s#/openwrt-#/altermesh-#' "$dest/$file"
   fi
 done
