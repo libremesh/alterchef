@@ -83,7 +83,7 @@ class Network(models.Model):
     name = models.CharField(_('name'), max_length=100, unique=True,
                             help_text=_("also acts as the default public ESSID. Eg: quintanalibre.org.ar"))
     slug = AutoSlugField(populate_from='name', always_update=False,
-                         editable=False, blank=True)
+                         editable=False, blank=True, unique=True)
     description = models.TextField(_('description'))
 
     def get_absolute_url(self):
@@ -100,7 +100,7 @@ class Network(models.Model):
 class FwProfile(models.Model):
     network = models.ForeignKey(Network, verbose_name=_('network'))
     name = models.SlugField(_("name"), default="node", max_length=15)
-    slug = AutoSlugField(_("slug"), always_update=False,
+    slug = AutoSlugField(_("slug"), always_update=False, unique=True,
                          populate_from=lambda instance: instance._get_slug())
     description = models.TextField(_('description'))
     creation_date = models.DateTimeField(_("creation date"), default=datetime.datetime.now,
