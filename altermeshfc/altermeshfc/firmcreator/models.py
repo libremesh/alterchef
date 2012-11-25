@@ -95,6 +95,7 @@ class Network(models.Model):
     class Meta:
         verbose_name = _('network')
         verbose_name_plural = _('networks')
+        ordering = ['name']
 
 
 class FwProfile(models.Model):
@@ -105,7 +106,6 @@ class FwProfile(models.Model):
     description = models.TextField(_('description'))
     creation_date = models.DateTimeField(_("creation date"), default=datetime.datetime.now,
                                          editable=False)
-    #default = models.BooleanField(_('description'), default=False, blank=True, editable=False)
     path = models.CharField(editable=False, max_length=255)
     based_on = models.ForeignKey("self", verbose_name=_('based on'), blank=True,
                                  null=True, on_delete=models.SET_NULL,
@@ -150,6 +150,7 @@ class FwProfile(models.Model):
         verbose_name = _("firmware profile")
         verbose_name_plural = _("firmware profiles")
         unique_together = ("network", "name")
+        ordering = ['name', 'network__name']
 
 
 STATUSES = (

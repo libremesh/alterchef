@@ -4,7 +4,14 @@
 {% block title %}{% trans "Welcome to our firmware kitchen" %}{% endblock %}
 
 {% block content %}
-
+{% if user.is_authenticated and user.network_set.all %}
+  <h2>{% trans "My Networks" %}</h2>
+  <ul>
+  {% for object in user.network_set.all %}
+    {% include "firmcreator/network_object.html" %}
+  {% endfor %}
+  </ul>
+{% else %}
 <p>{% trans "To create a firmware for your network you only need to follow this steps" %}:</p>
 <ul>
   <li>
@@ -17,6 +24,7 @@
     <a href="/fwprofile/create/">{% trans "create your firmware profile" %}</a>
   </li>
 </ul>
+{% endif %}
 
 {% endblock %}
 

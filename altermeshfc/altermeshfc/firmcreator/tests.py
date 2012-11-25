@@ -83,6 +83,7 @@ class FwProfileTest(TestCase):
         self.user = User.objects.create_user("ninja", "e@a.com", "password")
         self.network = Network.objects.create(name="quintanalibre.org.ar", user=self.user)
         self.client.login(username="ninja", password="password")
+        self.data = {"network": self.network.pk, "name": "node", "description": "foo"}
 
     def assertLoginRequired(self, url):
         self.client.logout()
@@ -97,15 +98,13 @@ class FwProfileTest(TestCase):
     def test_simple_creation(self):
         response = self.client.get(reverse("fwprofile-create-simple"))
         self.assertContains(response, "Create Firmware Profile")
-        data = {"network": self.network.pk, "name": "node", "description": "foo"}
-        response = self.client.post(reverse("fwprofile-create-simple"), data, follow=True)
+        response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
         self.assertContains(response, "Profile Detail")
 
     def test_simple_creation_with_based_on(self):
-        data = {"network": self.network.pk, "name": "node", "description": "foo"}
-        response = self.client.post(reverse("fwprofile-create-simple"), data, follow=True)
+        response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
         self.assertContains(response, "Profile Detail")
-
+        data = self.data.copy()
         data.update({"name": "name2", "based_on": 1})
         response = self.client.post(reverse("fwprofile-create-simple"), data, follow=True)
         self.assertContains(response, "Profile Detail")

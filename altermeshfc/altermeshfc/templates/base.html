@@ -39,7 +39,18 @@
         <li><a href="/">{% trans "Home" %}</a></li>
         <li class="nav-header">{% trans 'Networks' %}</li>
         <li><a href="{% url "network-create" %}">{% trans "Create Network" %}</a></li>
-        <li><a href="{% url "network-list" %}">{% trans "List Networks" %}</a></li>
+        <li><a href="{% url "network-list" %}">{% trans "All Networks" %}</a></li>
+        {% with my_networks=user.network_set.all %}
+        {% if my_networks %}
+        <li>{% trans "My Networks" %}
+        <ul>
+        {% for network in my_networks %}
+          <li><a href="{{ network.get_absolute_url }}">{{ network }}</a></li>
+        {% endfor %}
+        </ul>
+        </li>
+        {% endif %}
+        {% endwith %}
     </ul>
     </div>
     <div class="span9">
