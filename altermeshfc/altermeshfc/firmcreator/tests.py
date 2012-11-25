@@ -34,7 +34,7 @@ class IncludePackagesTest(TestCase):
                              exclude=["dnsmasq", "qos-scripts"])
         output = StringIO.StringIO()
         ip.dump(output)
-        self.assertEqual(output.getvalue(), "iperf safe-reboot -dnsmasq -qos-scripts")
+        self.assertEqual(output.getvalue(), "iperf\nsafe-reboot\n-dnsmasq\n-qos-scripts")
 
     def test_form(self):
         ip = IncludePackages(include=["iperf", "safe-reboot"],
