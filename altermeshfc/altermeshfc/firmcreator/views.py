@@ -24,7 +24,7 @@ from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
 
 
 def index(request):
-    return render(request, "firmcreator/index.html", {
+    return render(request, "index.html", {
     })
 
 ##
