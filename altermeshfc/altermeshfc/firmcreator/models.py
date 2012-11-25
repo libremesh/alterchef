@@ -150,7 +150,7 @@ class FwProfile(models.Model):
         verbose_name = _("firmware profile")
         verbose_name_plural = _("firmware profiles")
         unique_together = ("network", "name")
-        ordering = ['name', 'network__name']
+        ordering = ['network__name', 'name']
 
 
 STATUSES = (
