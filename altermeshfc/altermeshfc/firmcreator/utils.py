@@ -12,6 +12,22 @@ class LoginRequiredMixin(object):
     def dispatch(self, *args, **kwargs):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
+from django.conf import settings
+
+
+_default_slug = None
+default_profile_slug = getattr(settings, "DEFAULT_PROFILE_SLUG", None)
+
+def get_default_profile():
+    global _default_slug
+
+    if not _default_slug and default_profile_slug:
+        from models import FwProfile
+
+        _default_slug = FwProfile.objects.get(slug=default_profile_slug)
+    return _default_slug
+
+
 import atexit
 import Queue
 import threading

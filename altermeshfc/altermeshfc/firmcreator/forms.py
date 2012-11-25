@@ -16,6 +16,7 @@ from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, F
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
 from models import IncludePackages, IncludeFiles, FwProfile, Network
+from utils import get_default_profile
 
 # We may add a description of each package, in the form ("pkgname", "description")
 SUGESTED_PACKAGES = ["iperf", "mini-snmpd", "altermap-agent"]
@@ -96,6 +97,34 @@ class NetworkForm(forms.ModelForm):
             'slug', 'user',
         )
 
+
+def make_choices(queryset, title=""):
+    base = "--   " if title else ""
+    default = title if title else '------'
+    choices = map(lambda item: (item.pk, base + unicode(item)), queryset)
+    choices.insert(0, ('' or title, default))
+    return choices
+
+def make_base_on_choices(user):
+
+    default_profile = get_default_profile()
+    own_profiles = FwProfile.objects.filter(network__user=user)
+    other_profiles = FwProfile.objects.exclude(network__user=user)
+    if default_profile:
+        default_nps = FwProfile.objects.filter(network=default_profile.network)
+        other_profiles = other_profiles.exclude(pk__in=[p.pk for p in default_nps])
+
+    own_choices = make_choices(own_profiles, _("Own profiles")) if own_profiles else []
+    other_choices = make_choices(other_profiles, _("Other profiles (unsupported!)")) if other_profiles else []
+
+    choices = own_choices + other_choices
+
+    if default_profile:
+        def_choices = make_choices(default_nps, title=_("Default profiles (supported)"))
+        choices = def_choices + choices
+    choices = make_choices([]) + choices
+    return choices
+
 class FwProfileSimpleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -103,6 +132,7 @@ class FwProfileSimpleForm(forms.ModelForm):
         super(FwProfileSimpleForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))
+        self.fields['based_on'].choices = make_base_on_choices(user)
 
     helper = FormHelper()
     helper.form_tag = False
@@ -121,7 +151,7 @@ class FwProfileForm(forms.ModelForm):
         super(FwProfileForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))
-
+        self.fields['based_on'].choices = make_base_on_choices(user)
 
     def save(self, user, *args, **kwargs):
         kwargs['commit'] = False
