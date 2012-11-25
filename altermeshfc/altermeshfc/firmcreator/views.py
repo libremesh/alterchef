@@ -105,8 +105,9 @@ def create_profile_simple(request):
         if form.is_valid():
             based_on = form.cleaned_data.get("based_on")
             fw_profile = form.save()
-            fw_profile.include_files = based_on.include_files
-            fw_profile.include_packages = based_on.include_packages
+            if based_on:
+                fw_profile.include_files = based_on.include_files
+                fw_profile.include_packages = based_on.include_packages
             fw_profile.save()
             return redirect("fwprofile-detail", slug=fw_profile.slug)
     else:

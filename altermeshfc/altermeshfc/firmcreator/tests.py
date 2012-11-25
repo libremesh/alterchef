@@ -78,6 +78,39 @@ class NetworkTest(TestCase):
          response = self.client.get(reverse('network-create'))
          self.assertEqual(response.status_code, 302)
 
+class FwProfileTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user("ninja", "e@a.com", "password")
+        self.network = Network.objects.create(name="quintanalibre.org.ar", user=self.user)
+        self.client.login(username="ninja", password="password")
+
+    def assertLoginRequired(self, url):
+        self.client.logout()
+        response = self.client.get(url)
+        self.assertRedirects(response, reverse('auth_login') + "?next=" + url,
+                             status_code=302, target_status_code=200)
+
+    def test_login_required(self):
+        self.assertLoginRequired(reverse("fwprofile-create-simple"))
+        self.client.login(username="ninja", password="password")
+
+    def test_simple_creation(self):
+        response = self.client.get(reverse("fwprofile-create-simple"))
+        self.assertContains(response, "Create Firmware Profile")
+        data = {"network": self.network.pk, "name": "node", "description": "foo"}
+        response = self.client.post(reverse("fwprofile-create-simple"), data, follow=True)
+        self.assertContains(response, "Profile Detail")
+
+    def test_simple_creation_with_based_on(self):
+        data = {"network": self.network.pk, "name": "node", "description": "foo"}
+        response = self.client.post(reverse("fwprofile-create-simple"), data, follow=True)
+        self.assertContains(response, "Profile Detail")
+
+        data.update({"name": "name2", "based_on": 1})
+        response = self.client.post(reverse("fwprofile-create-simple"), data, follow=True)
+        self.assertContains(response, "Profile Detail")
+
+
 class JobsTest(TestCase):
 
     def setUp(self):
@@ -96,7 +129,7 @@ class JobsTest(TestCase):
         fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
 
         models.make_commands = lambda *x: ["sleep 0.1"]
-        import time
+
         self.assertEqual(len(FwJob.started.all()), 0)
         self.assertEqual(len(FwJob.waiting.all()), 2)
 
