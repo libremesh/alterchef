@@ -142,7 +142,7 @@ def crud_profile_advanced(request, slug=None):
         based_on = request.GET.get("based_on", None)
         try:
             int(based_on)
-        except ValueError:
+        except (ValueError, TypeError):
             based_on = None
         if based_on:
             based_on = get_object_or_404(FwProfile, pk=based_on)
