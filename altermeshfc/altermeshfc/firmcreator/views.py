@@ -133,6 +133,8 @@ def crud_profile_advanced(request, slug=None):
             fw_profile.include_packages = include_packages_form.to_str()
             files = {}
             for f in include_files_formset.cleaned_data:
+                if f.get("DELETE"):
+                    continue
                 files[f["name"]] = normalize_newlines(f["content"])
             fw_profile.include_files = files
             fw_profile.save()

@@ -82,6 +82,7 @@ class IncludeFileForm(BaseForm):
             Fieldset(_("File"),
                 Field('name', css_class="input-xxlarge"),
                 Field('content', css_class="input-xxlarge pre-scrollable"),
+                Field('DELETE'),
             )
         )
 
@@ -171,7 +172,7 @@ class FwProfileForm(forms.ModelForm):
             'creation_date', 'path', 'include_files', 'include_packages'
         )
 
-IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0)
+IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0, can_delete=True)
 
 COMMON_DEVICES = (
     ('TLMR3020', 'TP-LINK TL-MR3020'),
