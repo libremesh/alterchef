@@ -9,8 +9,14 @@
  <script src="{{ STATIC_URL}}js/jquery.min.js"></script>
  <script src="{{ STATIC_URL}}js/bootstrap.min.js"></script>
  <style>
-    textarea {font-family: 'DejaVu Sans Mono', monospace;}
-    input {font-family: 'DejaVu Sans Mono', monospace;}
+    input, textarea, pre, code {font-family: 'DejaVu Sans Mono', monospace;}
+    .bordered {
+      border: 1px solid #DDDDDD;
+      border-radius: 4px 4px 4px 4px;
+      margin: 15px 0;
+      padding: 10px 10px 10px;
+      position: relative;
+    }
  </style>
  {% block extra_head %}{% endblock %}
 </head>
