@@ -53,18 +53,14 @@
      
 <div id="include_detail" class="collapse">
   <h3>Packages</h3>
-  <pre>
-  {{ object.include_packages }}
-  </pre>
+  <pre>{{ object.include_packages }}</pre>
  
   <h3>Files</h3>  
 
   {% for file, content in object.include_files.iteritems %}
   <div class="bordered">
   <h4>{{ file }}</h4>
-  <pre>
-  {{ content }}
-  </pre>
+  <pre>{{ content }}</pre>
   </div>
   {% endfor %}
 </div>
