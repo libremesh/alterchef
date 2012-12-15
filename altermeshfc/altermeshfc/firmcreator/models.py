@@ -209,10 +209,10 @@ class FwJob(models.Model):
             job = waiting[0]
             job.status = "STARTED"
             job.profile.write_to_disk()
-            commands = make_commands(job.profile.network.name,
-                                     job.profile.name,
-                                     job.job_data["devices"],
-                                     job.job_data["revision"])
+            commands = cls.make_commands(job.profile.network.name,
+                                         job.profile.name,
+                                         job.job_data["devices"],
+                                         job.job_data["revision"])
             job.job_data["commands"] = commands
             job.save()
             job.process(sync)  # runs in another thread
@@ -244,22 +244,28 @@ class FwJob(models.Model):
         self.status = "FINISHED"
         self.save()
 
+    @staticmethod
+    def default_make_commands(networkname, profilename, devices, revision):
+        archs = defaultdict(list)
+        for device in devices:
+            arch = Device.get_arch(device)
+            if arch:
+                if device.startswith("NONE%s" % arch):
+                    device = device.split("NONE%s" % arch)[1]
+                archs[arch].append(device)
 
+        return ["%s %s %s %s %s %s" % (settings.MAKE_SNAPSHOT, revision, arch, networkname, \
+                                       profilename, " ".join(devices)) for (arch, devices) in archs.iteritems()]
 
-def _make_commands(networkname, profilename, devices, revision):
-    archs = defaultdict(list)
-    for device in devices:
-        arch = Device.get_arch(device)
-        if arch:
-            if device.startswith("NONE%s" % arch):
-                device = device.split("NONE%s" % arch)[1]
-            archs[arch].append(device)
+    @classmethod
+    def make_commands(cls, networkname, profilename, devices, revision):
+        return FwJob._make_commands_func(networkname, profilename, devices, revision)
 
-    return ["%s %s %s %s %s %s" % (settings.MAKE_SNAPSHOT, revision, arch, networkname, \
-                                   profilename, " ".join(devices)) for (arch, devices) in archs.iteritems()]
+    @classmethod
+    def set_make_commands_func(cls, func):
+        cls._make_commands_func = staticmethod(func)
 
-def make_commands(networkname, profilename, devices, revision):
-    return _make_commands(networkname, profilename, devices, revision)
+    _make_commands_func = default_make_commands
 
 class Device(object):
 

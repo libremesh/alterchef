@@ -121,13 +121,13 @@ class JobsTest(TestCase):
         self.job_data = {"devices": ["TLMR3220"], "revision": "stable"}
 
     def tearDown(self):
-        models.make_commands = models._make_commands
+        FwJob.set_make_commands_func(FwJob.default_make_commands)
 
     def test_process_some_jobs(self):
         fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
         fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
 
-        models.make_commands = lambda *x: ["sleep 0.1"]
+        FwJob.set_make_commands_func(lambda *x: ["sleep 0.1"])
 
         self.assertEqual(len(FwJob.started.all()), 0)
         self.assertEqual(len(FwJob.waiting.all()), 2)
@@ -141,7 +141,7 @@ class JobsTest(TestCase):
 
     def test_failed_job(self):
         fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
-        models.make_commands = lambda *x: ["ls /inexistent"]
+        FwJob.set_make_commands_func(lambda *x: ["ls /inexistent"])
 
         FwJob.process_jobs(sync=True)
         self.assertEqual(len(FwJob.failed.all()), 1)
@@ -174,8 +174,7 @@ class JobsTest(TestCase):
         self.assertContains(response, CookFirmwareForm.ERROR_NONEXISTENT_DEVICE % "NONEXISTENT")
 
     def test_make_commands(self):
-        from models import make_commands
-        commands = make_commands("quintanalibre.org.ar", "profile1", ["TLMR3220", "NONEatherosDefault"], "33333")
+        commands = FwJob.make_commands("quintanalibre.org.ar", "profile1", ["TLMR3220", "NONEatherosDefault"], "33333")
         self.assertTrue("33333 ar71xx quintanalibre.org.ar profile1 TLMR3220" in commands[0])
         self.assertTrue("33333 atheros quintanalibre.org.ar profile1 Default" in commands[1])
 
