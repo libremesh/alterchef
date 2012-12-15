@@ -7,4 +7,9 @@ To install the dependencies run ``pip install -r requeriments.txt``
 TODO
 ====
 
+
+* Add license
+* Multiple admins per network
+* SSH keys per user
+* Raise error when you cook a unexistant device
 * Handle jobs when application crash or stops.
