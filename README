@@ -10,5 +10,4 @@ TODO
 
 * Add license
 * Multiple admins per network
-* SSH keys per user
 * Handle jobs when application crash or stops.
