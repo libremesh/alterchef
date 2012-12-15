@@ -2,7 +2,8 @@ from django.conf.urls import patterns, include, url
 
 from altermeshfc.firmcreator.views import NetworkCreateView, NetworkDetailView, NetworkListView, \
                                            NetworkUpdateView, NetworkDeleteView, FwProfileDetailView, \
-                                           FwProfileDeleteView, FwJobDetailView
+                                           FwProfileDeleteView, FwJobDetailView, SSHKeyCreateView, \
+                                           SSHKeyListView, SSHKeyDetailView, SSHKeyUpdateView, SSHKeyDeleteView \
 
 urlpatterns = patterns('',
     url(r'^$', 'altermeshfc.firmcreator.views.index', name="index"),
@@ -13,6 +14,12 @@ urlpatterns = patterns('',
     url(r'^network/(?P<slug>[\w-]+)/$', NetworkDetailView.as_view(), name='network-detail'),
     url(r'^network/(?P<slug>[\w-]+)/edit/$', NetworkUpdateView.as_view(), name='network-edit'),
     url(r'^network/(?P<slug>[\w-]+)/delete/$', NetworkDeleteView.as_view(), name='network-delete'),
+
+    url(r'^sshkey/create/$', SSHKeyCreateView.as_view(), name='sshkey-create'),
+    url(r'^sshkey/list/$', SSHKeyListView.as_view(), name='sshkey-list'),
+    url(r'^sshkey/(?P<pk>\d+)/$', SSHKeyDetailView.as_view(), name='sshkey-detail'),
+    url(r'^sshkey/(?P<pk>\d+)/edit/$', SSHKeyUpdateView.as_view(), name='sshkey-edit'),
+    url(r'^sshkey/(?P<pk>\d+)/delete/$', SSHKeyDeleteView.as_view(), name='sshkey-delete'),
 
     url(r'^fwprofile/create/$', 'altermeshfc.firmcreator.views.create_profile_simple',
         name="fwprofile-create-simple"),

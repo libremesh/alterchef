@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n crispy_forms_tags %}
+{% load url from future %}
 
 {% block title %}{% trans "Welcome to our firmware kitchen" %}{% endblock %}
 
@@ -18,10 +19,10 @@
     <a href="/accounts/register?next=/">{% trans "register" %}</a>
   </li>
   <li>
-    <a href="/network/create/">{% trans "create your network" %}</a>
+    <a href="{% url 'network-create' %}">{% trans "create your network" %}</a>
   </li>
   <li>
-    <a href="/fwprofile/create/">{% trans "create your firmware profile" %}</a>
+    <a href="{% url 'fwprofile-create-simple' %}">{% trans "create your firmware profile" %}</a>
   </li>
 </ul>
 {% endif %}

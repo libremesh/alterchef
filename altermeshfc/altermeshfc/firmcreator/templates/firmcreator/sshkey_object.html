@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load url from future %}
+<dl class="dl-horizontal">
+    <dt>{% trans "Name" %}</dt><dd><a href="{% url 'sshkey-detail' object.pk %}">{{ object.name }}</a></dd>
+    <dt>{% trans "Key" %}</dt><dd>{{ object.key }}</dd>
+    <dt>{% trans "Auto add" %}</dt><dd>{{ object.auto_add }}</dd>
+    <dt>{% trans "Created by" %}</dt><dd>{{ object.user }}</dd>
+</dl>
+
+

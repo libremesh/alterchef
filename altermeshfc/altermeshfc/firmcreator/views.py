@@ -18,7 +18,7 @@ from pygments.formatters import HtmlFormatter
 from difflib import unified_diff
 
 from utils import LoginRequiredMixin
-from models import IncludeFiles, Network, FwProfile, FwJob
+from models import IncludeFiles, Network, FwProfile, FwJob, SSHKey
 from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
                    NetworkForm, FwProfileSimpleForm, CookFirmwareForm
 
@@ -64,6 +64,43 @@ class NetworkListView(ListView):
     model = Network
 
 ##
+# SSHKey views
+
+class SSHKeyCreateView(LoginRequiredMixin, CreateView):
+    model = SSHKey
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(SSHKeyCreateView, self).form_valid(form)
+
+class SSHKeyUpdateView(LoginRequiredMixin, UpdateView):
+    model = SSHKey
+    def get_object(self, queryset=None):
+        object = super(SSHKeyUpdateView, self).get_object(queryset)
+        if object.user == self.request.user:
+            return object
+        else:
+            raise Http404
+
+class SSHKeyDeleteView(LoginRequiredMixin, DeleteView):
+    model = SSHKey
+    success_url = reverse_lazy('sshkey-list')
+
+    def get_object(self, queryset=None):
+        object = super(SSHKeyDeleteView, self).get_object(queryset)
+        if object.user == self.request.user:
+            return object
+        else:
+            raise Http404
+
+class SSHKeyDetailView(DetailView):
+    model = SSHKey
+
+class SSHKeyListView(ListView):
+    model = SSHKey
+
+
+##
 # Profile Views
 
 class FwProfileDetailView(DetailView):
@@ -71,7 +108,8 @@ class FwProfileDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(FwProfileDetailView, self).get_context_data(**kwargs)
-        context['pending_jobs'] = FwJob.objects.filter(status__in = ["WAITING", "STARTED"], profile=self.object)
+        context['pending_jobs'] = FwJob.objects.filter(status__in = ["WAITING", "STARTED"],
+                                                       profile=self.object)
         jobs = FwJob.objects.filter(profile=self.object).order_by('-pk')[:1]
         if jobs and jobs[0].status == "FAILED":
             context['failed_job'] = jobs[0]
@@ -157,7 +195,8 @@ def crud_profile_advanced(request, slug=None):
         include_files_formset = IncludeFilesFormset(initial=initial_files, prefix="include-files")
         include_packages_form = IncludePackagesForm.from_str(inherited.include_packages if inherited else "")
 
-        profile_form = FwProfileForm(request.GET or None, instance=instance, user=request.user)
+        profile_form = FwProfileForm(initial=dict(request.GET.items()) or None, instance=instance,
+                                     user=request.user)
 
     return render(request, "firmcreator/crud_profile.html", {
         'include_files_formset': include_files_formset,

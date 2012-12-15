@@ -46,6 +46,7 @@
         <li class="nav-header">{% trans 'Networks' %}</li>
         <li><a href="{% url "network-create" %}">{% trans "Create Network" %}</a></li>
         <li><a href="{% url "network-list" %}">{% trans "All Networks" %}</a></li>
+        <li><a href="{% url "sshkey-list" %}">{% trans "SSH keys" %}</a></li>
         {% with my_networks=user.network_set.all %}
         {% if my_networks %}
         <li>{% trans "My Networks" %}

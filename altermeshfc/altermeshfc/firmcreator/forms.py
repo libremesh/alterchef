@@ -15,7 +15,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, Fieldset
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
-from models import IncludePackages, IncludeFiles, FwProfile, Network, Device
+from models import IncludePackages, IncludeFiles, FwProfile, Network, Device, SSHKey
 from utils import get_default_profile
 
 # We may add a description of each package, in the form ("pkgname", "description")
@@ -134,7 +134,9 @@ class FwProfileSimpleForm(forms.ModelForm):
         instance = kwargs.get('instance', None)
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))
         self.fields['based_on'].choices = make_base_on_choices(user)
-
+        self.fields['ssh_keys'] = forms.ModelMultipleChoiceField(queryset=SSHKey.objects.filter(user=user), widget=forms.CheckboxSelectMultiple,
+                                                                 help_text=_(u"<span class='text-warning'>Select at least one ssh key, otherwise you won't be able to enter to the router/acces point!</span>"),
+                                                                 initial=[s.pk for s in SSHKey.objects.filter(user=user, auto_add=True)], required=False)
     helper = FormHelper()
     helper.form_tag = False
     helper.form_class = 'form-horizontal'
@@ -153,6 +155,9 @@ class FwProfileForm(forms.ModelForm):
         instance = kwargs.get('instance', None)
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))
         self.fields['based_on'].choices = make_base_on_choices(user)
+        self.fields['ssh_keys'] = forms.ModelMultipleChoiceField(queryset=SSHKey.objects.filter(user=user), widget=forms.CheckboxSelectMultiple,
+                                                                 help_text=_(u"<span class='text-warning'>Select at least one ssh key, otherwise you won't be able to enter to the router/acces point!</span>"),
+                                                                 initial=[s.pk for s in SSHKey.objects.filter(user=user, auto_add=True)], required=False)
 
     def save(self, user, *args, **kwargs):
         kwargs['commit'] = False

@@ -50,12 +50,17 @@
 <button type="button" class="btn" data-toggle="collapse" data-target="#include_detail">{% trans "Toggle Details" %}</button>
 </div>
 
-     
+
 <div id="include_detail" class="collapse">
+  <h3>SSH Keys</h3>
+  {% for key in object.ssh_keys.all %}
+    <a href="{% url 'sshkey-detail' key.pk %}"> {{ key }}</a>{% if not forloop.last %}, {% endif %}
+  {% endfor%}
+
   <h3>Packages</h3>
   <pre>{{ object.include_packages }}</pre>
- 
-  <h3>Files</h3>  
+
+  <h3>Files</h3>
 
   {% for file, content in object.include_files.iteritems %}
   <div class="bordered">

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n utils %}
+{% load url from future %}
+
+{% block title %}{% trans "SSH Key Detail" %}{% endblock %}
+
+{% block content %}
+
+<h1>{{ object }}</h1>
+{% include "firmcreator/sshkey_object.html" %}
+
+{% if request.user == object.user %}
+<div class="form-actions">
+<a class="btn btn-primary" href="{% url "sshkey-edit" object.pk %}">{% trans "Edit" %}</a>
+<a class="btn btn-danger" href="{% url "sshkey-delete" object.pk %}">{% trans "Delete" %}</a>
+</div>
+{% endif %}
+
+{% endblock %}
+

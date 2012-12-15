@@ -14,7 +14,7 @@ from django.template import Context, Template
 from django.core.mail import mail_managers
 from django.contrib.sites.models import Site
 
-from fields import JSONField
+from fields import JSONField, PublicKeyField
 from utils import to_thread
 
 from django.conf import settings
@@ -106,13 +106,12 @@ class FwProfile(models.Model):
     description = models.TextField(_('description'))
     creation_date = models.DateTimeField(_("creation date"), default=datetime.datetime.now,
                                          editable=False)
-    path = models.CharField(editable=False, max_length=255)
     based_on = models.ForeignKey("self", verbose_name=_('based on'), blank=True,
                                  null=True, on_delete=models.SET_NULL,
                                  help_text=_("Create fw profile based on this profile. Leave it on default if you are not sure."))
+    ssh_keys = models.ManyToManyField("SSHKey", blank=True, verbose_name="SSH keys")
     include_packages = models.TextField(_('include packages'), blank=True)
     include_files = JSONField(_('include files'), default="{}")
-
 
     def _get_slug(self):
         return "%s-%s" % (self.network.slug, self.name)
@@ -136,7 +135,9 @@ class FwProfile(models.Model):
         files = {}
         for fname, content in self.include_files.iteritems():
             t = Template(content)
-            c = Context({"NETWORK_NAME": self.network.name}, autoescape=False)
+            c = Context({"NETWORK_NAME": self.network.name,
+                         "SSH_KEYS": "\n".join([k.key for k in self.ssh_keys.all()])},
+                        autoescape=False)
             files[fname] = normalize_newlines(t.render(c))
 
         inc_files = IncludeFiles(files)
@@ -151,6 +152,23 @@ class FwProfile(models.Model):
         verbose_name_plural = _("firmware profiles")
         unique_together = ("network", "name")
         ordering = ['network__name', 'name']
+
+
+class SSHKey(models.Model):
+    user = models.ForeignKey(User, verbose_name=_(u"user"), editable=False)
+    name = models.CharField(_(u"name"), max_length=40)
+    key = PublicKeyField(_(u"ssh key"))
+    auto_add = models.BooleanField(_(u"automaticaly add this key to my profiles"), default=False)
+
+    def get_absolute_url(self):
+        return reverse('sshkey-detail', kwargs={'pk': self.pk})
+
+    def __unicode__(self):
+        return u"%s-%s" % (self.user, self.name)
+
+    class Meta:
+        verbose_name = _("SSH key")
+        verbose_name_plural = _("SSH keys")
 
 
 STATUSES = (
