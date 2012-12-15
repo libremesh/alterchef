@@ -169,6 +169,10 @@ class JobsTest(TestCase):
         response = self.client.post(self.cook_url, {"other_devices": "MR320;comando"})
         self.assertContains(response, CookFirmwareForm.ERROR_ALPHANUMERIC)
 
+    def test_cook_for_nonexistent_device(self):
+        response = self.client.post(self.cook_url, {"other_devices": "NONEXISTENT"})
+        self.assertContains(response, CookFirmwareForm.ERROR_NONEXISTENT_DEVICE % "NONEXISTENT")
+
     def test_make_commands(self):
         from models import make_commands
         commands = make_commands("quintanalibre.org.ar", "profile1", ["TLMR3220", "NONEatherosDefault"], "33333")

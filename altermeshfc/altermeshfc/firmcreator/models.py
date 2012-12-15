@@ -249,7 +249,7 @@ class FwJob(models.Model):
 def _make_commands(networkname, profilename, devices, revision):
     archs = defaultdict(list)
     for device in devices:
-        arch = get_arch(device)
+        arch = Device.get_arch(device)
         if arch:
             if device.startswith("NONE%s" % arch):
                 device = device.split("NONE%s" % arch)[1]
@@ -261,22 +261,31 @@ def _make_commands(networkname, profilename, devices, revision):
 def make_commands(networkname, profilename, devices, revision):
     return _make_commands(networkname, profilename, devices, revision)
 
-def get_arch(device):
-    for arch, devices in ARCHS.iteritems():
-        if device in devices:
-            return arch
+class Device(object):
 
-ARCHS = {
-    "ar71xx": set([
-            "ath5k","ALFAAP96","HORNETUB","ALFANX","ALL0305","ALL0258N","ALL0315N","AP113","AP121","AP121MINI","AP136","AP81","AP83","AP96","DB120","PB42",
-            "PB44","PB92","A02RBW300N","WZRHPG300NH","WZRHPG300NH2","WZRHPAG300H","WZRHPG450H","WHRG301N","WHRHPG300N","WHRHPGN",
-            "WLAEAG300N","WP543","WPE72","DIR600A1","DIR601A1","DIR615C1","DIR615E4","DIR825B1","EWDORIN","JA76PF","JA76PF2",
-            "JWAP003","WRT160NL","WRT400N","WNDR3700","OM2P","MZKW04NU","MZKW300NH","RW2458N","TLMR11U","TLMR3020","TLMR3040",
-            "TLMR3220","TLMR3420","TLWR703","TLWA701","TLWA901","TLWDR4300","TLWR740","TLWR741","TLWR743","TLWR841","TLWR842",
-            "TLWR941","TLWR1041","TLWR1043","TLWR2543","TEW632BRP","TEW652BRP","TEW673GRU","TEW712BR","UBNTRS","UBNTRSPRO",
-            "UBNTUNIFI","UBNT","ZCN1523H28","ZCN1523H516","NBG_460N_550N_550NH"]),
-    "atheros": set(["NONEatherosDefault"]),
-}
+    ARCHS = {
+        "ar71xx": set([
+                "ath5k","ALFAAP96","HORNETUB","ALFANX","ALL0305","ALL0258N","ALL0315N","AP113","AP121","AP121MINI","AP136","AP81","AP83","AP96","DB120","PB42",
+                "PB44","PB92","A02RBW300N","WZRHPG300NH","WZRHPG300NH2","WZRHPAG300H","WZRHPG450H","WHRG301N","WHRHPG300N","WHRHPGN",
+                "WLAEAG300N","WP543","WPE72","DIR600A1","DIR601A1","DIR615C1","DIR615E4","DIR825B1","EWDORIN","JA76PF","JA76PF2",
+                "JWAP003","WRT160NL","WRT400N","WNDR3700","OM2P","MZKW04NU","MZKW300NH","RW2458N","TLMR11U","TLMR3020","TLMR3040",
+                "TLMR3220","TLMR3420","TLWR703","TLWA701","TLWA901","TLWDR4300","TLWR740","TLWR741","TLWR743","TLWR841","TLWR842",
+                "TLWR941","TLWR1041","TLWR1043","TLWR2543","TEW632BRP","TEW652BRP","TEW673GRU","TEW712BR","UBNTRS","UBNTRSPRO",
+                "UBNTUNIFI","UBNT","ZCN1523H28","ZCN1523H516","NBG_460N_550N_550NH"]),
+        "atheros": set(["NONEatherosDefault"]),
+    }
+
+    @classmethod
+    def get_arch(cls, device):
+        for arch, devices in cls.ARCHS.iteritems():
+            if device in devices:
+                return arch
+
+    @classmethod
+    def exists(cls, device):
+        return bool(cls.get_arch(device))
+
+
 
 import threading
 

@@ -15,7 +15,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, Fieldset
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
-from models import IncludePackages, IncludeFiles, FwProfile, Network
+from models import IncludePackages, IncludeFiles, FwProfile, Network, Device
 from utils import get_default_profile
 
 # We may add a description of each package, in the form ("pkgname", "description")
@@ -209,7 +209,12 @@ class CookFirmwareForm(forms.Form):
         if not all(map(lambda x: x.isalnum(), devices)):
             raise forms.ValidationError(self.ERROR_ALPHANUMERIC)
 
+        for device in devices:
+            if not Device.exists(device):
+                raise forms.ValidationError(self.ERROR_NONEXISTENT_DEVICE % device)
+
         return cleaned_data
 
     ERROR_ONE_DEVICE = _("You must select at least one device.")
     ERROR_ALPHANUMERIC = _("PROFILE devices must contain only alphanumeric characters.")
+    ERROR_NONEXISTENT_DEVICE = _("Nonexistent device %s")
