@@ -8,7 +8,7 @@
 <h1>{{ object }}</h1>
 {% include "firmcreator/network_object.html" %}
 
-{% if request.user == object.user %}
+{% if request.user in object.users %}
 <div class="form-actions">
 <a class="btn btn-primary" href="{% url "network-edit" object.slug %}">{% trans "Edit" %}</a>
 <a class="btn btn-warning" href="{% url "fwprofile-create-simple" %}?network={{ object.pk }}">{% trans "Create Firmware Profile" %}</a>

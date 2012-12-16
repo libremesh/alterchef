@@ -77,6 +77,10 @@ class IncludeFiles(object):
             with codecs.open(os.path.join(to_dir, filename), "w", "utf-8") as f:
                 f.write(normalize_newlines(filecontent))
 
+class NetworkManager(models.Manager):
+    def with_user_perms(self, user):
+        from django.db.models import Q
+        return self.filter(Q(user=user) | Q(admins=user))
 
 class Network(models.Model):
     user = models.ForeignKey(User, editable=False)
@@ -85,6 +89,16 @@ class Network(models.Model):
     slug = AutoSlugField(populate_from='name', always_update=False,
                          editable=False, blank=True, unique=True)
     description = models.TextField(_('description'))
+    admins = models.ManyToManyField(User, blank=True, related_name="admins")
+
+    objects = NetworkManager()
+
+    def has_perms(self, user):
+        user == self.user or user in self.admins.all()
+
+    @property
+    def users(self):
+        return [self.user] + list(self.admins.all())
 
     def get_absolute_url(self):
         return reverse('network-detail', kwargs={'slug': self.slug})

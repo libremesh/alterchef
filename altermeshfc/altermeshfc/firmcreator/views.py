@@ -3,12 +3,13 @@
 import os
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
+from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
 from django.template import Context, Template
 from django.utils.text import normalize_newlines
@@ -17,7 +18,7 @@ from pygments.lexers import DiffLexer
 from pygments.formatters import HtmlFormatter
 from difflib import unified_diff
 
-from utils import LoginRequiredMixin
+from utils import LoginRequiredMixin, UserOrAdminRequiredMixin, UserRequiredMixin
 from models import IncludeFiles, Network, FwProfile, FwJob, SSHKey
 from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
                    NetworkForm, FwProfileSimpleForm, CookFirmwareForm
@@ -26,6 +27,7 @@ from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
 def index(request):
     return render(request, "index.html", {
     })
+
 
 ##
 # Network Views
@@ -37,25 +39,12 @@ class NetworkCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super(NetworkCreateView, self).form_valid(form)
 
-class NetworkUpdateView(LoginRequiredMixin, UpdateView):
+class NetworkUpdateView(LoginRequiredMixin, UserOrAdminRequiredMixin, UpdateView):
     model = Network
-    def get_object(self, queryset=None):
-        object = super(NetworkUpdateView, self).get_object(queryset)
-        if object.user == self.request.user:
-            return object
-        else:
-            raise Http404
 
-class NetworkDeleteView(LoginRequiredMixin, DeleteView):
+class NetworkDeleteView(LoginRequiredMixin, UserOrAdminRequiredMixin, DeleteView):
     model = Network
     success_url = reverse_lazy('network-list')
-
-    def get_object(self, queryset=None):
-        object = super(NetworkDeleteView, self).get_object(queryset)
-        if object.user == self.request.user:
-            return object
-        else:
-            raise Http404
 
 class NetworkDetailView(DetailView):
     model = Network
@@ -73,32 +62,18 @@ class SSHKeyCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super(SSHKeyCreateView, self).form_valid(form)
 
-class SSHKeyUpdateView(LoginRequiredMixin, UpdateView):
+class SSHKeyUpdateView(LoginRequiredMixin, UserRequiredMixin, UpdateView):
     model = SSHKey
-    def get_object(self, queryset=None):
-        object = super(SSHKeyUpdateView, self).get_object(queryset)
-        if object.user == self.request.user:
-            return object
-        else:
-            raise Http404
 
-class SSHKeyDeleteView(LoginRequiredMixin, DeleteView):
+class SSHKeyDeleteView(LoginRequiredMixin, UserRequiredMixin, DeleteView):
     model = SSHKey
     success_url = reverse_lazy('sshkey-list')
-
-    def get_object(self, queryset=None):
-        object = super(SSHKeyDeleteView, self).get_object(queryset)
-        if object.user == self.request.user:
-            return object
-        else:
-            raise Http404
 
 class SSHKeyDetailView(DetailView):
     model = SSHKey
 
 class SSHKeyListView(ListView):
     model = SSHKey
-
 
 ##
 # Profile Views
@@ -120,16 +95,9 @@ class FwProfileDetailView(DetailView):
         context['profiles'] = profiles
         return context
 
-class FwProfileDeleteView(DeleteView, LoginRequiredMixin):
+class FwProfileDeleteView(LoginRequiredMixin, UserOrAdminRequiredMixin, DeleteView):
     model = FwProfile
     success_url = reverse_lazy('network-list')
-
-    def get_object(self, queryset=None):
-        object = super(FwProfileDeleteView, self).get_object(queryset)
-        if object.network.user == self.request.user:
-            return object
-        else:
-            raise Http404
 
 @login_required
 def create_profile_simple(request):

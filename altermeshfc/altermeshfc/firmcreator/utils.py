@@ -5,12 +5,31 @@ import string
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.exceptions import PermissionDenied
 
 class LoginRequiredMixin(object):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
+
+class UserRequiredMixin(object):
+
+    def get_object(self, queryset=None):
+        object = super(UserRequiredMixin, self).get_object(queryset)
+        if object.user == self.request.user:
+            return object
+        else:
+            raise PermissionDenied
+
+class UserOrAdminRequiredMixin(object):
+
+    def get_object(self, queryset=None):
+        object = super(UserOrAdminRequiredMixin, self).get_object(queryset)
+        if object.user == self.request.user or self.request.user in object.admins.all():
+            return object
+        else:
+            raise PermissionDenied
 
 from django.conf import settings
 

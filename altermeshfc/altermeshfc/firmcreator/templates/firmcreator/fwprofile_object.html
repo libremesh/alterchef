@@ -6,5 +6,6 @@
     <dt>{% trans "Description" %}</dt><dd>{{ object.description }}</dd>
     <dt>{% trans "Creation date" %}</dt><dd>{{ object.creation_date }}</dd>
     <dt>{% trans "Created by" %}</dt><dd>{{ object.network.user }}</dd>
+    <dt>{% trans "Admins" %}</dt><dd>{{ object.network.admins.all|join:", " }}</dd>
 </dl>
 

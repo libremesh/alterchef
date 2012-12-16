@@ -74,9 +74,39 @@ class IncludeFilesTest(TestCase):
         shutil.rmtree(dest_dir) # cleaning up
 
 class NetworkTest(TestCase):
+
+    def setUp(self):
+        self.owner = User.objects.create_user("owner", "e@a.com", "password")
+        self.admin = User.objects.create_user("admin", "e@a.com", "password")
+        self.other_user = User.objects.create_user("other", "e@a.com", "password")
+
+        self.network = Network.objects.create(name="quintanalibre.org.ar", user=self.owner,
+                                              description="desc")
+        self.network.admins.add(self.admin)
+        self.network_edit_url = reverse('network-edit', kwargs={"slug":self.network.slug})
+
     def test_create_network_anonymous(self):
          response = self.client.get(reverse('network-create'))
          self.assertEqual(response.status_code, 302)
+
+    def test_edit_owner(self):
+        self.client.login(username="owner", password="password")
+        response = self.client.get(self.network_edit_url)
+        self.assertEqual(response.status_code, 200)
+        self.client.post(self.network_edit_url, {"name": "owner.org.ar", "description": "desc"})
+        self.assertEqual(Network.objects.get(pk=self.network.pk).name, "owner.org.ar")
+
+    def test_edit_admin(self):
+        self.client.login(username="admin", password="password")
+        response = self.client.post(self.network_edit_url, {"name": "admin.org.ar", "description": "desc"})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Network.objects.get(pk=self.network.pk).name, "admin.org.ar")
+
+    def test_edit_other(self):
+        self.client.login(username="other", password="password")
+        response = self.client.post(self.network_edit_url, {"name": "other.org.ar", "description": "desc"})
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Network.objects.get(pk=self.network.pk).name, "quintanalibre.org.ar")
 
 class FwProfileTest(TestCase):
     def setUp(self):

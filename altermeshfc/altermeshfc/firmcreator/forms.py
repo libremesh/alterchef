@@ -132,11 +132,16 @@ class FwProfileSimpleForm(forms.ModelForm):
         user = kwargs.pop('user')
         super(FwProfileSimpleForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
-        self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))
+        self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.with_user_perms(user))
+
         self.fields['based_on'].choices = make_base_on_choices(user)
-        self.fields['ssh_keys'] = forms.ModelMultipleChoiceField(queryset=SSHKey.objects.filter(user=user), widget=forms.CheckboxSelectMultiple,
+        if instance:
+            initial_ssh_keys = SSHKey.objects.filter(user__in=instance.network.users, auto_add=True)
+        else:
+            initial_ssh_keys = SSHKey.objects.filter(user=user, auto_add=True)
+        self.fields['ssh_keys'] = forms.ModelMultipleChoiceField(queryset=initial_ssh_keys, widget=forms.CheckboxSelectMultiple,
                                                                  help_text=_(u"<span class='text-warning'>Select at least one ssh key, otherwise you won't be able to enter to the router/acces point!</span>"),
-                                                                 initial=[s.pk for s in SSHKey.objects.filter(user=user, auto_add=True)], required=False)
+                                                                 initial=[s.pk for s in initial_ssh_keys.filter(auto_add=True)], required=False)
     helper = FormHelper()
     helper.form_tag = False
     helper.form_class = 'form-horizontal'
@@ -153,11 +158,15 @@ class FwProfileForm(forms.ModelForm):
         user = kwargs.pop('user')
         super(FwProfileForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
-        self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.filter(user=user))
+        self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.with_user_perms(user))
         self.fields['based_on'].choices = make_base_on_choices(user)
-        self.fields['ssh_keys'] = forms.ModelMultipleChoiceField(queryset=SSHKey.objects.filter(user=user), widget=forms.CheckboxSelectMultiple,
+        if instance:
+            initial_ssh_keys = SSHKey.objects.filter(user__in=instance.network.users, auto_add=True)
+        else:
+            initial_ssh_keys = SSHKey.objects.filter(user=user, auto_add=True)
+        self.fields['ssh_keys'] = forms.ModelMultipleChoiceField(queryset=initial_ssh_keys, widget=forms.CheckboxSelectMultiple,
                                                                  help_text=_(u"<span class='text-warning'>Select at least one ssh key, otherwise you won't be able to enter to the router/acces point!</span>"),
-                                                                 initial=[s.pk for s in SSHKey.objects.filter(user=user, auto_add=True)], required=False)
+                                                                 initial=[s.pk for s in initial_ssh_keys.filter(auto_add=True)], required=False)
 
     def save(self, user, *args, **kwargs):
         kwargs['commit'] = False
