@@ -1,6 +1,9 @@
 import os
 import codecs
+import shutil
+import tarfile
 import datetime
+import tempfile
 import subprocess
 from collections import defaultdict
 
@@ -66,6 +69,19 @@ class IncludeFiles(object):
             for filename in files:
                 with codecs.open(os.path.join(root, filename), "r", "utf-8") as f:
                     inc_files.files[os.path.join(dirname, filename)] = f.read()
+        return inc_files
+
+    @classmethod
+    def load_from_tar(cls, f):
+        tmpdir = tempfile.mkdtemp(prefix='chef_upload-')
+        try:
+            path = os.path.join(tmpdir, "include_files")
+            os.mkdir(path)
+            tar = tarfile.open(fileobj=f)
+            tar.extractall(path=path)
+            inc_files = cls.load(path)
+        finally:
+            shutil.rmtree(tmpdir)
         return inc_files
 
     def dump(self, to_path):

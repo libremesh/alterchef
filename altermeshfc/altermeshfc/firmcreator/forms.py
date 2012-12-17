@@ -154,6 +154,8 @@ class FwProfileSimpleForm(forms.ModelForm):
 
 class FwProfileForm(forms.ModelForm):
 
+    upload_files = forms.FileField(required=False, help_text=_(u'Upload a tar/tar.gz with files to include'))
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super(FwProfileForm, self).__init__(*args, **kwargs)

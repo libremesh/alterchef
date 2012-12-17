@@ -130,10 +130,10 @@ def create_profile_simple(request):
 def crud_profile_advanced(request, slug=None):
     instance = get_object_or_404(FwProfile, slug=slug) if slug else None
     if request.method == "POST":
-        profile_form = FwProfileForm(request.POST, user=request.user, instance=instance)
+        profile_form = FwProfileForm(request.POST, request.FILES, user=request.user, instance=instance)
         include_files_formset = IncludeFilesFormset(request.POST, prefix="include-files")
         include_packages_form = IncludePackagesForm(request.POST)
-        if profile_form.is_valid() and include_files_formset.is_valid and \
+        if profile_form.is_valid() and include_files_formset.is_valid() and \
            include_packages_form.is_valid():
             fw_profile = profile_form.save(user=request.user)
             fw_profile.include_packages = include_packages_form.to_str()
@@ -142,6 +142,9 @@ def crud_profile_advanced(request, slug=None):
                 if f.get("DELETE"):
                     continue
                 files[f["name"]] = normalize_newlines(f["content"])
+            uploaded_files = profile_form.cleaned_data.get("upload_files")
+            if uploaded_files:
+                files.update(IncludeFiles.load_from_tar(uploaded_files).files)
             fw_profile.include_files = files
             fw_profile.save()
             return redirect("fwprofile-detail", slug=fw_profile.slug)
