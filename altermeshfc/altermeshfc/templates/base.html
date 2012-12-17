@@ -57,7 +57,7 @@
         <li><a href="{% url "network-create" %}">{% trans "Create Network" %}</a></li>
         <li><a href="{% url "network-list" %}">{% trans "All Networks" %}</a></li>
         <li><a href="{% url "sshkey-list" %}">{% trans "SSH keys" %}</a></li>
-        {% with my_networks=user.network_set.all %}
+        {% with my_networks=user.networks_with_perms %}
         {% if my_networks %}
         <li>{% trans "My Networks" %}
         <ul>

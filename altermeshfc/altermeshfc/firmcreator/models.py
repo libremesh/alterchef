@@ -80,7 +80,7 @@ class IncludeFiles(object):
 class NetworkManager(models.Manager):
     def with_user_perms(self, user):
         from django.db.models import Q
-        return self.filter(Q(user=user) | Q(admins=user))
+        return self.filter(Q(user=user) | Q(admins=user)).distinct()
 
 class Network(models.Model):
     user = models.ForeignKey(User, editable=False, related_name="network_user_set")
