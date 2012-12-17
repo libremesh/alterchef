@@ -4,7 +4,7 @@
     <dt>{% trans "Name" %}</dt><dd><a href="{% url 'network-detail' object.slug %}">{{ object.name }}</a></dd>
     <dt>{% trans "Description" %}</dt><dd>{{ object.description }}</dd>
     <dt>{% trans "Created by" %}</dt><dd>{{ object.user }}</dd>
-    <dt>{% trans "Admins" %}</dt><dd>{{ object.admins.all|join:", " }}</dd>
+    <dt>{% trans "Admins" %}</dt><dd>{{ object.admins.all|join:", "|default:"-" }}</dd>
     <dt>{% trans "Profiles" %}</dt><dd><ul>{% for profile in object.fwprofile_set.all %}<li><a href="{{ profile.get_absolute_url }}">{{ profile }}</a></li>{% endfor %}</ul></dd>
 </dl>
 
