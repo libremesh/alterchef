@@ -123,7 +123,7 @@ def make_base_on_choices(user):
     if default_profile:
         def_choices = make_choices(default_nps, title=_("Default profiles (supported)"))
         choices = def_choices + choices
-    choices = make_choices([]) + choices
+    choices = [("", _("OpenWrt Vanilla"))] + choices
     return choices
 
 class FwProfileSimpleForm(forms.ModelForm):
