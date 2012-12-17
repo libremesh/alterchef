@@ -72,6 +72,7 @@ class IncludeFileForm(BaseForm):
 
     content = forms.CharField(
         widget = forms.Textarea(),
+        required = False,
     )
 
     helper = FormHelper()
@@ -185,7 +186,7 @@ class FwProfileForm(forms.ModelForm):
     class Meta:
         model = FwProfile
         exclude = (
-            'creation_date', 'path', 'include_files', 'include_packages'
+            'creation_date', 'include_files', 'include_packages'
         )
 
 IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0, can_delete=True)
