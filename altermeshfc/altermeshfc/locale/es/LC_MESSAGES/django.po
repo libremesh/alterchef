@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-17 12:39-0300\n"
+"POT-Creation-Date: 2012-12-17 12:48-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -525,6 +525,24 @@ msgstr "Mis Redes"
 #: templates/base.html:72
 msgid "AlterMesh Firmware Chef"
 msgstr "Chef de Firmwares AlterMesh"
+
+#: templates/base.html:82
+msgid ""
+"This software is part of the <a href=\"http://altermundi.net/\">Altermundi</"
+"a> project"
+msgstr "Este software es parte del proyecto "
+"<a href=\"http://altermundi.net/\">Altermundi</a>"
+
+#: templates/base.html:83
+msgid ""
+"This is Free Software licensed under <a href=\"http://www.gnu.org/licenses/"
+"agpl.txt\" >AGPL</a>"
+msgstr "Esto es Software Libre con licencia <a href=\"http://www.gnu.org/licenses/"
+"agpl.txt\" >AGPL</a>"
+
+#: templates/base.html:83
+msgid "Get the code!"
+msgstr "¡Obtener el código!"
 
 #: templates/index.html:5
 msgid "Welcome to our firmware kitchen"
