@@ -11,11 +11,18 @@
  <style>
     input, textarea, pre, code {font-family: 'DejaVu Sans Mono', monospace;}
     .bordered {
-      border: 1px solid #DDDDDD;
-      border-radius: 4px 4px 4px 4px;
-      margin: 15px 0;
-      padding: 10px 10px 10px;
-      position: relative;
+        border: 1px solid #DDDDDD;
+        border-radius: 4px 4px 4px 4px;
+        margin: 15px 0;
+        padding: 10px 10px 10px;
+        position: relative;
+    }
+    .footer {
+        background-color: #F5F5F5;
+        border-top: 1px solid #E5E5E5;
+        margin-top: 70px;
+        padding: 30px 0;
+        text-align: center;
     }
  </style>
  {% block extra_head %}{% endblock %}
@@ -69,5 +76,13 @@
   </div>
 </div>
 
+<footer class="footer">
+<div class="container">
+    <p>© Copyright 2012 Santiago Piccinini</p>
+    <p>This software is part of the <a href="http://altermundi.net/">Altermundi</a> project.</p>
+    <p>This is Free Software licensed under <a href="http://www.gnu.org/licenses/agpl.txt" >AGPL</a>. <a href="https://colectivo.altermundi.net/projects/chef">Get the code!</a></p>
+
+</div>
+</footer>
 </body>
 </html>
