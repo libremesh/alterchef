@@ -83,13 +83,13 @@ class NetworkManager(models.Manager):
         return self.filter(Q(user=user) | Q(admins=user))
 
 class Network(models.Model):
-    user = models.ForeignKey(User, editable=False)
+    user = models.ForeignKey(User, editable=False, related_name="network_user_set")
     name = models.CharField(_('name'), max_length=100, unique=True,
                             help_text=_("also acts as the default public ESSID. Eg: quintanalibre.org.ar"))
     slug = AutoSlugField(populate_from='name', always_update=False,
                          editable=False, blank=True, unique=True)
     description = models.TextField(_('description'))
-    admins = models.ManyToManyField(User, blank=True, related_name="admins")
+    admins = models.ManyToManyField(User, blank=True, related_name="network_admin_set")
 
     objects = NetworkManager()
 
@@ -110,6 +110,8 @@ class Network(models.Model):
         verbose_name = _('network')
         verbose_name_plural = _('networks')
         ordering = ['name']
+
+User.networks_with_perms = lambda self: Network.objects.with_user_perms(self)
 
 
 class FwProfile(models.Model):

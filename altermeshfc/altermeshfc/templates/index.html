@@ -5,10 +5,10 @@
 {% block title %}{% trans "Welcome to our firmware kitchen" %}{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated and user.network_set.all %}
+{% if user.is_authenticated and user.networks_with_perms %}
   <h2>{% trans "My Networks" %}</h2>
   <ul>
-  {% for object in user.network_set.all %}
+  {% for object in user.networks_with_perms %}
     {% include "firmcreator/network_object.html" %}
   {% endfor %}
   </ul>
