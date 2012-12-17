@@ -24,6 +24,9 @@
         padding: 30px 0;
         text-align: center;
     }
+    footer .media-body {
+        padding-top: 30px;
+    }
  </style>
  {% block extra_head %}{% endblock %}
 </head>
@@ -78,9 +81,17 @@
 
 <footer class="footer">
 <div class="container">
-    <p>© Copyright 2012 Santiago Piccinini</p>
-    <p>{% trans 'This software is part of the <a href="http://altermundi.net/">Altermundi</a> project' %}.</p>
-    <p>{% trans 'This is Free Software licensed under <a href="http://www.gnu.org/licenses/agpl.txt" >AGPL</a>' %}. <a href="https://colectivo.altermundi.net/projects/chef">{% trans 'Get the code!' %}</a></p>
+    <div class="media">
+      <a class="pull-left" href="http://altermundi.net/">
+        <img src="{{ STATIC_URL}}img/altermundi-logo.png" alt="logo altermundi"/>
+      </a>
+
+      <div class="media-body">
+        <p>© Copyright 2012 Santiago Piccinini</p>
+        <p>{% trans 'This software is part of the <a href="http://altermundi.net/">Altermundi</a> project' %}.</p>
+        <p>{% trans 'This is Free Software licensed under <a href="http://www.gnu.org/licenses/agpl.txt" >AGPL</a>' %}. <a href="https://colectivo.altermundi.net/projects/chef">{% trans 'Get the code!' %}</a></p>
+      </div>
+    </div>
 
 </div>
 </footer>
