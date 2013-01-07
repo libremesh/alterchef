@@ -102,6 +102,7 @@ class Network(models.Model):
     user = models.ForeignKey(User, editable=False, related_name="network_user_set")
     name = models.CharField(_('name'), max_length=100, unique=True,
                             help_text=_("also acts as the default public ESSID. Eg: quintanalibre.org.ar"))
+    web = models.CharField(max_length=200, blank=True)
     slug = AutoSlugField(populate_from='name', always_update=False,
                          editable=False, blank=True, unique=True)
     description = models.TextField(_('description'))
