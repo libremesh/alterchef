@@ -139,6 +139,11 @@ class FwProfileTest(TestCase):
         response = self.client.post(reverse("fwprofile-create-simple"), data, follow=True)
         self.assertContains(response, "Profile Detail")
 
+    def test_delete(self):
+        response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
+        response = self.client.get(reverse("fwprofile-delete", kwargs={"slug": FwProfile.objects.all()[0].slug}))
+        self.assertEqual(response.status_code, 200)
+
 
 class JobsTest(TestCase):
 

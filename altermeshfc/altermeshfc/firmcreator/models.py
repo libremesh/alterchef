@@ -146,6 +146,14 @@ class FwProfile(models.Model):
     include_packages = models.TextField(_('include packages'), blank=True)
     include_files = JSONField(_('include files'), default="{}")
 
+    @property
+    def user(self):
+        return self.network.user
+
+    @property
+    def admins(self):
+        return self.network.admins
+
     def _get_slug(self):
         return "%s-%s" % (self.network.slug, self.name)
 
