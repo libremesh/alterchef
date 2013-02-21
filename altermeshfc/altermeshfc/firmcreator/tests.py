@@ -139,6 +139,16 @@ class FwProfileTest(TestCase):
         response = self.client.post(reverse("fwprofile-create-simple"), data, follow=True)
         self.assertContains(response, "Profile Detail")
 
+    def test_edit(self):
+        response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
+        url = reverse("fwprofile-edit-advanced", kwargs={"slug": FwProfile.objects.all()[0].slug})
+        response = self.client.get(url)
+        data = self.data.copy()
+        data.update({'include-files-INITIAL_FORMS': u'0', 'include-files-MAX_NUM_FORMS': u'',
+                    'include-files-TOTAL_FORMS': u'0', 'description': 'new_description'})
+        response = self.client.post(url, data)
+        self.assertEqual(FwProfile.objects.all()[0].description, 'new_description')
+
     def test_delete(self):
         response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
         response = self.client.get(reverse("fwprofile-delete", kwargs={"slug": FwProfile.objects.all()[0].slug}))

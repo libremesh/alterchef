@@ -171,14 +171,6 @@ class FwProfileForm(forms.ModelForm):
                                                                  help_text=_(u"<span class='text-warning'>Select at least one ssh key, otherwise you won't be able to enter to the router/acces point!</span>"),
                                                                  initial=[s.pk for s in initial_ssh_keys.filter(auto_add=True)], required=False)
 
-    def save(self, user, *args, **kwargs):
-        kwargs['commit'] = False
-        obj = super(FwProfileForm, self).save(*args, **kwargs)
-        obj.user = user
-        obj.save()
-        self.save_m2m()
-        return obj
-
     helper = FormHelper()
     helper.form_tag = False
     helper.form_class = 'form-horizontal'

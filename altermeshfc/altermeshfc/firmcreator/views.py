@@ -135,7 +135,7 @@ def crud_profile_advanced(request, slug=None):
         include_packages_form = IncludePackagesForm(request.POST)
         if profile_form.is_valid() and include_files_formset.is_valid() and \
            include_packages_form.is_valid():
-            fw_profile = profile_form.save(user=request.user)
+            fw_profile = profile_form.save()
             fw_profile.include_packages = include_packages_form.to_str()
             files = {}
             for f in include_files_formset.cleaned_data:
