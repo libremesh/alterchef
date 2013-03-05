@@ -184,10 +184,11 @@ class FwProfileForm(forms.ModelForm):
 IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0, can_delete=True)
 
 COMMON_DEVICES = (
+    ('TLWDR4300', 'TP-LINK TL-WDR3500/3600/4300/4310'),
+    ('TLWR842', 'TP-LINK TL-WR842N/ND'),
     ('TLMR3020', 'TP-LINK TL-MR3020'),
     ('TLMR3220', 'TP-LINK TL-MR3220'),
     ('TLMR3420', 'TP-LINK TL-MR3420'),
-    ('TLWR842', 'TP-LINK TL-WR842N/ND'),
     ('UBNT', 'Ubiquiti M series: M2, M5 (ar71xx_UBNT)'),
     ('NONEatherosDefault', 'Ubiquiti legacy: Bullet 2, Nano 2/5 (atheros)'),
 )
