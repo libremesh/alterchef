@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-17 12:48-0300\n"
+"POT-Creation-Date: 2013-03-04 21:45-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,27 +47,27 @@ msgstr ""
 "listado de paquetes a incluir o excluir. por ej. para incluir fooy baz y "
 "excluir bar: <tt>foo -bar baz</tt>"
 
-#: firmcreator/forms.py:82
+#: firmcreator/forms.py:83
 msgid "File"
 msgstr "Archivo"
 
-#: firmcreator/forms.py:118
+#: firmcreator/forms.py:119
 msgid "Own profiles"
 msgstr "Mis perfiles"
 
-#: firmcreator/forms.py:119
+#: firmcreator/forms.py:120
 msgid "Other profiles (unsupported!)"
 msgstr "Otros perfiles (no soportados!)"
 
-#: firmcreator/forms.py:124
+#: firmcreator/forms.py:125
 msgid "Default profiles (supported)"
 msgstr "Perfiles por defecto (soportados)"
 
-#: firmcreator/forms.py:126
+#: firmcreator/forms.py:127
 msgid "OpenWrt Vanilla"
 msgstr ""
 
-#: firmcreator/forms.py:143 firmcreator/forms.py:168
+#: firmcreator/forms.py:144 firmcreator/forms.py:171
 msgid ""
 "<span class='text-warning'>Select at least one ssh key, otherwise you won't "
 "be able to enter to the router/acces point!</span>"
@@ -75,15 +75,19 @@ msgstr ""
 "<span class='text-warning'>Elegí al menos una llave ssh, de otro modo no "
 "podrás entrar al router/acces point!</span>"
 
-#: firmcreator/forms.py:205
+#: firmcreator/forms.py:158
+msgid "Upload a tar/tar.gz with files to include"
+msgstr "Subir un tar/tar.gz con archivos a incluir"
+
+#: firmcreator/forms.py:201
 msgid "Common devices"
 msgstr "Dispositivos soportados"
 
-#: firmcreator/forms.py:206
+#: firmcreator/forms.py:202
 msgid "Other devices"
 msgstr "Otros dispositivos"
 
-#: firmcreator/forms.py:207
+#: firmcreator/forms.py:203
 msgid ""
 "List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 UBNT "
 "TLWA701</code>"
@@ -91,54 +95,54 @@ msgstr ""
 "Listado de dispositivos separados por espacio. Por ej: <code>TLMR3420 UBNT "
 "TLWA701</code>"
 
-#: firmcreator/forms.py:232
+#: firmcreator/forms.py:228
 msgid "You must select at least one device."
 msgstr "Debe seleccionar al menos un dispositivo."
 
-#: firmcreator/forms.py:233
+#: firmcreator/forms.py:229
 msgid "PROFILE devices must contain only alphanumeric characters."
 msgstr ""
 "Los nombres de dispositivos sólo pueden contener caracateres alfanuméricos."
 
-#: firmcreator/forms.py:234
+#: firmcreator/forms.py:230
 #, python-format
 msgid "Nonexistent device %s"
 msgstr "Dispositivo %s inexistente"
 
-#: firmcreator/models.py:87 firmcreator/models.py:119
-#: firmcreator/models.py:175
+#: firmcreator/models.py:103 firmcreator/models.py:136
+#: firmcreator/models.py:200
 msgid "name"
 msgstr "nombre"
 
-#: firmcreator/models.py:88
+#: firmcreator/models.py:104
 msgid "also acts as the default public ESSID. Eg: quintanalibre.org.ar"
 msgstr "también servirá como ESSID público. Por ej: quintanalibre.org.ar"
 
-#: firmcreator/models.py:91 firmcreator/models.py:122
+#: firmcreator/models.py:108 firmcreator/models.py:139
 msgid "description"
 msgstr "descripción"
 
-#: firmcreator/models.py:110 firmcreator/models.py:118
+#: firmcreator/models.py:127 firmcreator/models.py:135
 msgid "network"
 msgstr "red"
 
-#: firmcreator/models.py:111
+#: firmcreator/models.py:128
 msgid "networks"
 msgstr "redes"
 
-#: firmcreator/models.py:120
+#: firmcreator/models.py:137
 msgid "slug"
 msgstr "identificador alfanumérico"
 
-#: firmcreator/models.py:123 firmcreator/models.py:221
+#: firmcreator/models.py:140 firmcreator/models.py:246
 msgid "creation date"
 msgstr "fecha de creación"
 
-#: firmcreator/models.py:125
+#: firmcreator/models.py:142
 msgid "based on"
 msgstr "basado en"
 
-#: firmcreator/models.py:127
+#: firmcreator/models.py:144
 msgid ""
 "Create fw profile based on this profile. Leave it on default if you are not "
 "sure."
@@ -146,71 +150,71 @@ msgstr ""
 "Utilizar el perfil seleccionado como base. Si no estás seguro puede quedar "
 "en blanco"
 
-#: firmcreator/models.py:129
+#: firmcreator/models.py:146
 msgid "include packages"
 msgstr "paquetes a incluir"
 
-#: firmcreator/models.py:130
+#: firmcreator/models.py:147
 msgid "include files"
 msgstr "archivos a incluir"
 
-#: firmcreator/models.py:167
+#: firmcreator/models.py:192
 msgid "firmware profile"
 msgstr "perfil de firmware"
 
-#: firmcreator/models.py:168
+#: firmcreator/models.py:193
 msgid "firmware profiles"
 msgstr "perfiles de firmware"
 
-#: firmcreator/models.py:174 firmcreator/models.py:218
+#: firmcreator/models.py:199 firmcreator/models.py:243
 msgid "user"
 msgstr "usuario"
 
-#: firmcreator/models.py:176
+#: firmcreator/models.py:201
 msgid "ssh key"
 msgstr "llave ssh"
 
-#: firmcreator/models.py:177
+#: firmcreator/models.py:202
 msgid "automaticaly add this key to my profiles"
 msgstr "agregar automáticamente esta llave a mis perfiles"
 
-#: firmcreator/models.py:186
+#: firmcreator/models.py:211
 msgid "SSH key"
 msgstr "llave SSH"
 
-#: firmcreator/models.py:187 templates/base.html:56
+#: firmcreator/models.py:212 templates/base.html:61
 msgid "SSH keys"
 msgstr "llaves SSH"
 
-#: firmcreator/models.py:191
+#: firmcreator/models.py:216
 msgid "waiting"
 msgstr "esperando"
 
-#: firmcreator/models.py:192
+#: firmcreator/models.py:217
 msgid "started"
 msgstr "comenzado"
 
-#: firmcreator/models.py:193
+#: firmcreator/models.py:218
 msgid "finished"
 msgstr "finalizado"
 
-#: firmcreator/models.py:194
+#: firmcreator/models.py:219
 msgid "failed"
 msgstr "fallo"
 
-#: firmcreator/models.py:215
+#: firmcreator/models.py:240
 msgid "satus"
 msgstr "estado"
 
-#: firmcreator/models.py:217
+#: firmcreator/models.py:242
 msgid "profile"
 msgstr "perfil"
 
-#: firmcreator/models.py:219
+#: firmcreator/models.py:244
 msgid "job data"
 msgstr "datos de la tarea"
 
-#: firmcreator/models.py:220
+#: firmcreator/models.py:245
 msgid "build log"
 msgstr ""
 
@@ -320,7 +324,7 @@ msgstr "Perfil"
 
 #: firmcreator/templates/firmcreator/fwjob_detail.html:13
 #: firmcreator/templates/firmcreator/fwprofile_object.html:8
-#: firmcreator/templates/firmcreator/network_object.html:6
+#: firmcreator/templates/firmcreator/network_object.html:7
 #: firmcreator/templates/firmcreator/sshkey_object.html:7
 msgid "Created by"
 msgstr "Creado por"
@@ -409,7 +413,7 @@ msgid "Name"
 msgstr "Nombre"
 
 #: firmcreator/templates/firmcreator/fwprofile_object.html:6
-#: firmcreator/templates/firmcreator/network_object.html:5
+#: firmcreator/templates/firmcreator/network_object.html:6
 msgid "Description"
 msgstr "Descripción"
 
@@ -418,7 +422,7 @@ msgid "Creation date"
 msgstr "Fecha de creación"
 
 #: firmcreator/templates/firmcreator/fwprofile_object.html:9
-#: firmcreator/templates/firmcreator/network_object.html:7
+#: firmcreator/templates/firmcreator/network_object.html:8
 msgid "Admins"
 msgstr "Administradores"
 
@@ -446,7 +450,11 @@ msgstr "Red"
 msgid "List Networks"
 msgstr "Listar Redes"
 
-#: firmcreator/templates/firmcreator/network_object.html:8
+#: firmcreator/templates/firmcreator/network_object.html:5
+msgid "Web"
+msgstr ""
+
+#: firmcreator/templates/firmcreator/network_object.html:9
 msgid "Profiles"
 msgstr "Perfiles"
 
@@ -494,53 +502,63 @@ msgstr "404 No encontrado"
 msgid "500 Error"
 msgstr ""
 
-#: templates/base.html:40
+#: templates/base.html:43
 msgid "Log out"
 msgstr "Salir"
 
-#: templates/base.html:43
+#: templates/base.html:46
 msgid "Log in"
 msgstr "Ingresar"
 
-#: templates/base.html:52
+#: templates/base.html:55
 msgid "Home"
 msgstr "Inicio"
 
-#: templates/base.html:53
+#: templates/base.html:56
+msgid "Mailing List"
+msgstr "Lista de correo"
+
+#: templates/base.html:57
+msgid "Docs"
+msgstr "Documentación"
+
+#: templates/base.html:58
 msgid "Networks"
 msgstr "Redes"
 
-#: templates/base.html:54
+#: templates/base.html:59
 msgid "Create Network"
 msgstr "Crear Red"
 
-#: templates/base.html:55
+#: templates/base.html:60
 msgid "All Networks"
 msgstr "Todas las Redes"
 
-#: templates/base.html:59 templates/index.html:9
+#: templates/base.html:64 templates/index.html:9
 msgid "My Networks"
 msgstr "Mis Redes"
 
-#: templates/base.html:72
+#: templates/base.html:77
 msgid "AlterMesh Firmware Chef"
 msgstr "Chef de Firmwares AlterMesh"
 
-#: templates/base.html:82
+#: templates/base.html:93
 msgid ""
 "This software is part of the <a href=\"http://altermundi.net/\">Altermundi</"
 "a> project"
-msgstr "Este software es parte del proyecto "
-"<a href=\"http://altermundi.net/\">Altermundi</a>"
+msgstr ""
+"Este software es parte del proyecto <a href=\"http://altermundi.net/"
+"\">Altermundi</a>"
 
-#: templates/base.html:83
+#: templates/base.html:94
 msgid ""
 "This is Free Software licensed under <a href=\"http://www.gnu.org/licenses/"
 "agpl.txt\" >AGPL</a>"
-msgstr "Esto es Software Libre con licencia <a href=\"http://www.gnu.org/licenses/"
+msgstr ""
+"Esto es Software Libre con licencia <a href=\"http://www.gnu.org/licenses/"
 "agpl.txt\" >AGPL</a>"
 
-#: templates/base.html:83
+#: templates/base.html:94
 msgid "Get the code!"
 msgstr "¡Obtener el código!"
 
@@ -602,32 +620,6 @@ msgstr "Ahora puedes"
 msgid "login"
 msgstr "ingresar"
 
-#: templates/registration/activation_email.txt:2
-#, python-format
-msgid ""
-"\n"
-"Thank you for registering to %(site)s\n"
-"\n"
-"You can finish your registration by clicking on this link:\n"
-msgstr ""
-"\n"
-"Gracias por registrarte en %(site)s\n"
-"\n"
-"Puedes concluir la registración haciendo click en este enlace:\n"
-
-#: templates/registration/activation_email.txt:8
-#, python-format
-msgid ""
-"\n"
-"This activation key will expire in %(expiration_days)s days.\n"
-msgstr ""
-"\n"
-"Esta clave de activación expirará en %(expiration_days)s días.\n"
-
-#: templates/registration/activation_email_subject.txt:2
-msgid "Account activation for"
-msgstr "Activación de cuenta para"
-
 #: templates/registration/login.html:5
 msgid "Login"
 msgstr "Ingreso"
@@ -668,6 +660,27 @@ msgstr ""
 #: templates/registration/registration_form.html:4
 msgid "Registration"
 msgstr "Registración"
+
+#~ msgid ""
+#~ "\n"
+#~ "Thank you for registering to %(site)s\n"
+#~ "\n"
+#~ "You can finish your registration by clicking on this link:\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Gracias por registrarte en %(site)s\n"
+#~ "\n"
+#~ "Puedes concluir la registración haciendo click en este enlace:\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "This activation key will expire in %(expiration_days)s days.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Esta clave de activación expirará en %(expiration_days)s días.\n"
+
+#~ msgid "Account activation for"
+#~ msgstr "Activación de cuenta para"
 
 #~ msgid " and cook firmware"
 #~ msgstr " y cocinar firmware"

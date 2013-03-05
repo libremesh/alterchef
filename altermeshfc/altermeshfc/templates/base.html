@@ -53,7 +53,9 @@
     <div class="span2">
     <ul class="nav nav-list nav-stacked" style="margin: 30px 0 0;">
         <li><a href="/">{% trans "Home" %}</a></li>
-        <li class="nav-header">{% trans 'Networks' %}</li>
+        <li><a href="http://listas.altermundi.net/cgi-bin/mailman/listinfo/altermesh">{% trans "Mailing List" %}</a></li>
+        <li><a href="http://docs.altermundi.net/AlterMesh">{% trans "Docs" %}</a></li>
+       <li class="nav-header">{% trans 'Networks' %}</li>
         <li><a href="{% url "network-create" %}">{% trans "Create Network" %}</a></li>
         <li><a href="{% url "network-list" %}">{% trans "All Networks" %}</a></li>
         <li><a href="{% url "sshkey-list" %}">{% trans "SSH keys" %}</a></li>
