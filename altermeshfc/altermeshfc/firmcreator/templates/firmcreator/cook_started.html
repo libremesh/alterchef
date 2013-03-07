@@ -5,10 +5,12 @@
 
 {% block content %}
 <div class="alert alert-info alert-block">
-<h2>{% trans "Chef is cooking now! it should take a couple of minutes." %} </h2>
+<h3>{% trans "Chef is cooking now! it should take a couple of minutes." %} </h3>
 </div>
 
-<a class="btn" href="{{ profile.get_absolute_url }}">{% trans "Return" %}</a>
+<div class="alert alert-info alert-block">
+<h4>{% trans "Your firmware will be available for download in the "%}<a href="{{ profile.get_absolute_url }}">{% trans "Profile entry" %}</a>.</h4>
+</div>
 
 {% endblock %}
 

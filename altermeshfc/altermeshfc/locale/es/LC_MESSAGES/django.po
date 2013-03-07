@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-04 21:45-0300\n"
+"POT-Creation-Date: 2013-03-07 18:09-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -232,7 +232,6 @@ msgid "Chef is already cooking this profile, please be patient!"
 msgstr "el Chef ya se encuentra cocinando este perfil, ten paciencia!"
 
 #: firmcreator/templates/firmcreator/cook.html:23
-#: firmcreator/templates/firmcreator/cook_started.html:11
 msgid "Return"
 msgstr "Volver"
 
@@ -243,6 +242,14 @@ msgstr "Cocinando firmware para el perfil"
 #: firmcreator/templates/firmcreator/cook_started.html:8
 msgid "Chef is cooking now! it should take a couple of minutes."
 msgstr "el Chef está cocinando! demorará unos minutos."
+
+#: firmcreator/templates/firmcreator/cook_started.html:12
+msgid "Your firmware will be available for download in the "
+msgstr "El firmware estará disponible para descarga en el "
+
+#: firmcreator/templates/firmcreator/cook_started.html:12
+msgid "Profile entry"
+msgstr "Detalle de Perfil"
 
 #: firmcreator/templates/firmcreator/create_profile_simple.html:19
 #: firmcreator/templates/firmcreator/crud_profile.html:19
