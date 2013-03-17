@@ -6,13 +6,15 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
-from django.template import Context, Template
+from django.template import Context, Template, RequestContext
+from django.template.loader import render_to_string
 from django.utils.text import normalize_newlines
+from django.utils.translation import ugettext_lazy as _
 import pygments
 from pygments.lexers import DiffLexer
 from pygments.formatters import HtmlFormatter
@@ -144,7 +146,12 @@ def crud_profile_advanced(request, slug=None):
                 files[f["name"]] = normalize_newlines(f["content"])
             uploaded_files = profile_form.cleaned_data.get("upload_files")
             if uploaded_files:
-                files.update(IncludeFiles.load_from_tar(uploaded_files).files)
+                try:
+                    files.update(IncludeFiles.load_from_tar(uploaded_files).files)
+                except UnicodeDecodeError:
+                    error = _("Encoding Error: Uploaded tarfile must have all it's files encoded in UTF-8.")
+                    return HttpResponseServerError(render_to_string('500.html', {"message": error},
+                                                                     RequestContext(request)))
             fw_profile.include_files = files
             fw_profile.save()
             return redirect("fwprofile-detail", slug=fw_profile.slug)

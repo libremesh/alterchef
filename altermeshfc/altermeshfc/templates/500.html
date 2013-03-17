@@ -3,3 +3,7 @@
 {% load url from future %}
 
 {% block title %}{% trans "500 Error" %}{% endblock %}
+
+{% block content %}
+{% if message %}<div class="alert alert-block"><h3>{{ message }}</h3></div>{% endif %}
+{% endblock %}

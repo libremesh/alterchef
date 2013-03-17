@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from os import path
 import shutil
@@ -72,6 +73,31 @@ class IncludeFilesTest(TestCase):
         diff = subprocess.check_output(["diff", "-r", dest_dir, path.join(TEST_PROFILE_PATH, "include_files")], stderr=subprocess.STDOUT)
         self.assertEqual(diff, "")
         shutil.rmtree(dest_dir) # cleaning up
+
+    def test_load_from_tar(self):
+
+        def generate_inmemory_tar(content):
+            import StringIO, tarfile
+            tar_sio = StringIO.StringIO()
+            with tarfile.TarFile(fileobj=tar_sio, mode="w") as tar:
+                content_sio = StringIO.StringIO()
+                content_sio.write(content)
+                content_sio.seek(0)
+                info = tarfile.TarInfo(name=u"fóø".encode("utf-8"))
+                info.size = len(content_sio.buf)
+                tar.addfile(tarinfo=info, fileobj=content_sio)
+            tar_sio.seek(0)
+            tar_sio.name = "foo"
+            return tar_sio
+
+        content = u"testing únicódè"
+        inc_files = IncludeFiles.load_from_tar(generate_inmemory_tar(content.encode("utf-8")))
+        self.assertEqual(inc_files.files.values()[0], content)
+
+        # if encoding is not utf-8 then we cant load the file
+        self.assertRaises(UnicodeDecodeError, IncludeFiles.load_from_tar,
+                          generate_inmemory_tar(content.encode("latin-1")))
+
 
 class NetworkTest(TestCase):
 
