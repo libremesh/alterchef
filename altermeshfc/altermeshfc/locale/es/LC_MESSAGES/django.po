@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-07 18:09-0300\n"
+"POT-Creation-Date: 2013-03-17 20:38-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,7 +67,7 @@ msgstr "Perfiles por defecto (soportados)"
 msgid "OpenWrt Vanilla"
 msgstr ""
 
-#: firmcreator/forms.py:144 firmcreator/forms.py:171
+#: firmcreator/forms.py:132
 msgid ""
 "<span class='text-warning'>Select at least one ssh key, otherwise you won't "
 "be able to enter to the router/acces point!</span>"
@@ -75,19 +75,22 @@ msgstr ""
 "<span class='text-warning'>Elegí al menos una llave ssh, de otro modo no "
 "podrás entrar al router/acces point!</span>"
 
-#: firmcreator/forms.py:158
-msgid "Upload a tar/tar.gz with files to include"
-msgstr "Subir un tar/tar.gz con archivos a incluir"
+#: firmcreator/forms.py:165
+msgid ""
+"Upload a tar/tar.gz with files to include. Files <b>MUST</b> be UTF-8 "
+"encoded!"
+msgstr "Subir un tar/tar.gz con archivos a incluir. Los archivos <b>TIENEN</b> "
+"que estar encodeados en UTF-8!"
 
-#: firmcreator/forms.py:201
+#: firmcreator/forms.py:203
 msgid "Common devices"
 msgstr "Dispositivos soportados"
 
-#: firmcreator/forms.py:202
+#: firmcreator/forms.py:204
 msgid "Other devices"
 msgstr "Otros dispositivos"
 
-#: firmcreator/forms.py:203
+#: firmcreator/forms.py:205
 msgid ""
 "List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 UBNT "
 "TLWA701</code>"
@@ -95,16 +98,16 @@ msgstr ""
 "Listado de dispositivos separados por espacio. Por ej: <code>TLMR3420 UBNT "
 "TLWA701</code>"
 
-#: firmcreator/forms.py:228
+#: firmcreator/forms.py:230
 msgid "You must select at least one device."
 msgstr "Debe seleccionar al menos un dispositivo."
 
-#: firmcreator/forms.py:229
+#: firmcreator/forms.py:231
 msgid "PROFILE devices must contain only alphanumeric characters."
 msgstr ""
 "Los nombres de dispositivos sólo pueden contener caracateres alfanuméricos."
 
-#: firmcreator/forms.py:230
+#: firmcreator/forms.py:232
 #, python-format
 msgid "Nonexistent device %s"
 msgstr "Dispositivo %s inexistente"
@@ -217,6 +220,12 @@ msgstr "datos de la tarea"
 #: firmcreator/models.py:245
 msgid "build log"
 msgstr ""
+
+#: firmcreator/views.py:152
+msgid ""
+"Encoding Error: Uploaded tarfile must have all it's files encoded in UTF-8."
+msgstr "Error de Encoding: El archivo tar tiene que tener todos sus archivos "
+"guardados en encoding UTF-8."
 
 #: firmcreator/templates/firmcreator/cook.html:4
 msgid "Cook Firmware for profile"
@@ -627,6 +636,32 @@ msgstr "Ahora puedes"
 msgid "login"
 msgstr "ingresar"
 
+#: templates/registration/activation_email.txt:2
+#, python-format
+msgid ""
+"\n"
+"Thank you for registering to %(site)s\n"
+"\n"
+"You can finish your registration by clicking on this link:\n"
+msgstr ""
+"\n"
+"Gracias por registrarte en %(site)s\n"
+"\n"
+"Puedes concluir la registración haciendo click en este enlace:\n"
+
+#: templates/registration/activation_email.txt:8
+#, python-format
+msgid ""
+"\n"
+"This activation key will expire in %(expiration_days)s days.\n"
+msgstr ""
+"\n"
+"Esta clave de activación expirará en %(expiration_days)s días.\n"
+
+#: templates/registration/activation_email_subject.txt:2
+msgid "Account activation for"
+msgstr "Activación de cuenta para"
+
 #: templates/registration/login.html:5
 msgid "Login"
 msgstr "Ingreso"
@@ -667,27 +702,6 @@ msgstr ""
 #: templates/registration/registration_form.html:4
 msgid "Registration"
 msgstr "Registración"
-
-#~ msgid ""
-#~ "\n"
-#~ "Thank you for registering to %(site)s\n"
-#~ "\n"
-#~ "You can finish your registration by clicking on this link:\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Gracias por registrarte en %(site)s\n"
-#~ "\n"
-#~ "Puedes concluir la registración haciendo click en este enlace:\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "This activation key will expire in %(expiration_days)s days.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Esta clave de activación expirará en %(expiration_days)s días.\n"
-
-#~ msgid "Account activation for"
-#~ msgstr "Activación de cuenta para"
 
 #~ msgid " and cook firmware"
 #~ msgstr " y cocinar firmware"
