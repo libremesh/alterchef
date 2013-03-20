@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n crispy_forms_tags %}
+{% load i18n l10n crispy_forms_tags %}
 
 {% block title %}{% trans "List Networks" %}{% endblock %}
 
@@ -18,7 +18,9 @@
   {% spaceless %}
   {% for object in object_list %}
     {% if object.latitude and object.longitude %}
+      {% localize off %}
       var marker = L.marker([{{ object.latitude }}, {{ object.longitude }}]).addTo(map);
+      {% endlocalize %}
       marker.bindPopup('<b><a href="#{{ object.slug }}">{{ object.name }}</a></b><br><small>{{ object.description }}</small>');
     {% endif %}
   {% endfor %}
