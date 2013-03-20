@@ -106,6 +106,8 @@ class Network(models.Model):
     slug = AutoSlugField(populate_from='name', always_update=False,
                          editable=False, blank=True, unique=True)
     description = models.TextField(_('description'))
+    latitude = models.FloatField(_('GEO latitude'), blank=True, null=True)
+    longitude = models.FloatField(_('GEO longitude'), blank=True, null=True)
     admins = models.ManyToManyField(User, blank=True, related_name="network_admin_set")
 
     objects = NetworkManager()

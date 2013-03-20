@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load url from future %}
 <dl class="dl-horizontal">
-    <dt>{% trans "Name" %}</dt><dd><a href="{% url 'network-detail' object.slug %}">{{ object.name }}</a></dd>
+    <dt>{% trans "Name" %}</dt><dd><a href="{% url 'network-detail' object.slug %}" name="{{object.slug}}">{{ object.name }}</a></dd>
     <dt>{% trans "Web" %}</dt><dd>{{ object.web|urlize|default:"-" }}</dd>
     <dt>{% trans "Description" %}</dt><dd>{{ object.description }}</dd>
     <dt>{% trans "Created by" %}</dt><dd>{{ object.user }}</dd>
