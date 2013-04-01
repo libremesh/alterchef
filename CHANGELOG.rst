@@ -4,6 +4,8 @@ Changelog
 0.9 (unreleased)
 ----------------
 
+- Added GEO location of networks and a Map to show it in networks list
+
 - Profile's Include files may be uploaded using a tarfile
 
 - Removed non emptynes restriction on Include files content
