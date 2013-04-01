@@ -187,7 +187,7 @@ msgstr "llave SSH"
 
 #: firmcreator/models.py:212 templates/base.html:61
 msgid "SSH keys"
-msgstr "llaves SSH"
+msgstr "Llaves SSH"
 
 #: firmcreator/models.py:216
 msgid "waiting"
