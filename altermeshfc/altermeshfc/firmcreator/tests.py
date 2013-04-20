@@ -165,6 +165,14 @@ class FwProfileTest(TestCase):
         response = self.client.post(reverse("fwprofile-create-simple"), data, follow=True)
         self.assertContains(response, "Profile Detail")
 
+    def test_include_files_formset_files(self):
+        from forms import IncludeFilesFormset
+        form_data = {'form-TOTAL_FORMS': 1, 'form-INITIAL_FORMS': 0,
+                     'form-0-path': u'/foo/bar', 'form-0-content': u'this is foo'}
+        formset = IncludeFilesFormset(form_data)
+        assert formset.is_valid() == True
+        self.assertEqual(formset.include_files(), {u"/foo/bar": u'this is foo'})
+
     def test_edit(self):
         response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
         url = reverse("fwprofile-edit-advanced", kwargs={"slug": FwProfile.objects.all()[0].slug})

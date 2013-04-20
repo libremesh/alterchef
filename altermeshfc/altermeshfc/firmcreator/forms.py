@@ -6,11 +6,8 @@ from django import forms
 from django.conf import settings
 from django.forms.widgets import TextInput, Textarea, FileInput, DateInput
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.forms.formsets import formset_factory
+from django.forms.formsets import formset_factory, BaseFormSet
+from django.utils.text import normalize_newlines
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, Fieldset
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
@@ -66,7 +63,7 @@ class IncludePackagesForm(BaseForm):
 
 class IncludeFileForm(BaseForm):
 
-    name = forms.CharField(
+    path = forms.CharField(
         help_text="eg: /etc/config/batmesh"
     )
 
@@ -81,7 +78,7 @@ class IncludeFileForm(BaseForm):
     helper.form_class = 'form-horizontal'
     helper.layout = Layout(
             Fieldset(_("File"),
-                Field('name', css_class="input-xxlarge"),
+                Field('path', css_class="input-xxlarge"),
                 Field('content', css_class="input-xxlarge pre-scrollable"),
                 Field('DELETE'),
             )
@@ -183,7 +180,18 @@ class FwProfileForm(forms.ModelForm):
             'creation_date', 'include_files', 'include_packages'
         )
 
-IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0, can_delete=True)
+
+class IncludeFilesBaseFormSet(BaseFormSet):
+    def include_files(self):
+        files = {}
+        for form in self.cleaned_data:
+            if form.get("DELETE"):
+                continue
+            files[form["path"]] = normalize_newlines(form["content"])
+        return files
+
+IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0, can_delete=True, formset=IncludeFilesBaseFormSet)
+
 
 COMMON_DEVICES = (
     ('TLWDR4300', 'TP-LINK TL-WDR3500/3600/4300/4310'),

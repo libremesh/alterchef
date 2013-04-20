@@ -13,7 +13,6 @@ from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
 from django.template import Context, Template, RequestContext
 from django.template.loader import render_to_string
-from django.utils.text import normalize_newlines
 from django.utils.translation import ugettext_lazy as _
 import pygments
 from pygments.lexers import DiffLexer
@@ -139,11 +138,7 @@ def crud_profile_advanced(request, slug=None):
            include_packages_form.is_valid():
             fw_profile = profile_form.save()
             fw_profile.include_packages = include_packages_form.to_str()
-            files = {}
-            for f in include_files_formset.cleaned_data:
-                if f.get("DELETE"):
-                    continue
-                files[f["name"]] = normalize_newlines(f["content"])
+            files = include_files_formset.include_files()
             uploaded_files = profile_form.cleaned_data.get("upload_files")
             if uploaded_files:
                 try:
