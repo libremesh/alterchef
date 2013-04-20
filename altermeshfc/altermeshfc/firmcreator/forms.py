@@ -1,18 +1,12 @@
 # -*- coding: utf-8 -*-
-import os
-import datetime
-
 from django import forms
-from django.conf import settings
-from django.forms.widgets import TextInput, Textarea, FileInput, DateInput
 from django.utils.translation import ugettext_lazy as _
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.utils.text import normalize_newlines
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, Fieldset
-from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
-from models import IncludePackages, IncludeFiles, FwProfile, Network, Device, SSHKey
+from models import IncludePackages, FwProfile, Network, Device, SSHKey
 from utils import get_default_profile
 
 # We may add a description of each package, in the form ("pkgname", "description")

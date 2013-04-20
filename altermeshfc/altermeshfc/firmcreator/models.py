@@ -93,6 +93,7 @@ class IncludeFiles(object):
             with codecs.open(os.path.join(to_dir, filename), "w", "utf-8") as f:
                 f.write(normalize_newlines(filecontent))
 
+
 class NetworkManager(models.Manager):
     def with_user_perms(self, user):
         from django.db.models import Q
@@ -163,12 +164,18 @@ class FwProfile(models.Model):
         return "%s-%s" % (unicode(self.network), self.name)
 
     def load_includes_from_disk(self, from_path):
+        """
+        Load profile from disk from ImageBuilder's include.
+        """
         inc_files = IncludeFiles.load(os.path.join(from_path, "include_files"))
         inc_packages = IncludePackages.load(open(os.path.join(from_path, "include_packages")))
         self.include_packages = inc_packages.to_str()
         self.include_files = inc_files.files
 
     def write_to_disk(self):
+        """
+        Write profile to disk so that openwrt ImageBuilder can pickup and build the image.
+        """
         to_path = os.path.join(settings.NETWORK_INCLUDES_PATH, self.network.name, self.name)
         if not os.path.exists(to_path):
             os.makedirs(to_path)
