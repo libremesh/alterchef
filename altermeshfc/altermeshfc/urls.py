@@ -1,9 +1,14 @@
 from django.conf.urls import patterns, include, url
+from django.contrib import admin
 
 from altermeshfc.firmcreator.views import NetworkCreateView, NetworkDetailView, NetworkListView, \
                                            NetworkUpdateView, NetworkDeleteView, FwProfileDetailView, \
                                            FwProfileDeleteView, FwJobDetailView, SSHKeyCreateView, \
                                            SSHKeyListView, SSHKeyDetailView, SSHKeyUpdateView, SSHKeyDeleteView \
+
+admin.autodiscover()
+from django.contrib.sites.models import Site
+admin.site.unregister(Site)
 
 urlpatterns = patterns('',
     url(r'^$', 'altermeshfc.firmcreator.views.index', name="index"),
@@ -41,5 +46,5 @@ urlpatterns = patterns('',
 
     url(r'^ls/(?P<path>.*)$', 'altermeshfc.list_dir.views.list_dir', name="list-dir"),
 
-    # url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 )
