@@ -31,7 +31,13 @@ def _list_dir(path):
     def get_attrs(name):
         stat = os.stat(os.path.join(path, name))
         return {"name": name, "stat": stat, "mtime": datetime.datetime.fromtimestamp(stat.st_mtime)}
+
+    def remove_broken_symlinks(names):
+        return [name for name in names if os.path.exists(os.path.join(path, name))]
+
+    fnames = remove_broken_symlinks(fnames)
     files = map(get_attrs, sorted(fnames))
+    dnames = remove_broken_symlinks(dnames)
     directories = map(get_attrs, sorted(dnames))
 
     context = {'directories': directories, 'files': files}
