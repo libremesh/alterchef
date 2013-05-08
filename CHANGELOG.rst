@@ -10,6 +10,8 @@ Changelog
 
 - Removed non emptynes restriction on Include files content
 
+- Integrated django admin site
+
 0.8 (17/12/2012)
 ----------------
 

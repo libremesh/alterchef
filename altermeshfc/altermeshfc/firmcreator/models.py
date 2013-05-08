@@ -176,7 +176,7 @@ class FwProfile(models.Model):
         """
         Write profile to disk so that openwrt ImageBuilder can pickup and build the image.
         """
-        to_path = os.path.join(settings.NETWORK_INCLUDES_PATH, self.network.name, self.name)
+        to_path = os.path.join(settings.NETWORK_INCLUDES_PATH, self.network.slug, self.name)
         if not os.path.exists(to_path):
             os.makedirs(to_path)
 
@@ -277,7 +277,7 @@ class FwJob(models.Model):
             job = waiting[0]
             job.status = "STARTED"
             job.profile.write_to_disk()
-            commands = cls.make_commands(job.profile.network.name,
+            commands = cls.make_commands(job.profile.network.slug,
                                          job.profile.name,
                                          job.job_data["devices"],
                                          job.job_data["revision"])
