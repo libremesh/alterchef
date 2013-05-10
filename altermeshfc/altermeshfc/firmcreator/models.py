@@ -1,4 +1,6 @@
 import os
+import re
+import glob
 import codecs
 import shutil
 import tarfile
@@ -21,6 +23,24 @@ from fields import JSONField, PublicKeyField
 from utils import to_thread
 
 from django.conf import settings
+
+class OpenwrtImageBuilder(object):
+
+    @classmethod
+    def get_available_openwrt_revisions(self):
+        dirs = os.listdir(settings.LIST_DIR_ROOT)
+        revs = [int(dname[1:]) for dname in dirs if re.match(r"r\d+", dname)]
+        return sorted(revs, reverse=True)
+
+    @classmethod
+    def get_stable_version(self):
+        version = None
+        stable_dirname = os.path.realpath(os.path.join(settings.LIST_DIR_ROOT, "stable"))
+        try:
+            version = int(os.path.basename(stable_dirname)[1:])
+        except:
+            pass
+        return version
 
 class IncludePackages(object):
 
@@ -192,6 +212,19 @@ class FwProfile(models.Model):
 
         inc_files = IncludeFiles(files)
         inc_files.dump(os.path.join(to_path, "include_files"))
+
+    def get_cooked_revisions(self):
+        base_path = os.path.join(settings.LIST_DIR_ROOT, self.network.slug)
+        revisions = []
+        if os.path.exists(base_path):
+            directories = glob.glob(base_path + "/r*" )
+            for dname in directories:
+                if os.path.exists(os.path.join(dname, self.name)):
+                  try:
+                      revisions.append(int(os.path.basename(dname).replace("r","")))
+                  except:
+                      pass
+        return sorted(revisions, reverse=True)
 
     @models.permalink
     def get_absolute_url(self):

@@ -6,15 +6,13 @@ rootdir="/home/openwrt"
 downloadsdir="$rootdir/downloads"
 bindir="$rootdir/openwrt/trunk/bin/$platform"
 imagebuildersdir="$rootdir/openwrt/image_builders"
-imagebuilder="$(basename $bindir/OpenWrt-ImageBuilder-*86.tar.bz2)"
+imagebuilder="$(basename $bindir/OpenWrt-ImageBuilder-*.tar.bz2)"
 imagebuilder="${imagebuilder%%.tar.bz2}"
 
 cd $imagebuildersdir || { echo Please adapt hardcoded strings in source code! ; exit 1 ; }
 if tar -xjf $bindir/$imagebuilder.tar.bz2 ; then
-  rev="$(sed -n "s/.*OpenWrt version:.*(\(.*\))/\1/p" $imagebuilder/.config)"
+  rev="$(sed -n "s/^REVISION:=\(.*\)/\1/p" $imagebuilder/include/version.mk)"
   [ -z "$rev" ] && exit 1 
-
-  mv $bindir/$imagebuilder.tar.bz2 $bindir/${imagebuilder}_$rev.tar.bz2
 
   rm -rf ${imagebuilder}_$rev 
   mv $imagebuilder ${imagebuilder}_$rev
@@ -25,7 +23,7 @@ if tar -xjf $bindir/$imagebuilder.tar.bz2 ; then
 
   releasedir="$downloadsdir/$rev/$platform/"
   mkdir -p $releasedir
-  cp -p $bindir/${imagebuilder}_$rev.tar.bz2 $releasedir
+  mv $bindir/$imagebuilder.tar.bz2 $releasedir/${imagebuilder}_$rev.tar.bz2
   cp -p ${imagebuilder}_$rev/.config $releasedir/config
   rsync -a --delete ${imagebuilder}_${rev:?}/packages $releasedir
   ls -ld $(pwd)/${imagebuilder}_$rev $releasedir/${imagebuilder}_$rev.tar.bz2 $releasedir/config $releasedir/packages

@@ -46,8 +46,24 @@
 <a class="btn btn-warning" href="{% url "cook" object.slug %}">{% trans "Cook" %}</a>
 <a class="btn btn-danger" href="{% url "fwprofile-delete" object.slug %}">{% trans "Delete" %}</a>
 {% endif %}
-<a class="btn btn-inverse" href="/ls/{{ object.network.slug }}/">{% trans "Download Firmware" %}</a>
 <button type="button" class="btn" data-toggle="collapse" data-target="#include_detail">{% trans "Toggle Details" %}</button>
+{% with cooked_revisions=object.get_cooked_revisions %}
+  {% if cooked_revisions %}
+    <div class="dropdown">
+    <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+       {% trans "Download Firmware" %}
+       <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+    {% with stable=openwrt_image_builder.get_stable_version %}
+      {% for revision in object.get_cooked_revisions %}
+      <li><a href="/ls/{{ object.network.slug }}/r{{ revision }}/{{ object.name }}/">{{ revision }} {% if revision == stable %} (stable) {% endif %}</a></li>
+      {% endfor %}
+    {% endwith %}
+    </ul>
+    </div>
+  {% endif %}
+{% endwith %}
 </div>
 
 

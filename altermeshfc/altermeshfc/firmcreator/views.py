@@ -20,7 +20,7 @@ from pygments.formatters import HtmlFormatter
 from difflib import unified_diff
 
 from utils import LoginRequiredMixin, UserOrAdminRequiredMixin, UserRequiredMixin
-from models import IncludeFiles, Network, FwProfile, FwJob, SSHKey
+from models import IncludeFiles, Network, FwProfile, FwJob, SSHKey, OpenwrtImageBuilder
 from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
                    NetworkForm, FwProfileSimpleForm, CookFirmwareForm
 
@@ -94,6 +94,7 @@ class FwProfileDetailView(DetailView):
         if self.object.based_on:
             profiles = profiles.exclude(slug=self.object.based_on.slug)
         context['profiles'] = profiles
+        context['openwrt_image_builder'] = OpenwrtImageBuilder
         return context
 
 class FwProfileDeleteView(LoginRequiredMixin, UserOrAdminRequiredMixin, DeleteView):
@@ -161,7 +162,7 @@ def crud_profile_advanced(request, slug=None):
             based_on = get_object_or_404(FwProfile, pk=based_on)
 
         def get_initial_files(obj):
-            return [{"name":name, "content": content} for name, content in obj.include_files.iteritems()]
+            return [{"path": path, "content": content} for path, content in obj.include_files.iteritems()]
 
         inherited = instance or based_on
         initial_files = get_initial_files(inherited) if inherited else None

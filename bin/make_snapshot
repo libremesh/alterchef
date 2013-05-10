@@ -51,10 +51,11 @@ for file in *.img ; do
   fi
 done
 ( cd $dest/ && rm -f md5sums && md5sum * >md5sums 2>/dev/null )
+exit 0
 
-for file in ${dest}/*${rev}-${network}-${netprofile}*.{img,bin} ; do
-  [ -e "$file" ] && ln -nsf "${file##$dest_base/}" $dest_base/
-done
-( cd $dest_base/ && rm -f md5sums && md5sum *.img *.bin >md5sums 2>/dev/null)
+#for file in ${dest}/*${rev}-${network}-${netprofile}*.{img,bin} ; do
+#  [ -e "$file" ] && ln -nsf "${file##$dest_base/}" $dest_base/
+#done
+#( cd $dest_base/ && rm -f md5sums && md5sum *.img *.bin >md5sums 2>/dev/null)
 
-( cd ${dest_base%/$rev} && ln -nsf $(ls -d1 r* |tail -n1) stable )
+#( cd ${dest_base%/$rev} && ln -nsf $(ls -d1 r* |tail -n1) stable )
