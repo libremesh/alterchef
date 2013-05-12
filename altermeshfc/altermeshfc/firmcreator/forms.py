@@ -6,7 +6,7 @@ from django.utils.text import normalize_newlines
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, Fieldset
 
-from models import IncludePackages, FwProfile, Network, Device, SSHKey
+from models import IncludePackages, FwProfile, Network, Device, SSHKey, OpenwrtImageBuilder
 from utils import get_default_profile
 
 # We may add a description of each package, in the form ("pkgname", "description")
@@ -206,7 +206,21 @@ class CookFirmwareForm(forms.Form):
     other_devices = forms.CharField(required=False, label=_("Other devices"),
                                     help_text=_("List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 UBNT TLWA701</code>"),
                                     )
-    openwrt_revision = forms.SlugField(required=True, initial="stable")
+    openwrt_revision = forms.ChoiceField(choices=(("stable", "stable"),))
+
+    def __init__(self, *args, **kwargs):
+        super(CookFirmwareForm, self).__init__(*args, **kwargs)
+        stable_revision = OpenwrtImageBuilder.get_stable_version()
+        def transform_revision(rev):
+            if rev == stable_revision:
+                return "%d (stable)" % rev
+            else:
+                return "%d" % rev
+        revision_choices = [("r%d" % r, transform_revision(r)) for r in OpenwrtImageBuilder.get_available_openwrt_revisions()]
+
+        if revision_choices:
+            initial = filter(lambda x: "stable" in x[1], revision_choices)[0][0]
+            self.fields["openwrt_revision"] = forms.ChoiceField(choices=revision_choices, initial=initial)
 
     def get_devices(self):
         return self.cleaned_data["common_devices"] + self.cleaned_data["other_devices"].split()
