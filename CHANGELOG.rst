@@ -12,6 +12,13 @@ Changelog
 
 - Integrated django admin site
 
+- Changed download path to use Network slug instead of Network name
+
+- Improved firmware Download selection. This removed a lot of inconsistencies
+  and weirdness.
+
+- Now the openwrt revision can be selected when cooking.
+
 0.8 (17/12/2012)
 ----------------
 
