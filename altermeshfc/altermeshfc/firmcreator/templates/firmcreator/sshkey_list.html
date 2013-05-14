@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+{% load url from future %}
+
+{% block title %}{% trans "List SSH Keys" %}{% endblock %}
+
+{% block content %}
+
+{% for object in object_list %}
+  {% if object.user == request.user %}
+    {% include "firmcreator/sshkey_object.html" %}
+  {% endif %}
+{% endfor %}
+
+<a class="btn" href="{% url 'sshkey-create' %}"> {% trans "Add SSH Key" %}</a>
+
+{% endblock %}
+

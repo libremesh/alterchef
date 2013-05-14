@@ -1,0 +1,101 @@
+{% load i18n %}
+{% load url from future %}
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8" />
+ <title>AlterMesh </title>
+ <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+ <script src="{{ STATIC_URL}}js/jquery.min.js"></script>
+ <script src="{{ STATIC_URL}}js/bootstrap.min.js"></script>
+ <style>
+    input, textarea, pre, code {font-family: 'DejaVu Sans Mono', monospace;}
+    .bordered {
+        border: 1px solid #DDDDDD;
+        border-radius: 4px 4px 4px 4px;
+        margin: 15px 0;
+        padding: 10px 10px 10px;
+        position: relative;
+    }
+    .footer {
+        background-color: #F5F5F5;
+        border-top: 1px solid #E5E5E5;
+        margin-top: 70px;
+        padding: 30px 0;
+        text-align: center;
+    }
+    footer .media-body {
+        padding-top: 30px;
+    }
+ </style>
+ {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+
+
+<div id="login" style="float:right; margin-right: 30px;margin-top: 30px;">
+ <div class="btn-group">
+  {% if user.is_authenticated %}
+    <a class="btn btn-primary" href="#"><i class="icon-user icon-white"></i> {{ user }}</a>
+    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li><a href="{% url "auth_logout" %}?next={{ request.path }}"><i class="icon-arrow-left"></i> {% trans "Log out" %}</a></li>
+      </ul>
+  {% else %}
+    <a class="btn btn-primary" href="{% url "auth_login" %}?next={{ request.path }}"><i class="icon-user icon-white"></i> {% trans "Log in" %}</a>
+  {% endif %}
+ </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">
+    <ul class="nav nav-list nav-stacked" style="margin: 30px 0 0;">
+        <li><a href="/">{% trans "Home" %}</a></li>
+        <li><a href="https://listas.altermundi.net/cgi-bin/mailman/listinfo/altermesh">{% trans "Mailing List" %}</a></li>
+        <li><a href="http://docs.altermundi.net/AlterMesh">{% trans "Docs" %}</a></li>
+       <li class="nav-header">{% trans 'Networks' %}</li>
+        <li><a href="{% url "network-create" %}">{% trans "Create Network" %}</a></li>
+        <li><a href="{% url "network-list" %}">{% trans "All Networks" %}</a></li>
+        <li><a href="{% url "sshkey-list" %}">{% trans "SSH keys" %}</a></li>
+        {% with my_networks=user.networks_with_perms %}
+        {% if my_networks %}
+        <li>{% trans "My Networks" %}
+        <ul>
+        {% for network in my_networks %}
+          <li><a href="{{ network.get_absolute_url }}">{{ network }}</a></li>
+        {% endfor %}
+        </ul>
+        </li>
+        {% endif %}
+        {% endwith %}
+    </ul>
+    </div>
+    <div class="span9">
+      <div class="page-header">
+        <h3>{% block title %}{% trans "AlterMesh Firmware Chef" %}{% endblock %}</h3>
+      </div>
+    {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+<div class="container">
+    <div class="media">
+      <a class="pull-left" href="http://altermundi.net/">
+        <img src="{{ STATIC_URL}}img/altermundi-logo.png" alt="logo altermundi"/>
+      </a>
+
+      <div class="media-body">
+        <p>© Copyright 2012 Santiago Piccinini</p>
+        <p>{% trans 'This software is part of the <a href="http://altermundi.net/">Altermundi</a> project' %}.</p>
+        <p>{% trans 'This is Free Software licensed under <a href="http://www.gnu.org/licenses/agpl.txt" >AGPL</a>' %}. <a href="https://colectivo.altermundi.net/projects/chef">{% trans 'Get the code!' %}</a></p>
+      </div>
+    </div>
+
+</div>
+</footer>
+</body>
+</html>

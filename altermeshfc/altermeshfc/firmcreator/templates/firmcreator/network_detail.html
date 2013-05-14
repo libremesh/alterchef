@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans "Network Detail" %}{% endblock %}
+
+{% block content %}
+<h1>{{ object }}</h1>
+{% include "firmcreator/network_object.html" %}
+
+{% if request.user in object.users %}
+<div class="form-actions">
+<a class="btn btn-primary" href="{% url "network-edit" object.slug %}">{% trans "Edit" %}</a>
+<a class="btn btn-warning" href="{% url "fwprofile-create-simple" %}?network={{ object.pk }}">{% trans "Create Firmware Profile" %}</a>
+<a class="btn btn-danger" href="{% url "network-delete" object.slug %}">{% trans "Delete" %}</a>
+</div>
+{% endif %}
+
+{% endblock %}
+

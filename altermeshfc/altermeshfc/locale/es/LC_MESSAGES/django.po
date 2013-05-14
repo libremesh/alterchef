@@ -1,0 +1,710 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-17 20:38-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: firmcreator/fields.py:77
+msgid "This does not appear to be an ssh public key"
+msgstr "Esto no parece ser una llave pública ssh"
+
+#: firmcreator/fields.py:79
+#, python-format
+msgid "Row %d does not appear to be an ssh public key"
+msgstr "La fila %d no parece ser una llave pública ssh"
+
+#: firmcreator/forms.py:32
+msgid "Optional packages"
+msgstr "Paquetes opcionales"
+
+#: firmcreator/forms.py:35
+msgid "These packages are not essential, but pretty useful."
+msgstr "Estos paquetes no son esenciales, pero sí muy útiles."
+
+#: firmcreator/forms.py:40
+msgid "Extra include/exclude packages"
+msgstr "Más paquetes a incluir o excluir"
+
+#: firmcreator/forms.py:41
+msgid ""
+"list of packages to include or exclude. i.e. to include foo and baz, and "
+"exclude bar: <tt>foo -bar baz</tt>"
+msgstr ""
+"listado de paquetes a incluir o excluir. por ej. para incluir fooy baz y "
+"excluir bar: <tt>foo -bar baz</tt>"
+
+#: firmcreator/forms.py:83
+msgid "File"
+msgstr "Archivo"
+
+#: firmcreator/forms.py:119
+msgid "Own profiles"
+msgstr "Mis perfiles"
+
+#: firmcreator/forms.py:120
+msgid "Other profiles (unsupported!)"
+msgstr "Otros perfiles (no soportados!)"
+
+#: firmcreator/forms.py:125
+msgid "Default profiles (supported)"
+msgstr "Perfiles por defecto (soportados)"
+
+#: firmcreator/forms.py:127
+msgid "OpenWrt Vanilla"
+msgstr ""
+
+#: firmcreator/forms.py:132
+msgid ""
+"<span class='text-warning'>Select at least one ssh key, otherwise you won't "
+"be able to enter to the router/acces point!</span>"
+msgstr ""
+"<span class='text-warning'>Elegí al menos una llave ssh, de otro modo no "
+"podrás entrar al router/acces point!</span>"
+
+#: firmcreator/forms.py:165
+msgid ""
+"Upload a tar/tar.gz with files to include. Files <b>MUST</b> be UTF-8 "
+"encoded!"
+msgstr "Subir un tar/tar.gz con archivos a incluir. Los archivos <b>TIENEN</b> "
+"que estar encodeados en UTF-8!"
+
+#: firmcreator/forms.py:203
+msgid "Common devices"
+msgstr "Dispositivos soportados"
+
+#: firmcreator/forms.py:204
+msgid "Other devices"
+msgstr "Otros dispositivos"
+
+#: firmcreator/forms.py:205
+msgid ""
+"List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 UBNT "
+"TLWA701</code>"
+msgstr ""
+"Listado de dispositivos separados por espacio. Por ej: <code>TLMR3420 UBNT "
+"TLWA701</code>"
+
+#: firmcreator/forms.py:230
+msgid "You must select at least one device."
+msgstr "Debe seleccionar al menos un dispositivo."
+
+#: firmcreator/forms.py:231
+msgid "PROFILE devices must contain only alphanumeric characters."
+msgstr ""
+"Los nombres de dispositivos sólo pueden contener caracateres alfanuméricos."
+
+#: firmcreator/forms.py:232
+#, python-format
+msgid "Nonexistent device %s"
+msgstr "Dispositivo %s inexistente"
+
+#: firmcreator/models.py:103 firmcreator/models.py:136
+#: firmcreator/models.py:200
+msgid "name"
+msgstr "nombre"
+
+#: firmcreator/models.py:104
+msgid "also acts as the default public ESSID. Eg: quintanalibre.org.ar"
+msgstr "también servirá como ESSID público. Por ej: quintanalibre.org.ar"
+
+#: firmcreator/models.py:108 firmcreator/models.py:139
+msgid "description"
+msgstr "descripción"
+
+#: firmcreator/models.py:127 firmcreator/models.py:135
+msgid "network"
+msgstr "red"
+
+#: firmcreator/models.py:128
+msgid "networks"
+msgstr "redes"
+
+#: firmcreator/models.py:137
+msgid "slug"
+msgstr "identificador alfanumérico"
+
+#: firmcreator/models.py:140 firmcreator/models.py:246
+msgid "creation date"
+msgstr "fecha de creación"
+
+#: firmcreator/models.py:142
+msgid "based on"
+msgstr "basado en"
+
+#: firmcreator/models.py:144
+msgid ""
+"Create fw profile based on this profile. Leave it on default if you are not "
+"sure."
+msgstr ""
+"Utilizar el perfil seleccionado como base. Si no estás seguro puede quedar "
+"en blanco"
+
+#: firmcreator/models.py:146
+msgid "include packages"
+msgstr "paquetes a incluir"
+
+#: firmcreator/models.py:147
+msgid "include files"
+msgstr "archivos a incluir"
+
+#: firmcreator/models.py:192
+msgid "firmware profile"
+msgstr "perfil de firmware"
+
+#: firmcreator/models.py:193
+msgid "firmware profiles"
+msgstr "perfiles de firmware"
+
+#: firmcreator/models.py:199 firmcreator/models.py:243
+msgid "user"
+msgstr "usuario"
+
+#: firmcreator/models.py:201
+msgid "ssh key"
+msgstr "llave ssh"
+
+#: firmcreator/models.py:202
+msgid "automaticaly add this key to my profiles"
+msgstr "agregar automáticamente esta llave a mis perfiles"
+
+#: firmcreator/models.py:211
+msgid "SSH key"
+msgstr "llave SSH"
+
+#: firmcreator/models.py:212 templates/base.html:61
+msgid "SSH keys"
+msgstr "Llaves SSH"
+
+#: firmcreator/models.py:216
+msgid "waiting"
+msgstr "esperando"
+
+#: firmcreator/models.py:217
+msgid "started"
+msgstr "comenzado"
+
+#: firmcreator/models.py:218
+msgid "finished"
+msgstr "finalizado"
+
+#: firmcreator/models.py:219
+msgid "failed"
+msgstr "fallo"
+
+#: firmcreator/models.py:240
+msgid "satus"
+msgstr "estado"
+
+#: firmcreator/models.py:242
+msgid "profile"
+msgstr "perfil"
+
+#: firmcreator/models.py:244
+msgid "job data"
+msgstr "datos de la tarea"
+
+#: firmcreator/models.py:245
+msgid "build log"
+msgstr ""
+
+#: firmcreator/views.py:152
+msgid ""
+"Encoding Error: Uploaded tarfile must have all it's files encoded in UTF-8."
+msgstr "Error de Encoding: El archivo tar tiene que tener todos sus archivos "
+"guardados en encoding UTF-8."
+
+#: firmcreator/templates/firmcreator/cook.html:4
+msgid "Cook Firmware for profile"
+msgstr "Cocinar firmware para el perfil"
+
+#: firmcreator/templates/firmcreator/cook.html:13
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:46
+msgid "Cook"
+msgstr "Cocinar"
+
+#: firmcreator/templates/firmcreator/cook.html:20
+msgid "Chef is already cooking this profile, please be patient!"
+msgstr "el Chef ya se encuentra cocinando este perfil, ten paciencia!"
+
+#: firmcreator/templates/firmcreator/cook.html:23
+msgid "Return"
+msgstr "Volver"
+
+#: firmcreator/templates/firmcreator/cook_started.html:4
+msgid "Cooking Firmware for profile"
+msgstr "Cocinando firmware para el perfil"
+
+#: firmcreator/templates/firmcreator/cook_started.html:8
+msgid "Chef is cooking now! it should take a couple of minutes."
+msgstr "el Chef está cocinando! demorará unos minutos."
+
+#: firmcreator/templates/firmcreator/cook_started.html:12
+msgid "Your firmware will be available for download in the "
+msgstr "El firmware estará disponible para descarga en el "
+
+#: firmcreator/templates/firmcreator/cook_started.html:12
+msgid "Profile entry"
+msgstr "Detalle de Perfil"
+
+#: firmcreator/templates/firmcreator/create_profile_simple.html:19
+#: firmcreator/templates/firmcreator/crud_profile.html:19
+#: firmcreator/templates/firmcreator/network_detail.html:14
+msgid "Create Firmware Profile"
+msgstr "Crear Perfil de Firmware"
+
+#: firmcreator/templates/firmcreator/create_profile_simple.html:26
+#: firmcreator/templates/firmcreator/crud_profile.html:43
+#: firmcreator/templates/firmcreator/network_form.html:5
+#: firmcreator/templates/firmcreator/network_form.html:12
+#: firmcreator/templates/firmcreator/sshkey_form.html:5
+#: firmcreator/templates/firmcreator/sshkey_form.html:14
+msgid "Create"
+msgstr "Crear"
+
+#: firmcreator/templates/firmcreator/create_profile_simple.html:27
+msgid "Advanced creation"
+msgstr "Creación avanzada"
+
+#: firmcreator/templates/firmcreator/crud_profile.html:33
+msgid ""
+"You may write anything you want in the files. Take in consideration that "
+"some files contains variables in the form:"
+msgstr ""
+"Puedes escribir lo que desees en los archivos. Ten en consideración que "
+"algunos archivos contienen variables en el formato:"
+
+#: firmcreator/templates/firmcreator/crud_profile.html:39
+msgid "Add a file"
+msgstr "Agregar un archivo"
+
+#: firmcreator/templates/firmcreator/crud_profile.html:43
+#: firmcreator/templates/firmcreator/network_form.html:12
+#: firmcreator/templates/firmcreator/sshkey_form.html:14
+msgid "Save"
+msgstr "Guardar"
+
+#: firmcreator/templates/firmcreator/diff.html:4
+msgid "Diff for profiles"
+msgstr "Diferencia entre perfiles"
+
+#: firmcreator/templates/firmcreator/diff.html:18
+msgid "Invert diff"
+msgstr "Invertir diff"
+
+#: firmcreator/templates/firmcreator/diff.html:20
+msgid "Packages diff"
+msgstr "Diff de packages"
+
+#: firmcreator/templates/firmcreator/diff.html:26
+msgid "Files diff"
+msgstr "Diff de archivos"
+
+#: firmcreator/templates/firmcreator/diff.html:27
+msgid "Added"
+msgstr "Agregados"
+
+#: firmcreator/templates/firmcreator/diff.html:34
+msgid "Removed"
+msgstr "Quitados"
+
+#: firmcreator/templates/firmcreator/diff.html:41
+msgid "Changed"
+msgstr "Cambiados"
+
+#: firmcreator/templates/firmcreator/fwjob_detail.html:5
+msgid "Job Detail"
+msgstr "Detalle de la tarea"
+
+#: firmcreator/templates/firmcreator/fwjob_detail.html:11
+#: firmcreator/templates/firmcreator/fwprofile_object.html:5
+msgid "Network"
+msgstr "Red"
+
+#: firmcreator/templates/firmcreator/fwjob_detail.html:12
+msgid "Profile"
+msgstr "Perfil"
+
+#: firmcreator/templates/firmcreator/fwjob_detail.html:13
+#: firmcreator/templates/firmcreator/fwprofile_object.html:8
+#: firmcreator/templates/firmcreator/network_object.html:7
+#: firmcreator/templates/firmcreator/sshkey_object.html:7
+msgid "Created by"
+msgstr "Creado por"
+
+#: firmcreator/templates/firmcreator/fwjob_detail.html:14
+msgid "Status"
+msgstr "Estado"
+
+#: firmcreator/templates/firmcreator/fwjob_list.html:5
+msgid "List Jobs"
+msgstr "Listar tareas"
+
+#: firmcreator/templates/firmcreator/fwjob_list.html:11
+msgid ""
+"<tr><th>Job</th><th>Network</th><th>Profile</th><th>Status</th><th>User</"
+"th><th>Date</th></tr>"
+msgstr ""
+"<tr><th>Tarea</th><th>Red</th><th>Perfil</th><th>Estado</th><th>Usuario</"
+"th><th>Fecha</th></tr>"
+
+#: firmcreator/templates/firmcreator/fwprofile_confirm_delete.html:4
+msgid "Delete Profile"
+msgstr "Borrar Perfil"
+
+#: firmcreator/templates/firmcreator/fwprofile_confirm_delete.html:9
+msgid "Are you sure you want to delete this profile?"
+msgstr "Estás seguro de que deseas borrar este perfil?"
+
+#: firmcreator/templates/firmcreator/fwprofile_confirm_delete.html:15
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:47
+#: firmcreator/templates/firmcreator/network_confirm_delete.html:16
+#: firmcreator/templates/firmcreator/network_detail.html:15
+#: firmcreator/templates/firmcreator/network_form.html:13
+#: firmcreator/templates/firmcreator/sshkey_confirm_delete.html:16
+#: firmcreator/templates/firmcreator/sshkey_detail.html:15
+#: firmcreator/templates/firmcreator/sshkey_form.html:15
+msgid "Delete"
+msgstr "Borrar"
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:5
+msgid "Profile Detail"
+msgstr "Detalle de Perfil"
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:12
+msgid "compare with"
+msgstr "comparar con"
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:28
+msgid "Warning!"
+msgstr "Atención!"
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:30
+msgid ""
+"This profile has the following pending jobs, so the files may not be up to "
+"date. Please wait the Chef to finish them to ensure you download the latest "
+"files."
+msgstr ""
+"Este perfil tiene las siguientes órdenes pendiendes y en consecuencia sus "
+"archivos pueden no estar al día. Por favor aguarda a que el Chef las procese "
+"para asegurarte de estar descargando los últimos archivos."
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:38
+msgid "The last cook of this profile has failed."
+msgstr "El último intento de cocinar este perfil ha fallado."
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:45
+#: firmcreator/templates/firmcreator/network_detail.html:13
+#: firmcreator/templates/firmcreator/network_form.html:5
+#: firmcreator/templates/firmcreator/sshkey_detail.html:14
+#: firmcreator/templates/firmcreator/sshkey_form.html:5
+msgid "Edit"
+msgstr "Editar"
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:49
+msgid "Download Firmware"
+msgstr "Descargar Firmware"
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:50
+msgid "Toggle Details"
+msgstr "Ver Detalle"
+
+#: firmcreator/templates/firmcreator/fwprofile_object.html:4
+#: firmcreator/templates/firmcreator/network_object.html:4
+#: firmcreator/templates/firmcreator/sshkey_object.html:4
+msgid "Name"
+msgstr "Nombre"
+
+#: firmcreator/templates/firmcreator/fwprofile_object.html:6
+#: firmcreator/templates/firmcreator/network_object.html:6
+msgid "Description"
+msgstr "Descripción"
+
+#: firmcreator/templates/firmcreator/fwprofile_object.html:7
+msgid "Creation date"
+msgstr "Fecha de creación"
+
+#: firmcreator/templates/firmcreator/fwprofile_object.html:9
+#: firmcreator/templates/firmcreator/network_object.html:8
+msgid "Admins"
+msgstr "Administradores"
+
+#: firmcreator/templates/firmcreator/network_confirm_delete.html:4
+msgid "Delete Network"
+msgstr "Borrar Red"
+
+#: firmcreator/templates/firmcreator/network_confirm_delete.html:9
+msgid ""
+"Are you sure you want to delete this network? Consider that all firmware "
+"profiles will be deleted too."
+msgstr ""
+"Seguro que deseas borrar esta Red? Todos los perfiles y archivos asociados "
+"también se borrarán."
+
+#: firmcreator/templates/firmcreator/network_detail.html:5
+msgid "Network Detail"
+msgstr "Detalle de Red"
+
+#: firmcreator/templates/firmcreator/network_form.html:5
+msgid " Network"
+msgstr "Red"
+
+#: firmcreator/templates/firmcreator/network_list.html:4
+msgid "List Networks"
+msgstr "Listar Redes"
+
+#: firmcreator/templates/firmcreator/network_object.html:5
+msgid "Web"
+msgstr ""
+
+#: firmcreator/templates/firmcreator/network_object.html:9
+msgid "Profiles"
+msgstr "Perfiles"
+
+#: firmcreator/templates/firmcreator/sshkey_confirm_delete.html:4
+msgid "Delete SSH Key"
+msgstr "Borrar llave SSH"
+
+#: firmcreator/templates/firmcreator/sshkey_confirm_delete.html:9
+msgid "Are you sure you want to delete this SSH key?"
+msgstr "Estás seguro de que deseas borrar esta llave SSH?"
+
+#: firmcreator/templates/firmcreator/sshkey_detail.html:5
+msgid "SSH Key Detail"
+msgstr "Detalle de llave SSH"
+
+#: firmcreator/templates/firmcreator/sshkey_form.html:5
+msgid " SSH Key"
+msgstr " Llave SSH"
+
+#: firmcreator/templates/firmcreator/sshkey_list.html:5
+msgid "List SSH Keys"
+msgstr "Lista de llaves SSH"
+
+#: firmcreator/templates/firmcreator/sshkey_list.html:15
+msgid "Add SSH Key"
+msgstr "Agregar llave SSH"
+
+#: firmcreator/templates/firmcreator/sshkey_object.html:5
+msgid "Key"
+msgstr "Llave"
+
+#: firmcreator/templates/firmcreator/sshkey_object.html:6
+msgid "Auto add"
+msgstr "Agregar automáticamente"
+
+#: list_dir/templates/list_dir/list_base.html:4
+msgid "Index of "
+msgstr "Índice de"
+
+#: templates/404.html:5
+msgid "404 Not found"
+msgstr "404 No encontrado"
+
+#: templates/500.html:5
+msgid "500 Error"
+msgstr ""
+
+#: templates/base.html:43
+msgid "Log out"
+msgstr "Salir"
+
+#: templates/base.html:46
+msgid "Log in"
+msgstr "Ingresar"
+
+#: templates/base.html:55
+msgid "Home"
+msgstr "Inicio"
+
+#: templates/base.html:56
+msgid "Mailing List"
+msgstr "Lista de correo"
+
+#: templates/base.html:57
+msgid "Docs"
+msgstr "Documentación"
+
+#: templates/base.html:58
+msgid "Networks"
+msgstr "Redes"
+
+#: templates/base.html:59
+msgid "Create Network"
+msgstr "Crear Red"
+
+#: templates/base.html:60
+msgid "All Networks"
+msgstr "Todas las Redes"
+
+#: templates/base.html:64 templates/index.html:9
+msgid "My Networks"
+msgstr "Mis Redes"
+
+#: templates/base.html:77
+msgid "AlterMesh Firmware Chef"
+msgstr "Chef de Firmwares AlterMesh"
+
+#: templates/base.html:93
+msgid ""
+"This software is part of the <a href=\"http://altermundi.net/\">Altermundi</"
+"a> project"
+msgstr ""
+"Este software es parte del proyecto <a href=\"http://altermundi.net/"
+"\">Altermundi</a>"
+
+#: templates/base.html:94
+msgid ""
+"This is Free Software licensed under <a href=\"http://www.gnu.org/licenses/"
+"agpl.txt\" >AGPL</a>"
+msgstr ""
+"Esto es Software Libre con licencia <a href=\"http://www.gnu.org/licenses/"
+"agpl.txt\" >AGPL</a>"
+
+#: templates/base.html:94
+msgid "Get the code!"
+msgstr "¡Obtener el código!"
+
+#: templates/index.html:5
+msgid "Welcome to our firmware kitchen"
+msgstr "Bienvenida/o a nuestra cocina de firmwares"
+
+#: templates/index.html:16
+msgid ""
+"To create a firmware for your network you only need to follow this steps"
+msgstr "Para crear el firmware de tu red, sólo necesitas seguir estos pasos"
+
+#: templates/index.html:19
+msgid "register"
+msgstr "registrarse"
+
+#: templates/index.html:22
+msgid "create your network"
+msgstr "Crear Red"
+
+#: templates/index.html:25
+msgid "create your firmware profile"
+msgstr "Crear Perfil de Firmware"
+
+#: templates/registration/activate.html:7
+msgid "The activation key you posted is invalid."
+msgstr "La clave de activación es incorrecta."
+
+#: templates/registration/activate.html:8
+msgid "Please make sure that:"
+msgstr "Por favor asegúrate de que:"
+
+#: templates/registration/activate.html:10
+msgid "You haven't already activated your account"
+msgstr "Tu cuenta no ha sido previamente activada"
+
+#: templates/registration/activate.html:11
+msgid "Your key hasn't expired"
+msgstr "Tu clave de activación no haya expirado"
+
+#: templates/registration/activate.html:12
+msgid "Your activation link wasn't split or malformed"
+msgstr "Haber copiado correctamente el link de activación"
+
+#: templates/registration/activate.html:17
+msgid "Welcome! Your account has been successfully activated. "
+msgstr "Tu cuenta ha sido activada satisfactoriamente."
+
+#: templates/registration/activation_complete.html:7
+msgid "Your account is now active!"
+msgstr "Tu cuenta ya está activa!"
+
+#: templates/registration/activation_complete.html:10
+msgid "You may now"
+msgstr "Ahora puedes"
+
+#: templates/registration/activation_complete.html:10
+#: templates/registration/registration_form.html:9
+msgid "login"
+msgstr "ingresar"
+
+#: templates/registration/activation_email.txt:2
+#, python-format
+msgid ""
+"\n"
+"Thank you for registering to %(site)s\n"
+"\n"
+"You can finish your registration by clicking on this link:\n"
+msgstr ""
+"\n"
+"Gracias por registrarte en %(site)s\n"
+"\n"
+"Puedes concluir la registración haciendo click en este enlace:\n"
+
+#: templates/registration/activation_email.txt:8
+#, python-format
+msgid ""
+"\n"
+"This activation key will expire in %(expiration_days)s days.\n"
+msgstr ""
+"\n"
+"Esta clave de activación expirará en %(expiration_days)s días.\n"
+
+#: templates/registration/activation_email_subject.txt:2
+msgid "Account activation for"
+msgstr "Activación de cuenta para"
+
+#: templates/registration/login.html:5
+msgid "Login"
+msgstr "Ingreso"
+
+#: templates/registration/login.html:20
+#, python-format
+msgid ""
+"\n"
+"If you have not yet created an account you need to\n"
+"<a href=\"/accounts/register?next=%(next)s\">register</a>\n"
+"before you may login.\n"
+msgstr ""
+"\n"
+"Si aún no ha creado una cuenta, necesitará\n"
+"<a href=\"/accounts/register?next=%(next)s\">registrarse</a>\n"
+"antes de ingresar.\n"
+
+#: templates/registration/logout.html:6
+msgid "Logout"
+msgstr "Salir"
+
+#: templates/registration/logout.html:7
+msgid "You have logged out"
+msgstr "Has salido"
+
+#: templates/registration/registration_complete.html:4
+msgid "Registration complete"
+msgstr "Registración completa"
+
+#: templates/registration/registration_complete.html:8
+msgid ""
+"Please check your e-mail and follow the provided link in order to complete "
+"your account activation"
+msgstr ""
+"Por favor revisa tu correo y sigue el vínculo provisto para completar la "
+"activación de tu cuenta"
+
+#: templates/registration/registration_form.html:4
+msgid "Registration"
+msgstr "Registración"
+
+#~ msgid " and cook firmware"
+#~ msgstr " y cocinar firmware"
+
+#~ msgid "Firmware Profiles"
+#~ msgstr "Perfiles de Firmware"

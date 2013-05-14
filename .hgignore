@@ -1,0 +1,8 @@
+syntax: glob
+*.pyc
+venv/
+gunicorn_conf.py
+gunicorn_chef.pid
+settings.py
+db.sqlite3
+altermeshfc/static

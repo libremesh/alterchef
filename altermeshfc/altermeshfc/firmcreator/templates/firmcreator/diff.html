@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Diff for profiles"%} <em>{{profile}}</em>{% endblock %}
+
+{% block extra_head %}
+{{  block.super }}
+<script>
+$(function(){
+  $("pre").addClass("pre-scrollable");
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<style>{{ style|safe }}</style>
+
+<a class="btn" href="{{ inverse_diff }}">{% trans "Invert diff" %}</a>
+
+<h2>{% trans "Packages diff" %}</h2>
+
+<div>
+{{ packages_diff|safe }}
+</div>
+
+<h2>{% trans "Files diff" %}</h2>
+<h3>{% trans "Added" %}</h3>
+{% for filename, code in files_added %}
+<div>
+{{ code|safe }}
+</div>
+{% endfor %}
+
+<h3>{% trans "Removed" %}</h3>
+{% for filename, code in files_removed %}
+<div>
+{{ code|safe }}
+</div>
+{% endfor %}
+
+<h3>{% trans "Changed" %}</h3>
+{% for filename, code in files_changed %}
+<div>
+{{ code|safe }}
+</div>
+{% endfor %}
+
+{% endblock %}
+

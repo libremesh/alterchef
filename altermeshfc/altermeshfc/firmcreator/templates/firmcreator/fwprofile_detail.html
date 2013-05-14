@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans "Profile Detail" %}{% endblock %}
+
+{% block content %}
+<h1>{{object}}</h1>
+
+{% include "firmcreator/fwprofile_object.html" %}
+<dl class="dl-horizontal">
+  <dt>{% trans "compare with" %}</dt>
+  <dd>
+    <select ONCHANGE="location = this.options[this.selectedIndex].value;">
+      <option value="#" selected="selected"> - - - - - </option>
+      {% if object.based_on %}
+      <option value="{% url 'fwprofile-diff' object.slug object.based_on.slug %}"> {{ object.based_on }} (base)</option>
+      {% endif %}
+      {% for profile in profiles %}
+      <option value="{% url 'fwprofile-diff' object.slug profile.slug %}"> {{ profile }}</option>
+      {% endfor %}
+    </select>
+  </dd>
+</dl>
+{% if pending_jobs or failed_job %}
+<div class="alert alert-error">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <strong>{% trans "Warning!" %}</strong>
+  {% if pending_jobs %}
+    {% trans "This profile has the following pending jobs, so the files may not be up to date. Please wait the Chef to finish them to ensure you download the latest files." %}
+    <ul>
+    {% for job in pending_jobs %}
+      <li>{{ job }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  {% if failed_job %}
+  {% trans "The last cook of this profile has failed." %}
+  <a href="{% url "fwjob-detail" failed_job.pk %}">{{ failed_job }}</a>
+  {% endif %}
+</div>
+{% endif %}
+<div class="form-actions">
+{% if request.user in object.network.users %}
+<a class="btn btn-primary" href="{% url "fwprofile-edit-advanced" object.slug %}">{% trans "Edit" %}</a>
+<a class="btn btn-warning" href="{% url "cook" object.slug %}">{% trans "Cook" %}</a>
+<a class="btn btn-danger" href="{% url "fwprofile-delete" object.slug %}">{% trans "Delete" %}</a>
+{% endif %}
+<button type="button" class="btn" data-toggle="collapse" data-target="#include_detail">{% trans "Toggle Details" %}</button>
+{% with cooked_revisions=object.get_cooked_revisions %}
+  {% if cooked_revisions %}
+    <span class="dropdown">
+    <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+       {% trans "Download Firmware" %}
+       <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+    {% with stable=openwrt_image_builder.get_stable_version %}
+      {% for revision in object.get_cooked_revisions %}
+      <li><a href="/ls/{{ object.network.slug }}/r{{ revision }}/{{ object.name }}/">{{ revision }} {% if revision == stable %} (stable) {% endif %}</a></li>
+      {% endfor %}
+    {% endwith %}
+    </ul>
+    </span>
+  {% endif %}
+{% endwith %}
+</div>
+
+
+<div id="include_detail" class="collapse">
+  <h3>SSH Keys</h3>
+  {% for key in object.ssh_keys.all %}
+    <a href="{% url 'sshkey-detail' key.pk %}"> {{ key }}</a>{% if not forloop.last %}, {% endif %}
+  {% endfor%}
+
+  <h3>Packages</h3>
+  <pre>{{ object.include_packages }}</pre>
+
+  <h3>Files</h3>
+
+  {% for file, content in object.include_files.iteritems %}
+  <div class="bordered">
+  <h4>{{ file }}</h4>
+  <pre>{{ content }}</pre>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
+

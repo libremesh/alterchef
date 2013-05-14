@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Cooking Firmware for profile"%} <em>{{profile}}</em>{% endblock %}
+
+{% block content %}
+<div class="alert alert-info alert-block">
+<h3>{% trans "Chef is cooking now! it should take a couple of minutes." %} </h3>
+</div>
+
+<div class="alert alert-info alert-block">
+<h4>{% trans "Your firmware will be available for download in the "%}<a href="{{ profile.get_absolute_url }}">{% trans "Profile entry" %}</a>.</h4>
+</div>
+
+{% endblock %}
+

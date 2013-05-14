@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block title %}{% trans "Cook Firmware for profile"%} <em>{{profile}}</em>{% endblock %}
+
+{% block content %}
+{% if form %}
+<form class="form-horizontal" enctype="multipart/form-data" method="post" action=".">{% csrf_token %}
+
+{{ form|crispy }}
+
+<div class="form-actions">
+  <input type="submit" name="cook" value="{% trans "Cook" %}" class="btn btn-primary">
+</div>
+</form>
+{% endif %}
+
+{% if job %}
+<div class="alert alert-error alert-block">
+<h2>{% trans "Chef is already cooking this profile, please be patient!" %} </h2>
+</div>
+
+<a class="btn" href="{{ profile.get_absolute_url }}">{% trans "Return" %}</a>
+
+
+{% endif %}
+
+{% endblock %}
+

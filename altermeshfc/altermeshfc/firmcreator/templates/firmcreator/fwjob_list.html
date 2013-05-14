@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load i18n crispy_forms_tags %}
+
+{% block title %}{% trans "List Jobs" %}{% endblock %}
+
+{% block content %}
+
+<table class="table table-striped">
+    <thead>
+    {% blocktrans %}<tr><th>Job</th><th>Network</th><th>Profile</th><th>Status</th><th>User</th><th>Date</th></tr>{% endblocktrans %}
+    </thead>
+    <tbody>
+    {% for job in jobs %}
+    <tr>
+    <td><a href="{% url 'fwjob-detail' job.pk %}">{{job }}</a></td>
+    <td><a href="{% url 'network-detail' job.profile.network.slug %}">{{ job.profile.network.name }}</a></td>
+    <td><a href="{% url 'fwprofile-detail' job.profile.slug %}">{{ job.profile.name }}</a></td>
+
+    <td {% if job.status == "FAILED" %}class="text-error"{% elif job.status == "FINISHED" %}class="text-success"{% endif %}>{{ job.get_status_display|capfirst }}</td>
+    <td>{{ job.user }}</td>
+    <td>{{ job.creation_date|date:"SHORT_DATETIME_FORMAT" }} ({{ job.creation_date|date:"T" }})</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% endblock %}
+
