@@ -16,8 +16,8 @@ hwprofiles="${@:-Default}"
 root_dir="/home/openwrt"
 imagebuilder_dir="$root_dir/openwrt/image_builders/OpenWrt-ImageBuilder-${platform}*_${rev}"
 [ -f $imagebuilder_dir/.config ] || { echo "ImageBuilder for revision '$rev' and platform '$platform' not found!" ; usage ; exit 4 ; }
-rev="$(sed -n "s/.*OpenWrt version:.*(\(.*\))/\1/p" $imagebuilder_dir/.config)"
-dest_base="$root_dir/downloads/$network/$rev"
+rev="$(sed -n '/REVISION:=/s///p' $imagebuilder_dir/include/version.mk)"
+dest_base="$root_dir/downloads/$network/${rev:?}"
 dest="$dest_base/$netprofile/$platform"
 bin_dir=bin/$platform/
 network_includes="$root_dir/network_includes/$network/$netprofile" 
