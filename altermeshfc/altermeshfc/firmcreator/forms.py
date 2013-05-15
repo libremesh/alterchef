@@ -119,12 +119,22 @@ def make_base_on_choices(user):
     return choices
 
 
-def _create_ssh_keys_field(instance, user):
+def _create_ssh_keys_field(data, kwargs, user):
     HT = _(u"<span class='text-warning'>Select at least one ssh key, otherwise"
            u" you won't be able to enter to the router/acces point!</span>")
     kwds = {"auto_add": True}
+    instance = kwargs.get('instance', None)
     if instance:
-        kwds["user__in"] = instance.network.users
+        network = instance.network
+    elif data:
+        network = data.get("network")
+    else:
+        network = kwargs.get("initial").get("network") if "initial" in kwargs else None
+    if network is not None and not hasattr(network, "pk"):
+        network = Network.objects.get(id=int(network))
+
+    if network:
+        kwds["user__in"] = network.users
     else:
         kwds["user"] = user
     ssh_keys = SSHKey.objects.filter(**kwds)
@@ -135,13 +145,12 @@ def _create_ssh_keys_field(instance, user):
 
 class FwProfileSimpleForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, data=None, *args, **kwargs):
         user = kwargs.pop('user')
-        super(FwProfileSimpleForm, self).__init__(*args, **kwargs)
-        instance = kwargs.get('instance', None)
+        super(FwProfileSimpleForm, self).__init__(data, *args, **kwargs)
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.with_user_perms(user))
         self.fields['based_on'].choices = make_base_on_choices(user)
-        self.fields['ssh_keys'] = _create_ssh_keys_field(instance, user)
+        self.fields['ssh_keys'] = _create_ssh_keys_field(data, kwargs, user)
     helper = FormHelper()
     helper.form_tag = False
     helper.form_class = 'form-horizontal'
@@ -156,13 +165,12 @@ class FwProfileForm(forms.ModelForm):
     UPLOAD_HELP_TEXT = _(u'Upload a tar/tar.gz with files to include. Files <b>MUST</b> be UTF-8 encoded!')
     upload_files = forms.FileField(required=False, help_text=UPLOAD_HELP_TEXT)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, data=None, *args, **kwargs):
         user = kwargs.pop('user')
-        super(FwProfileForm, self).__init__(*args, **kwargs)
-        instance = kwargs.get('instance', None)
+        super(FwProfileForm, self).__init__(data, *args, **kwargs)
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.with_user_perms(user))
         self.fields['based_on'].choices = make_base_on_choices(user)
-        self.fields['ssh_keys'] = _create_ssh_keys_field(instance, user)
+        self.fields['ssh_keys'] = _create_ssh_keys_field(data, kwargs, user)
 
     helper = FormHelper()
     helper.form_tag = False
