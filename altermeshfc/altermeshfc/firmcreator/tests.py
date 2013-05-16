@@ -188,6 +188,25 @@ class FwProfileTest(TestCase):
         response = self.client.get(reverse("fwprofile-delete", kwargs={"slug": FwProfile.objects.all()[0].slug}))
         self.assertEqual(response.status_code, 200)
 
+    def test_network_in_url_empty(self):
+        response = self.client.get(reverse("fwprofile-create-advanced")+"?network=")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse("fwprofile-create-simple")+"?network=")
+        self.assertEqual(response.status_code, 200)
+
+    def test_network_in_url(self):
+        response = self.client.get(reverse("fwprofile-create-advanced")+"?network=1")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse("fwprofile-create-simple")+"?network=1")
+        self.assertEqual(response.status_code, 200)
+
+    def test_simple_creation_without_network(self):
+        self.data["network"] = ""
+        response = self.client.post(reverse("fwprofile-create-simple")+"?network=", self.data, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+
 
 class JobsTest(TestCase):
 

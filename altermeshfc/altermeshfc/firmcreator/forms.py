@@ -130,7 +130,7 @@ def _create_ssh_keys_field(data, kwargs, user):
         network = data.get("network")
     else:
         network = kwargs.get("initial").get("network") if "initial" in kwargs else None
-    if network is not None and not hasattr(network, "pk"):
+    if network and not hasattr(network, "pk"):
         network = Network.objects.get(id=int(network))
 
     if network:
