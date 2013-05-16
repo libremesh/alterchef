@@ -6,12 +6,7 @@
 {% block extra_head %}{% include "map_header.html" %}{% endblock %}
 
 {% block content %}
-<div class="span5">
-{% for object in object_list %}
-  {% include "firmcreator/network_object.html" %}
-{% endfor %}
-</div>
-<div class="span4">
+<div class="hero-unit">
   <div id="map" style="width:512px; height:400px;"></div>
   {% include "map_base.html" %}
   <script defer="defer" type="text/javascript">
@@ -26,6 +21,22 @@
   {% endfor %}
   {% endspaceless %}
   </script>
+</div>
+<div class="row">
+<table class="table table-striped">
+<thead>
+<tr>
+	<th>{% trans "Network" %}</th>
+	<th>{% trans "Description" %}</th>
+	<th>{% trans "Created by" %}</th>
+</tr>
+</thead>
+<tbody>
+{% for object in object_list %}
+  {% include "firmcreator/network_row.html" %}
+{% endfor %}
+</tbody>
+</table>
 </div>
 {% endblock %}
 
