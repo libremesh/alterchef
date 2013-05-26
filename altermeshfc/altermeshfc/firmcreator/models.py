@@ -403,10 +403,14 @@ import threading
 
 def thread_process_jobs():
     import time, random
+    from traceback import format_exc
     sleep = random.randint(5, 15)
     while True:
-        FwJob.process_jobs()
-        time.sleep(sleep)
+        try:
+            FwJob.process_jobs()
+            time.sleep(sleep)
+        except Exception:
+            mail_managers("[Chef] Process Jobs failed", format_exc(), fail_silently=True)
 
 process_jobs_thread = threading.Thread(target=thread_process_jobs)
 process_jobs_thread.daemon = True
