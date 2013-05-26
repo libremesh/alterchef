@@ -105,6 +105,11 @@ class IncludeFiles(object):
         return inc_files
 
     def dump(self, to_path):
+        """
+        Write all include files to disk
+        """
+        if os.path.exists(to_path):
+            shutil.rmtree(to_path)
         for abspath, filecontent in self.files.iteritems():
             to_dir = os.path.join(to_path, os.path.dirname(abspath[1:]))
             filename = os.path.basename(abspath)
@@ -199,8 +204,7 @@ class FwProfile(models.Model):
         to_path = os.path.join(settings.NETWORK_INCLUDES_PATH, self.network.slug, self.name)
         if not os.path.exists(to_path):
             os.makedirs(to_path)
-        shutil.rmtree(os.path.join(to_path, "include_files"))
-        
+
         inc_packages = IncludePackages.from_str(self.include_packages)
         inc_packages.dump(open(os.path.join(to_path, "include_packages"), "w"))
         files = {}
