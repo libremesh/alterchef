@@ -9,23 +9,12 @@ from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, F
 from models import IncludePackages, FwProfile, Network, Device, SSHKey, OpenwrtImageBuilder
 from utils import get_default_profile
 
-# We may add a description of each package, in the form ("pkgname", "description")
-SUGESTED_PACKAGES = ["netperf", "altermap-agent"]
-
 class BaseForm(forms.Form):
     helper = FormHelper()
     helper.form_tag = False
     helper.form_class = 'form-horizontal'
 
 class IncludePackagesForm(BaseForm):
-
-    optional_packages = forms.MultipleChoiceField(
-        label = _("Optional packages"),
-        choices = [(p, p) for p in SUGESTED_PACKAGES],
-        widget = forms.CheckboxSelectMultiple,
-        help_text = _("These packages are not essential, but pretty useful."),
-        required = False,
-    )
 
     include_exclude = forms.CharField(
         label = _("Extra include/exclude packages"),
@@ -41,18 +30,11 @@ class IncludePackagesForm(BaseForm):
     @classmethod
     def from_str(self, string):
         ip = IncludePackages.from_str(string)
-        optional_packages = []
-        for package in ip.include[:]:
-            if package in SUGESTED_PACKAGES:
-                optional_packages.append(package)
-                ip.include.remove(package)
-        return IncludePackagesForm({"include_exclude":ip.to_str(), "optional_packages": optional_packages})
+        return IncludePackagesForm({"include_exclude":ip.to_str()})
 
     def to_str(self):
-        optional_packages = self.cleaned_data.get("optional_packages")
         include_exclude = self.cleaned_data.get("include_exclude")
         ip = IncludePackages.from_str(include_exclude)
-        ip.include = set(ip.include + optional_packages)
         return ip.to_str()
 
 class IncludeFileForm(BaseForm):
