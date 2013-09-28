@@ -190,7 +190,8 @@ class FwProfile(models.Model):
         return "%s-%s" % (self.network.slug, self.name)
 
     def __unicode__(self):
-        return "%s-%s" % (unicode(self.network), self.name)
+        return "%s-%s (%s)" % (unicode(self.network), self.name,
+                                self.openwrt_revision)
 
     def load_includes_from_disk(self, from_path):
         """
