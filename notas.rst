@@ -5,7 +5,7 @@ Notas
 TODO
 ====
 
-# Sacar sugested packages
+# [done] Sacar sugested packages
 # [done] Armar una lista de devices con checkboxes y sacar el campo de texto
 # [done] Pollear el Profile Detail y mostrar siempre el ultimo success
 # Quitar del perfil simple las llaves SSH

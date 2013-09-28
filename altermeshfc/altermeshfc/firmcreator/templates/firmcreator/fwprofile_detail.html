@@ -50,7 +50,7 @@
 {% if last_job.status == "FINISHED" %}
 <div class="alert alert-success">
     {% blocktrans with last_job.creation_date|timesince as time_from_creation %}
-    Last job was cooked with success {{ time_from_creation }} ago.
+    Last cook with success for this profile was {{ time_from_creation }} ago.
     {% endblocktrans %}
 </div>
 {% endif %}
@@ -79,7 +79,6 @@
   {% endif %}
 {% endwith %}
 </div>
-
 
 <div id="include_detail" class="collapse">
   <h3>SSH Keys</h3>
