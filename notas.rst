@@ -2,6 +2,17 @@
 Notas
 =====
 
+TODO
+====
+
+# Sacar sugested packages
+# [done] Armar una lista de devices con checkboxes y sacar el campo de texto
+# [done] Pollear el Profile Detail y mostrar siempre el ultimo success
+# Quitar del perfil simple las llaves SSH
+# Bug: si desselccionas llaves al editar un perfil guarda mal y pone otra llave (se soluciona con el anterior)
+# No preseleccionar las llaves y quitarlas del perfil avanzado
+# [done] Enviar email 
+
 Vistas generales
 ================
 

@@ -22,7 +22,7 @@
     </select>
   </dd>
 </dl>
-{% if pending_jobs or failed_job %}
+{% if pending_jobs or last_job.status == "FAILED" %}
 <div class="alert alert-error">
   <button type="button" class="close" data-dismiss="alert">×</button>
   <strong>{% trans "Warning!" %}</strong>
@@ -34,10 +34,24 @@
     {% endfor %}
     </ul>
   {% endif %}
-  {% if failed_job %}
+  {% if last_job.status == "FAILED" %}
   {% trans "The last cook of this profile has failed." %}
-  <a href="{% url "fwjob-detail" failed_job.pk %}">{{ failed_job }}</a>
+  <a href="{% url 'fwjob-detail' last_job.pk %}">{{ failed_job }}</a>
   {% endif %}
+</div>
+
+{% if pending_jobs %}
+  {% trans "Cooking (automatic reload)" %}  <img src="{{ STATIC_URL }}img/ajax-loader.gif" alt="loading">
+  <script>setTimeout(function(){window.location.reload(true);}, 5000);</script>
+{% endif %}
+
+{% endif %}
+
+{% if last_job.status == "FINISHED" %}
+<div class="alert alert-success">
+    {% blocktrans with last_job.creation_date|timesince as time_from_creation %}
+    Last job was cooked with success {{ time_from_creation }} ago.
+    {% endblocktrans %}
 </div>
 {% endif %}
 <div class="form-actions">

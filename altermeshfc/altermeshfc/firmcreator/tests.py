@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 
 import models
 from models import IncludePackages, IncludeFiles, FwJob, FwProfile, Network
-from forms import IncludePackagesForm, CookFirmwareForm
+from forms import IncludePackagesForm
 
 TEST_DATA_PATH = path.join(path.dirname(__file__), "test_data")
 PROFILES_PATH =  path.abspath(path.join(TEST_DATA_PATH, "profiles"))
@@ -139,7 +139,13 @@ class FwProfileTest(TestCase):
         self.user = User.objects.create_user("ninja", "e@a.com", "password")
         self.network = Network.objects.create(name="quintanalibre.org.ar", user=self.user)
         self.client.login(username="ninja", password="password")
-        self.data = {"network": self.network.pk, "name": "node", "description": "foo"}
+        self.data = {
+            "network": self.network.pk,
+            "name": "node",
+            "description": "foo",
+            "openwrt_revision": "stable",
+            "devices": [u"TLMR3220", u"TLWR703"]
+        }
 
     def assertLoginRequired(self, url):
         self.client.logout()
@@ -154,8 +160,12 @@ class FwProfileTest(TestCase):
     def test_simple_creation(self):
         response = self.client.get(reverse("fwprofile-create-simple"))
         self.assertContains(response, "Create Firmware Profile")
-        response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
+        response = self.client.post(reverse("fwprofile-create-simple"),
+                                    self.data, follow=True)
         self.assertContains(response, "Profile Detail")
+
+        profile = FwProfile.objects.all()[0]
+        self.assertItemsEqual(profile.devices, u"TLMR3220 TLWR703")
 
     def test_simple_creation_with_based_on(self):
         response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
@@ -258,18 +268,6 @@ class JobsTest(TestCase):
         FwJob.process_jobs()
         self.assertEqual(len(FwJob.started.all()), 1)
         self.assertEqual(len(FwJob.waiting.all()), 0)
-
-    def test_empty_cook(self):
-        response = self.client.post(self.cook_url, {})
-        self.assertContains(response, CookFirmwareForm.ERROR_ONE_DEVICE)
-
-    def test_inyect_cook(self):
-        response = self.client.post(self.cook_url, {"other_devices": "MR320;comando"})
-        self.assertContains(response, CookFirmwareForm.ERROR_ALPHANUMERIC)
-
-    def test_cook_for_nonexistent_device(self):
-        response = self.client.post(self.cook_url, {"other_devices": "NONEXISTENT"})
-        self.assertContains(response, CookFirmwareForm.ERROR_NONEXISTENT_DEVICE % "NONEXISTENT")
 
     def test_make_commands(self):
         commands = FwJob.make_commands("quintanalibre.org.ar", "profile1", ["TLMR3220", "NONEatherosDefault"], "33333")

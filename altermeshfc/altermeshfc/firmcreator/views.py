@@ -22,7 +22,7 @@ from difflib import unified_diff
 from utils import LoginRequiredMixin, UserOrAdminRequiredMixin, UserRequiredMixin
 from models import IncludeFiles, Network, FwProfile, FwJob, SSHKey, OpenwrtImageBuilder
 from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
-                   NetworkForm, FwProfileSimpleForm, CookFirmwareForm
+                   NetworkForm, FwProfileSimpleForm
 
 
 def index(request):
@@ -87,8 +87,8 @@ class FwProfileDetailView(DetailView):
         context['pending_jobs'] = FwJob.objects.filter(status__in = ["WAITING", "STARTED"],
                                                        profile=self.object)
         jobs = FwJob.objects.filter(profile=self.object).order_by('-pk')[:1]
-        if jobs and jobs[0].status == "FAILED":
-            context['failed_job'] = jobs[0]
+        if jobs:
+            context['last_job'] = jobs[0]
 
         profiles = FwProfile.objects.all().exclude(slug=self.object.slug)
         if self.object.based_on:
@@ -190,29 +190,17 @@ def cook(request, slug):
         context["job"] = jobs[0]
     else:
         if request.method == "POST":
-            form = CookFirmwareForm(request.POST)
-            if form.is_valid():
-                devices = form.get_devices()
-                job_data = {
-                    "devices": devices,
-                    "revision": form.cleaned_data["openwrt_revision"],
-                    "profile_id": profile.pk,
-                    "user_id": request.user.pk
-                }
-                job = FwJob.objects.create(status="WAITING", profile=profile,
-                                           user=request.user, job_data=job_data)
-                return redirect("cook-started", slug=profile.slug)
-        else:
-            form = CookFirmwareForm()
-        context["form"] = form
-
+            job_data = {
+                "devices": profile.devices,
+                "revision": profile.openwrt_revision,
+                "profile_id": profile.pk,
+                "user_id": request.user.pk
+            }
+            job = FwJob.objects.create(status="WAITING", profile=profile,
+                                       user=request.user, job_data=job_data)
+            return redirect("fwprofile-detail", slug=profile.slug)
     return render(request, "firmcreator/cook.html", context)
 
-@login_required
-def cook_started(request, slug):
-    profile = get_object_or_404(FwProfile, slug=slug)
-    context = {"profile": profile}
-    return render(request, "firmcreator/cook_started.html", context)
 
 def view_jobs(request):
     jobs = FwJob.objects.select_related().all()[:100]

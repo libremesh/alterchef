@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse
 from autoslug.fields import AutoSlugField
 from django.utils.text import normalize_newlines
 from django.template import Context, Template
-from django.core.mail import mail_managers
+from django.core.mail import send_mail, mail_managers
 from django.contrib.sites.models import Site
 
 from fields import JSONField, PublicKeyField
@@ -41,6 +41,7 @@ class OpenwrtImageBuilder(object):
         except:
             pass
         return version
+
 
 class IncludePackages(object):
 
@@ -169,10 +170,13 @@ class FwProfile(models.Model):
                                          editable=False)
     based_on = models.ForeignKey("self", verbose_name=_('based on'), blank=True,
                                  null=True, on_delete=models.SET_NULL,
-                                 help_text=_("Create fw profile based on this profile. Leave it on default if you are not sure."))
+                                 help_text=_("Create fw profile based on this profile."
+                                             "Leave it on default if you are not sure."))
     ssh_keys = models.ManyToManyField("SSHKey", blank=True, verbose_name="SSH keys")
     include_packages = models.TextField(_('include packages'), blank=True)
     include_files = JSONField(_('include files'), default="{}")
+    openwrt_revision = models.CharField(_('openwrt revision'), max_length=50)
+    devices = models.TextField(_('devices'), default="TLWDR4300")
 
     @property
     def user(self):
@@ -246,7 +250,8 @@ class SSHKey(models.Model):
     user = models.ForeignKey(User, verbose_name=_(u"user"), editable=False)
     name = models.CharField(_(u"name"), max_length=40)
     key = PublicKeyField(_(u"ssh key"))
-    auto_add = models.BooleanField(_(u"automaticaly add this key to my profiles"), default=False)
+    auto_add = models.BooleanField(_(u"automaticaly add this key to my profiles"),
+                                   default=False)
 
     def get_absolute_url(self):
         return reverse('sshkey-detail', kwargs={'pk': self.pk})
@@ -338,15 +343,21 @@ class FwJob(models.Model):
                                  stderr=subprocess.STDOUT)
             output += p.communicate()[0].decode("utf-8")
 
+
+            job_url = reverse('fwjob-detail', kwargs={'pk': self.pk})
+            domain = Site.objects.all()[0].domain
             if p.returncode != 0:
-                job_url = reverse('fwjob-detail', kwargs={'pk': self.pk})
-                domain = Site.objects.all()[0].domain
                 email_msg = "Cook failed for job http://%s%s" % (domain, job_url)
                 mail_managers("[Chef] Cook failed", email_msg, fail_silently=True)
+                send_mail("[Chef] Cook failed", email_msg, settings.DEFAULT_FROM_EMAIL,
+                          [self.user.email], fail_silently=True)
                 self.status = "FAILED"
                 self.build_log = output
                 self.save()
                 return
+            email_msg = "Cook finished: http://%s%s" % (domain, job_url)
+            send_mail("[Chef] Cook finished", email_msg, settings.DEFAULT_FROM_EMAIL,
+                      [self.user.email], fail_silently=True)
         self.status = "FINISHED"
         self.save()
 
@@ -397,6 +408,9 @@ class Device(object):
     def exists(cls, device):
         return bool(cls.get_arch(device))
 
+    @classmethod
+    def list_devices(cls):
+        return sorted(list(cls.ARCHS["ar71xx"]))
 
 
 import threading

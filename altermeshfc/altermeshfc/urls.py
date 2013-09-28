@@ -42,7 +42,6 @@ urlpatterns = patterns('',
 
 
     url(r'^cook/(?P<slug>[\w-]+)/$', 'altermeshfc.firmcreator.views.cook', name='cook'),
-    url(r'^cook/(?P<slug>[\w-]+)/started/$', 'altermeshfc.firmcreator.views.cook_started', name='cook-started'),
 
     url(r'^ls/(?P<path>.*)$', 'altermeshfc.list_dir.views.list_dir', name="list-dir"),
 

@@ -10,7 +10,7 @@ from models import IncludePackages, FwProfile, Network, Device, SSHKey, OpenwrtI
 from utils import get_default_profile
 
 # We may add a description of each package, in the form ("pkgname", "description")
-SUGESTED_PACKAGES = ["iperf", "mini-snmpd", "altermap-agent"]
+SUGESTED_PACKAGES = ["netperf", "altermap-agent"]
 
 class BaseForm(forms.Form):
     helper = FormHelper()
@@ -120,8 +120,8 @@ def make_base_on_choices(user):
 
 
 def _create_ssh_keys_field(data, kwargs, user):
-    HT = _(u"<span class='text-warning'>Select at least one ssh key, otherwise"
-           u" you won't be able to enter to the router/acces point!</span>")
+    HT = _(u"<span class='text-warning'>Select at least one ssh key if you"
+           u" want to access using ssh</span>")
     kwds = {"auto_add": True}
     instance = kwargs.get('instance', None)
     if instance:
@@ -143,14 +143,76 @@ def _create_ssh_keys_field(data, kwargs, user):
                 help_text=HT, required=False,
                 initial=[s.pk for s in ssh_keys.filter(auto_add=True)])
 
-class FwProfileSimpleForm(forms.ModelForm):
+COMMON_DEVICES = (
+    ('TLWDR4300', 'TP-LINK TL-WDR3500/3600/4300/4310'),
+    ('TLWR842', 'TP-LINK TL-WR842N/ND'),
+    ('TLMR3020', 'TP-LINK TL-MR3020'),
+    ('TLMR3220', 'TP-LINK TL-MR3220'),
+    ('TLMR3420', 'TP-LINK TL-MR3420'),
+    ('UBNT', 'Ubiquiti M series: M2, M5 (ar71xx_UBNT)'),
+)
+
+ALL_DEVICES = COMMON_DEVICES + tuple(((device, device) for device in \
+                                       Device.list_devices()))
+
+def build_revision_choices():
+
+    stable_revision = OpenwrtImageBuilder.get_stable_version()
+    def transform_revision(rev):
+        if rev == stable_revision:
+            return "%d (stable)" % rev
+        else:
+            return "%d" % rev
+    choices = [("r%d" % r, transform_revision(r)) for r in \
+               OpenwrtImageBuilder.get_available_openwrt_revisions()]
+    return choices
+
+class FwProfileCommon(forms.ModelForm):
+
+    openwrt_revision = forms.ChoiceField(choices=(("stable", "stable"),))
+    devices = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                        required=False,
+                                        choices=ALL_DEVICES,
+                                        label=_("devices"))
 
     def __init__(self, data=None, *args, **kwargs):
         user = kwargs.pop('user')
-        super(FwProfileSimpleForm, self).__init__(data, *args, **kwargs)
+        super(FwProfileCommon, self).__init__(data, *args, **kwargs)
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.with_user_perms(user))
         self.fields['based_on'].choices = make_base_on_choices(user)
         self.fields['ssh_keys'] = _create_ssh_keys_field(data, kwargs, user)
+
+        revision_choices = build_revision_choices()
+        if revision_choices:
+            initial = filter(lambda x: "stable" in x[1], revision_choices)[0][0]
+            self.fields["openwrt_revision"] = forms.ChoiceField(choices=revision_choices,
+                                                                initial=initial)
+
+    def clean(self):
+        cleaned_data = super(FwProfileCommon, self).clean()
+
+        devices = cleaned_data.get("devices")
+
+        if not all(map(lambda x: x.isalnum(), devices)):
+            raise forms.ValidationError(self.ERROR_ALPHANUMERIC)
+
+        for device in devices:
+            if not Device.exists(device):
+                raise forms.ValidationError(self.ERROR_NONEXISTENT_DEVICE % device)
+        cleaned_data["devices"] = " ".join(devices)
+        return cleaned_data
+
+
+    ERROR_ONE_DEVICE = _("You must select at least one device.")
+    ERROR_ALPHANUMERIC = _("PROFILE devices must contain only alphanumeric characters.")
+    ERROR_NONEXISTENT_DEVICE = _("Nonexistent device %s")
+
+
+    class Meta:
+        model = FwProfile
+
+class FwProfileSimpleForm(FwProfileCommon):
+
     helper = FormHelper()
     helper.form_tag = False
     helper.form_class = 'form-horizontal'
@@ -161,16 +223,10 @@ class FwProfileSimpleForm(forms.ModelForm):
             'creation_date', 'path', 'include_packages', 'include_files',
         )
 
-class FwProfileForm(forms.ModelForm):
-    UPLOAD_HELP_TEXT = _(u'Upload a tar/tar.gz with files to include. Files <b>MUST</b> be UTF-8 encoded!')
+class FwProfileForm(FwProfileCommon):
+    UPLOAD_HELP_TEXT = _(u'Upload a tar/tar.gz with files to include.' \
+                          'Files <b>MUST</b> be UTF-8 encoded!')
     upload_files = forms.FileField(required=False, help_text=UPLOAD_HELP_TEXT)
-
-    def __init__(self, data=None, *args, **kwargs):
-        user = kwargs.pop('user')
-        super(FwProfileForm, self).__init__(data, *args, **kwargs)
-        self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.with_user_perms(user))
-        self.fields['based_on'].choices = make_base_on_choices(user)
-        self.fields['ssh_keys'] = _create_ssh_keys_field(data, kwargs, user)
 
     helper = FormHelper()
     helper.form_tag = False
@@ -192,65 +248,8 @@ class IncludeFilesBaseFormSet(BaseFormSet):
             files[form["path"]] = normalize_newlines(form["content"])
         return files
 
-IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0, can_delete=True, formset=IncludeFilesBaseFormSet)
+IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0, can_delete=True,
+                                      formset=IncludeFilesBaseFormSet)
 
 
-COMMON_DEVICES = (
-    ('TLWDR4300', 'TP-LINK TL-WDR3500/3600/4300/4310'),
-    ('TLWR842', 'TP-LINK TL-WR842N/ND'),
-    ('TLMR3020', 'TP-LINK TL-MR3020'),
-    ('TLMR3220', 'TP-LINK TL-MR3220'),
-    ('TLMR3420', 'TP-LINK TL-MR3420'),
-    ('UBNT', 'Ubiquiti M series: M2, M5 (ar71xx_UBNT)'),
-    ('NONEatherosDefault', 'Ubiquiti legacy: Bullet 2, Nano 2/5 (atheros)'),
-)
 
-
-class CookFirmwareForm(forms.Form):
-    common_devices = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                               required=False,
-                                               choices=COMMON_DEVICES,
-                                               label=_("Common devices"))
-    other_devices = forms.CharField(required=False, label=_("Other devices"),
-                                    help_text=_("List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 UBNT TLWA701</code>"),
-                                    )
-    openwrt_revision = forms.ChoiceField(choices=(("stable", "stable"),))
-
-    def __init__(self, *args, **kwargs):
-        super(CookFirmwareForm, self).__init__(*args, **kwargs)
-        stable_revision = OpenwrtImageBuilder.get_stable_version()
-        def transform_revision(rev):
-            if rev == stable_revision:
-                return "%d (stable)" % rev
-            else:
-                return "%d" % rev
-        revision_choices = [("r%d" % r, transform_revision(r)) for r in OpenwrtImageBuilder.get_available_openwrt_revisions()]
-
-        if revision_choices:
-            initial = filter(lambda x: "stable" in x[1], revision_choices)[0][0]
-            self.fields["openwrt_revision"] = forms.ChoiceField(choices=revision_choices, initial=initial)
-
-    def get_devices(self):
-        return self.cleaned_data["common_devices"] + self.cleaned_data["other_devices"].split()
-
-    def clean(self):
-        cleaned_data = super(CookFirmwareForm, self).clean()
-        common_devices = cleaned_data.get("common_devices")
-        other_devices = cleaned_data.get("other_devices")
-
-        if not (common_devices or other_devices):
-            raise forms.ValidationError(self.ERROR_ONE_DEVICE)
-
-        devices = self.get_devices()
-        if not all(map(lambda x: x.isalnum(), devices)):
-            raise forms.ValidationError(self.ERROR_ALPHANUMERIC)
-
-        for device in devices:
-            if not Device.exists(device):
-                raise forms.ValidationError(self.ERROR_NONEXISTENT_DEVICE % device)
-
-        return cleaned_data
-
-    ERROR_ONE_DEVICE = _("You must select at least one device.")
-    ERROR_ALPHANUMERIC = _("PROFILE devices must contain only alphanumeric characters.")
-    ERROR_NONEXISTENT_DEVICE = _("Nonexistent device %s")
