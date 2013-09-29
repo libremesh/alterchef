@@ -190,8 +190,8 @@ class FwProfile(models.Model):
         return "%s-%s" % (self.network.slug, self.name)
 
     def __unicode__(self):
-        return "%s-%s (%s)" % (unicode(self.network), self.name,
-                                self.openwrt_revision)
+        return "%s-%s [r%s]" % (unicode(self.network), self.name,
+                                 self.openwrt_revision)
 
     def load_includes_from_disk(self, from_path):
         """
@@ -338,6 +338,9 @@ class FwJob(models.Model):
 
     def _process(self, *args, **kwargs):
         output = u"%s\n" % self.job_data
+        job_url = reverse('fwjob-detail', kwargs={'pk': self.pk})
+        domain = Site.objects.all()[0].domain
+
         for command in self.job_data["commands"]:
             output += command + "\n"
             p = subprocess.Popen(command.split(), stdout=subprocess.PIPE,
@@ -345,8 +348,6 @@ class FwJob(models.Model):
             output += p.communicate()[0].decode("utf-8")
 
 
-            job_url = reverse('fwjob-detail', kwargs={'pk': self.pk})
-            domain = Site.objects.all()[0].domain
             if p.returncode != 0:
                 email_msg = "Cook failed for job http://%s%s" % (domain, job_url)
                 mail_managers("[Chef] Cook failed", email_msg, fail_silently=True)
@@ -356,9 +357,9 @@ class FwJob(models.Model):
                 self.build_log = output
                 self.save()
                 return
-            email_msg = "Cook finished: http://%s%s" % (domain, job_url)
-            send_mail("[Chef] Cook finished", email_msg, settings.DEFAULT_FROM_EMAIL,
-                      [self.user.email], fail_silently=True)
+        email_msg = "Cook finished: http://%s%s" % (domain, job_url)
+        send_mail("[Chef] Cook finished", email_msg, settings.DEFAULT_FROM_EMAIL,
+                  [self.user.email], fail_silently=True)
         self.status = "FINISHED"
         self.save()
 

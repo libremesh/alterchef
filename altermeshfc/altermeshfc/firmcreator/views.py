@@ -191,7 +191,7 @@ def cook(request, slug):
     else:
         if request.method == "POST":
             job_data = {
-                "devices": profile.devices,
+                "devices": profile.devices.split(),
                 "revision": profile.openwrt_revision,
                 "profile_id": profile.pk,
                 "user_id": request.user.pk

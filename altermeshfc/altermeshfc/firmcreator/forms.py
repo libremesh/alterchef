@@ -163,10 +163,11 @@ class FwProfileCommon(forms.ModelForm):
         self.fields['network'] = forms.ModelChoiceField(queryset=Network.objects.with_user_perms(user))
         self.fields['based_on'].choices = make_base_on_choices(user)
         self.fields['ssh_keys'] = _create_ssh_keys_field(data, kwargs, user)
-
+        instance = kwargs.get("instance")
         revision_choices = build_revision_choices()
         if revision_choices:
-            initial = filter(lambda x: "stable" in x[1], revision_choices)[0][0]
+            initial = instance.openwrt_revision if instance else \
+                      filter(lambda x: "stable" in x[1], revision_choices)[0][0]
             self.fields["openwrt_revision"] = forms.ChoiceField(choices=revision_choices,
                                                                 initial=initial)
 
