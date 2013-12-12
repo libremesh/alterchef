@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 usage () {
   echo "Usage: $0 <rev> <platform> <networkname> <netprofile> [HW_Profile1] [HW_Profile2] [...]" 
 }
