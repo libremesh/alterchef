@@ -102,9 +102,8 @@ def make_base_on_choices(user):
 
 
 def _create_ssh_keys_field(data, kwargs, user):
-    HT = _(u"<span class='text-warning'>Select at least one ssh key if you"
-           u" want to access using ssh</span>")
-    kwds = {"auto_add": True}
+    HT = _(u"<span class='text-warning'>WARNING: if you select a key, telnet access will be disabled.\n</br> If unsure leave all boxes unchecked.</span>")
+    kwds = {}
     instance = kwargs.get('instance', None)
     if instance:
         network = instance.network
@@ -120,10 +119,18 @@ def _create_ssh_keys_field(data, kwargs, user):
     else:
         kwds["user"] = user
     ssh_keys = SSHKey.objects.filter(**kwds)
+
+    initial = []
+    if not instance:
+        # select auto_add keys only if the current user has an auto_add key
+        # to avoid creating firmwares where the owner cannot SSH in
+        user_auto_add_key = ssh_keys.filter(user=user, auto_add=True)
+        if user_auto_add_key:
+            initial = [s.pk for s in ssh_keys.filter(auto_add=True)]
+
     return forms.ModelMultipleChoiceField(
                 queryset=ssh_keys, widget=forms.CheckboxSelectMultiple,
-                help_text=HT, required=False,
-                initial=[s.pk for s in ssh_keys.filter(auto_add=True)])
+                help_text=HT, required=False, initial=initial)
 
 COMMON_DEVICES = (
     ('TLWDR4300', 'TP-LINK TL-WDR3500/3600/4300/4310'),
