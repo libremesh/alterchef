@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-17 20:38-0300\n"
+"POT-Creation-Date: 2013-12-13 00:29-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,19 +27,11 @@ msgstr "Esto no parece ser una llave pública ssh"
 msgid "Row %d does not appear to be an ssh public key"
 msgstr "La fila %d no parece ser una llave pública ssh"
 
-#: firmcreator/forms.py:32
-msgid "Optional packages"
-msgstr "Paquetes opcionales"
-
-#: firmcreator/forms.py:35
-msgid "These packages are not essential, but pretty useful."
-msgstr "Estos paquetes no son esenciales, pero sí muy útiles."
-
-#: firmcreator/forms.py:40
+#: firmcreator/forms.py:20
 msgid "Extra include/exclude packages"
 msgstr "Más paquetes a incluir o excluir"
 
-#: firmcreator/forms.py:41
+#: firmcreator/forms.py:21
 msgid ""
 "list of packages to include or exclude. i.e. to include foo and baz, and "
 "exclude bar: <tt>foo -bar baz</tt>"
@@ -47,105 +39,102 @@ msgstr ""
 "listado de paquetes a incluir o excluir. por ej. para incluir fooy baz y "
 "excluir bar: <tt>foo -bar baz</tt>"
 
-#: firmcreator/forms.py:83
+#: firmcreator/forms.py:56
 msgid "File"
 msgstr "Archivo"
 
-#: firmcreator/forms.py:119
+#: firmcreator/forms.py:92
 msgid "Own profiles"
 msgstr "Mis perfiles"
 
-#: firmcreator/forms.py:120
+#: firmcreator/forms.py:93
 msgid "Other profiles (unsupported!)"
 msgstr "Otros perfiles (no soportados!)"
 
-#: firmcreator/forms.py:125
+#: firmcreator/forms.py:98
 msgid "Default profiles (supported)"
 msgstr "Perfiles por defecto (soportados)"
 
-#: firmcreator/forms.py:127
+#: firmcreator/forms.py:100
 msgid "OpenWrt Vanilla"
 msgstr ""
 
-#: firmcreator/forms.py:132
+#: firmcreator/forms.py:105
 msgid ""
-"<span class='text-warning'>Select at least one ssh key, otherwise you won't "
-"be able to enter to the router/acces point!</span>"
+"<span class='text-warning'>Select at least one ssh key if you want to access "
+"using ssh</span>"
 msgstr ""
 "<span class='text-warning'>Elegí al menos una llave ssh, de otro modo no "
 "podrás entrar al router/acces point!</span>"
 
-#: firmcreator/forms.py:165
-msgid ""
-"Upload a tar/tar.gz with files to include. Files <b>MUST</b> be UTF-8 "
-"encoded!"
-msgstr "Subir un tar/tar.gz con archivos a incluir. Los archivos <b>TIENEN</b> "
-"que estar encodeados en UTF-8!"
-
-#: firmcreator/forms.py:203
-msgid "Common devices"
-msgstr "Dispositivos soportados"
-
-#: firmcreator/forms.py:204
-msgid "Other devices"
-msgstr "Otros dispositivos"
-
-#: firmcreator/forms.py:205
-msgid ""
-"List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 UBNT "
-"TLWA701</code>"
-msgstr ""
-"Listado de dispositivos separados por espacio. Por ej: <code>TLMR3420 UBNT "
-"TLWA701</code>"
-
-#: firmcreator/forms.py:230
+#: firmcreator/forms.py:186
 msgid "You must select at least one device."
 msgstr "Debe seleccionar al menos un dispositivo."
 
-#: firmcreator/forms.py:231
+#: firmcreator/forms.py:187
 msgid "PROFILE devices must contain only alphanumeric characters."
 msgstr ""
 "Los nombres de dispositivos sólo pueden contener caracateres alfanuméricos."
 
-#: firmcreator/forms.py:232
+#: firmcreator/forms.py:188
 #, python-format
 msgid "Nonexistent device %s"
 msgstr "Dispositivo %s inexistente"
 
-#: firmcreator/models.py:103 firmcreator/models.py:136
-#: firmcreator/models.py:200
+#: firmcreator/forms.py:203 firmcreator/forms.py:222 firmcreator/models.py:179
+msgid "devices"
+msgstr "dispositivos"
+
+#: firmcreator/forms.py:211
+msgid ""
+"Upload a tar/tar.gz with files to include. Files <b>MUST</b> be UTF-8 "
+"encoded!"
+msgstr ""
+"Subir un tar/tar.gz con archivos a incluir. Los archivos <b>TIENEN</b> que "
+"estar encodeados en UTF-8!"
+
+#: firmcreator/models.py:130 firmcreator/models.py:165
+#: firmcreator/models.py:252
 msgid "name"
 msgstr "nombre"
 
-#: firmcreator/models.py:104
+#: firmcreator/models.py:131
 msgid "also acts as the default public ESSID. Eg: quintanalibre.org.ar"
 msgstr "también servirá como ESSID público. Por ej: quintanalibre.org.ar"
 
-#: firmcreator/models.py:108 firmcreator/models.py:139
+#: firmcreator/models.py:135 firmcreator/models.py:168
 msgid "description"
 msgstr "descripción"
 
-#: firmcreator/models.py:127 firmcreator/models.py:135
+#: firmcreator/models.py:136
+msgid "GEO latitude"
+msgstr ""
+
+#: firmcreator/models.py:137
+msgid "GEO longitude"
+msgstr ""
+
+#: firmcreator/models.py:156 firmcreator/models.py:164
 msgid "network"
 msgstr "red"
 
-#: firmcreator/models.py:128
+#: firmcreator/models.py:157
 msgid "networks"
 msgstr "redes"
 
-#: firmcreator/models.py:137
+#: firmcreator/models.py:166
 msgid "slug"
 msgstr "identificador alfanumérico"
 
-#: firmcreator/models.py:140 firmcreator/models.py:246
+#: firmcreator/models.py:169 firmcreator/models.py:299
 msgid "creation date"
 msgstr "fecha de creación"
 
-#: firmcreator/models.py:142
+#: firmcreator/models.py:171
 msgid "based on"
 msgstr "basado en"
 
-#: firmcreator/models.py:144
+#: firmcreator/models.py:173
 msgid ""
 "Create fw profile based on this profile. Leave it on default if you are not "
 "sure."
@@ -153,112 +142,111 @@ msgstr ""
 "Utilizar el perfil seleccionado como base. Si no estás seguro puede quedar "
 "en blanco"
 
-#: firmcreator/models.py:146
+#: firmcreator/models.py:176
 msgid "include packages"
 msgstr "paquetes a incluir"
 
-#: firmcreator/models.py:147
+#: firmcreator/models.py:177
 msgid "include files"
 msgstr "archivos a incluir"
 
-#: firmcreator/models.py:192
+#: firmcreator/models.py:178
+msgid "openwrt revision"
+msgstr "revisión de OpenWrt"
+
+#: firmcreator/models.py:244
 msgid "firmware profile"
 msgstr "perfil de firmware"
 
-#: firmcreator/models.py:193
+#: firmcreator/models.py:245
 msgid "firmware profiles"
 msgstr "perfiles de firmware"
 
-#: firmcreator/models.py:199 firmcreator/models.py:243
+#: firmcreator/models.py:251 firmcreator/models.py:296
 msgid "user"
 msgstr "usuario"
 
-#: firmcreator/models.py:201
+#: firmcreator/models.py:253
 msgid "ssh key"
 msgstr "llave ssh"
 
-#: firmcreator/models.py:202
+#: firmcreator/models.py:254
 msgid "automaticaly add this key to my profiles"
 msgstr "agregar automáticamente esta llave a mis perfiles"
 
-#: firmcreator/models.py:211
+#: firmcreator/models.py:264
 msgid "SSH key"
 msgstr "llave SSH"
 
-#: firmcreator/models.py:212 templates/base.html:61
+#: firmcreator/models.py:265 templates/base.html:61
 msgid "SSH keys"
 msgstr "Llaves SSH"
 
-#: firmcreator/models.py:216
+#: firmcreator/models.py:269
 msgid "waiting"
 msgstr "esperando"
 
-#: firmcreator/models.py:217
+#: firmcreator/models.py:270
 msgid "started"
 msgstr "comenzado"
 
-#: firmcreator/models.py:218
+#: firmcreator/models.py:271
 msgid "finished"
 msgstr "finalizado"
 
-#: firmcreator/models.py:219
+#: firmcreator/models.py:272
 msgid "failed"
 msgstr "fallo"
 
-#: firmcreator/models.py:240
+#: firmcreator/models.py:293
 msgid "satus"
 msgstr "estado"
 
-#: firmcreator/models.py:242
+#: firmcreator/models.py:295
 msgid "profile"
 msgstr "perfil"
 
-#: firmcreator/models.py:244
+#: firmcreator/models.py:297
 msgid "job data"
 msgstr "datos de la tarea"
 
-#: firmcreator/models.py:245
+#: firmcreator/models.py:298
 msgid "build log"
 msgstr ""
 
-#: firmcreator/views.py:152
+#: firmcreator/views.py:148
 msgid ""
 "Encoding Error: Uploaded tarfile must have all it's files encoded in UTF-8."
-msgstr "Error de Encoding: El archivo tar tiene que tener todos sus archivos "
+msgstr ""
+"Error de Encoding: El archivo tar tiene que tener todos sus archivos "
 "guardados en encoding UTF-8."
 
 #: firmcreator/templates/firmcreator/cook.html:4
 msgid "Cook Firmware for profile"
 msgstr "Cocinar firmware para el perfil"
 
-#: firmcreator/templates/firmcreator/cook.html:13
-#: firmcreator/templates/firmcreator/fwprofile_detail.html:46
-msgid "Cook"
-msgstr "Cocinar"
-
-#: firmcreator/templates/firmcreator/cook.html:20
+#: firmcreator/templates/firmcreator/cook.html:10
 msgid "Chef is already cooking this profile, please be patient!"
 msgstr "el Chef ya se encuentra cocinando este perfil, ten paciencia!"
 
-#: firmcreator/templates/firmcreator/cook.html:23
+#: firmcreator/templates/firmcreator/cook.html:13
 msgid "Return"
 msgstr "Volver"
 
-#: firmcreator/templates/firmcreator/cook_started.html:4
-msgid "Cooking Firmware for profile"
-msgstr "Cocinando firmware para el perfil"
+#: firmcreator/templates/firmcreator/cook.html:17
+msgid ""
+"\n"
+" Click Cook button to start cooking! it should take a couple of minutes.\n"
+" An e-mail will be sent to you when the firmware is ready."
+msgstr ""
+"\n"
+" Clickea el botón de Cocinar para comenzar! demorará unos minutos.\n"
+" Recibirás un e-mail cuando el firmware esté listo. "
 
-#: firmcreator/templates/firmcreator/cook_started.html:8
-msgid "Chef is cooking now! it should take a couple of minutes."
-msgstr "el Chef está cocinando! demorará unos minutos."
-
-#: firmcreator/templates/firmcreator/cook_started.html:12
-msgid "Your firmware will be available for download in the "
-msgstr "El firmware estará disponible para descarga en el "
-
-#: firmcreator/templates/firmcreator/cook_started.html:12
-msgid "Profile entry"
-msgstr "Detalle de Perfil"
+#: firmcreator/templates/firmcreator/cook.html:25
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:59
+msgid "Cook"
+msgstr "Cocinar"
 
 #: firmcreator/templates/firmcreator/create_profile_simple.html:19
 #: firmcreator/templates/firmcreator/crud_profile.html:19
@@ -282,7 +270,7 @@ msgstr "Creación avanzada"
 #: firmcreator/templates/firmcreator/crud_profile.html:33
 msgid ""
 "You may write anything you want in the files. Take in consideration that "
-"some files contains variables in the form:"
+"some files contain variables in the form:"
 msgstr ""
 "Puedes escribir lo que desees en los archivos. Ten en consideración que "
 "algunos archivos contienen variables en el formato:"
@@ -331,6 +319,7 @@ msgstr "Detalle de la tarea"
 
 #: firmcreator/templates/firmcreator/fwjob_detail.html:11
 #: firmcreator/templates/firmcreator/fwprofile_object.html:5
+#: firmcreator/templates/firmcreator/network_list.html:11
 msgid "Network"
 msgstr "Red"
 
@@ -339,7 +328,8 @@ msgid "Profile"
 msgstr "Perfil"
 
 #: firmcreator/templates/firmcreator/fwjob_detail.html:13
-#: firmcreator/templates/firmcreator/fwprofile_object.html:8
+#: firmcreator/templates/firmcreator/fwprofile_object.html:9
+#: firmcreator/templates/firmcreator/network_list.html:13
 #: firmcreator/templates/firmcreator/network_object.html:7
 #: firmcreator/templates/firmcreator/sshkey_object.html:7
 msgid "Created by"
@@ -370,7 +360,7 @@ msgid "Are you sure you want to delete this profile?"
 msgstr "Estás seguro de que deseas borrar este perfil?"
 
 #: firmcreator/templates/firmcreator/fwprofile_confirm_delete.html:15
-#: firmcreator/templates/firmcreator/fwprofile_detail.html:47
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:60
 #: firmcreator/templates/firmcreator/network_confirm_delete.html:16
 #: firmcreator/templates/firmcreator/network_detail.html:15
 #: firmcreator/templates/firmcreator/network_form.html:13
@@ -406,7 +396,19 @@ msgstr ""
 msgid "The last cook of this profile has failed."
 msgstr "El último intento de cocinar este perfil ha fallado."
 
-#: firmcreator/templates/firmcreator/fwprofile_detail.html:45
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:43
+msgid "Cooking (automatic reload)"
+msgstr ""
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:51
+#, python-format
+msgid ""
+"\n"
+"    Last cook with success for this profile was %(time_from_creation)s ago.\n"
+"    "
+msgstr ""
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:58
 #: firmcreator/templates/firmcreator/network_detail.html:13
 #: firmcreator/templates/firmcreator/network_form.html:5
 #: firmcreator/templates/firmcreator/sshkey_detail.html:14
@@ -414,13 +416,13 @@ msgstr "El último intento de cocinar este perfil ha fallado."
 msgid "Edit"
 msgstr "Editar"
 
-#: firmcreator/templates/firmcreator/fwprofile_detail.html:49
-msgid "Download Firmware"
-msgstr "Descargar Firmware"
-
-#: firmcreator/templates/firmcreator/fwprofile_detail.html:50
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:62
 msgid "Toggle Details"
 msgstr "Ver Detalle"
+
+#: firmcreator/templates/firmcreator/fwprofile_detail.html:67
+msgid "Download Firmware"
+msgstr "Descargar Firmware"
 
 #: firmcreator/templates/firmcreator/fwprofile_object.html:4
 #: firmcreator/templates/firmcreator/network_object.html:4
@@ -429,15 +431,20 @@ msgid "Name"
 msgstr "Nombre"
 
 #: firmcreator/templates/firmcreator/fwprofile_object.html:6
+#: firmcreator/templates/firmcreator/network_list.html:12
 #: firmcreator/templates/firmcreator/network_object.html:6
 msgid "Description"
 msgstr "Descripción"
 
 #: firmcreator/templates/firmcreator/fwprofile_object.html:7
+msgid "Openwrt revision"
+msgstr ""
+
+#: firmcreator/templates/firmcreator/fwprofile_object.html:8
 msgid "Creation date"
 msgstr "Fecha de creación"
 
-#: firmcreator/templates/firmcreator/fwprofile_object.html:9
+#: firmcreator/templates/firmcreator/fwprofile_object.html:10
 #: firmcreator/templates/firmcreator/network_object.html:8
 msgid "Admins"
 msgstr "Administradores"
@@ -560,11 +567,11 @@ msgstr "Chef de Firmwares AlterMesh"
 
 #: templates/base.html:93
 msgid ""
-"This software is part of the <a href=\"http://altermundi.net/\">Altermundi</"
+"This software is part of the <a href=\"http://altermundi.net/\">AlterMundi</"
 "a> project"
 msgstr ""
 "Este software es parte del proyecto <a href=\"http://altermundi.net/"
-"\">Altermundi</a>"
+"\">AlterMundi</a>"
 
 #: templates/base.html:94
 msgid ""
@@ -588,15 +595,15 @@ msgid ""
 msgstr "Para crear el firmware de tu red, sólo necesitas seguir estos pasos"
 
 #: templates/index.html:19
-msgid "register"
-msgstr "registrarse"
+msgid "Register"
+msgstr "Registrarse"
 
 #: templates/index.html:22
-msgid "create your network"
+msgid "Create your network"
 msgstr "Crear Red"
 
 #: templates/index.html:25
-msgid "create your firmware profile"
+msgid "Create your firmware profile"
 msgstr "Crear Perfil de Firmware"
 
 #: templates/registration/activate.html:7
@@ -702,6 +709,34 @@ msgstr ""
 #: templates/registration/registration_form.html:4
 msgid "Registration"
 msgstr "Registración"
+
+#~ msgid "Optional packages"
+#~ msgstr "Paquetes opcionales"
+
+#~ msgid "These packages are not essential, but pretty useful."
+#~ msgstr "Estos paquetes no son esenciales, pero sí muy útiles."
+
+#~ msgid "Common devices"
+#~ msgstr "Dispositivos soportados"
+
+#~ msgid ""
+#~ "List of PROFILE devices separated by a space or EOL. Eg: <code>TLMR3420 "
+#~ "UBNT TLWA701</code>"
+#~ msgstr ""
+#~ "Listado de dispositivos separados por espacio. Por ej: <code>TLMR3420 "
+#~ "UBNT TLWA701</code>"
+
+#~ msgid "Cooking Firmware for profile"
+#~ msgstr "Cocinando firmware para el perfil"
+
+#~ msgid "Chef is cooking now! it should take a couple of minutes."
+#~ msgstr "el Chef está cocinando! demorará unos minutos."
+
+#~ msgid "Your firmware will be available for download in the "
+#~ msgstr "El firmware estará disponible para descarga en el "
+
+#~ msgid "Profile entry"
+#~ msgstr "Detalle de Perfil"
 
 #~ msgid " and cook firmware"
 #~ msgstr " y cocinar firmware"

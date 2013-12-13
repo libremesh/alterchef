@@ -209,7 +209,7 @@ class FwProfileSimpleForm(FwProfileCommon):
 
 class FwProfileForm(FwProfileCommon):
     UPLOAD_HELP_TEXT = _(u'Upload a tar/tar.gz with files to include.' \
-                          'Files <b>MUST</b> be UTF-8 encoded!')
+                          ' Files <b>MUST</b> be UTF-8 encoded!')
     upload_files = forms.FileField(required=False, help_text=UPLOAD_HELP_TEXT)
 
     helper = FormHelper()

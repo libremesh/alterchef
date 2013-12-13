@@ -171,7 +171,7 @@ class FwProfile(models.Model):
     based_on = models.ForeignKey("self", verbose_name=_('based on'), blank=True,
                                  null=True, on_delete=models.SET_NULL,
                                  help_text=_("Create fw profile based on this profile."
-                                             "Leave it on default if you are not sure."))
+                                             " Leave it on default if you are not sure."))
     ssh_keys = models.ManyToManyField("SSHKey", blank=True, verbose_name="SSH keys")
     include_packages = models.TextField(_('include packages'), blank=True)
     include_files = JSONField(_('include files'), default="{}")
