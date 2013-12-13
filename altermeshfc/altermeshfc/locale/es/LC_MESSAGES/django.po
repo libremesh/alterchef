@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-13 00:29-0300\n"
+"POT-Creation-Date: 2013-12-13 01:56-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,31 +61,32 @@ msgstr ""
 
 #: firmcreator/forms.py:105
 msgid ""
-"<span class='text-warning'>Select at least one ssh key if you want to access "
-"using ssh</span>"
+"<span class='text-warning'>WARNING: if any key is selected, telnet access "
+"will be disabled. If unsure leave all boxes unchecked.</span>"
 msgstr ""
-"<span class='text-warning'>Elegí al menos una llave ssh, de otro modo no "
-"podrás entrar al router/acces point!</span>"
+"<span class='text-warning'>ATENCIÓN: si hay alguna llave seleccionada, el "
+"acceso por telnet estará deshabilitado. Si no estás seguro, deja todas las "
+"opciones sin tildar.</span>"
 
-#: firmcreator/forms.py:186
+#: firmcreator/forms.py:193
 msgid "You must select at least one device."
-msgstr "Debe seleccionar al menos un dispositivo."
+msgstr "Debes seleccionar al menos un dispositivo."
 
-#: firmcreator/forms.py:187
+#: firmcreator/forms.py:194
 msgid "PROFILE devices must contain only alphanumeric characters."
 msgstr ""
 "Los nombres de dispositivos sólo pueden contener caracateres alfanuméricos."
 
-#: firmcreator/forms.py:188
+#: firmcreator/forms.py:195
 #, python-format
 msgid "Nonexistent device %s"
 msgstr "Dispositivo %s inexistente"
 
-#: firmcreator/forms.py:203 firmcreator/forms.py:222 firmcreator/models.py:179
+#: firmcreator/forms.py:210 firmcreator/forms.py:229 firmcreator/models.py:179
 msgid "devices"
 msgstr "dispositivos"
 
-#: firmcreator/forms.py:211
+#: firmcreator/forms.py:218
 msgid ""
 "Upload a tar/tar.gz with files to include. Files <b>MUST</b> be UTF-8 "
 "encoded!"
@@ -407,6 +408,10 @@ msgid ""
 "    Last cook with success for this profile was %(time_from_creation)s ago.\n"
 "    "
 msgstr ""
+"\n"
+"    La última vez que este perfil se cocinó con éxito fue hace "
+"%(time_from_creation)s.\n"
+"    "
 
 #: firmcreator/templates/firmcreator/fwprofile_detail.html:58
 #: firmcreator/templates/firmcreator/network_detail.html:13
@@ -437,8 +442,8 @@ msgid "Description"
 msgstr "Descripción"
 
 #: firmcreator/templates/firmcreator/fwprofile_object.html:7
-msgid "Openwrt revision"
-msgstr ""
+msgid "OpenWrt revision"
+msgstr "revisión de OpenWrt"
 
 #: firmcreator/templates/firmcreator/fwprofile_object.html:8
 msgid "Creation date"
@@ -709,6 +714,13 @@ msgstr ""
 #: templates/registration/registration_form.html:4
 msgid "Registration"
 msgstr "Registración"
+
+#~ msgid ""
+#~ "<span class='text-warning'>Select at least one ssh key if you want to "
+#~ "access using ssh</span>"
+#~ msgstr ""
+#~ "<span class='text-warning'>Elegí al menos una llave ssh, de otro modo no "
+#~ "podrás entrar al router/acces point!</span>"
 
 #~ msgid "Optional packages"
 #~ msgstr "Paquetes opcionales"

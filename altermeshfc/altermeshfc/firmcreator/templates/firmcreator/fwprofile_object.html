@@ -4,7 +4,7 @@
     <dt>{% trans "Name" %}</dt><dd><a href="{% url 'fwprofile-detail' object.slug %}">{{ object.name }}</a></dd>
     <dt>{% trans "Network" %}</dt><dd><a href={% url "network-detail" object.network.slug %}>{{ object.network }}</a></dd>
     <dt>{% trans "Description" %}</dt><dd>{{ object.description }}</dd>
-    <dt>{% trans "Openwrt revision" %}</dt><dd>{{ object.openwrt_revision }}</dd>
+    <dt>{% trans "OpenWrt revision" %}</dt><dd>{{ object.openwrt_revision }}</dd>
     <dt>{% trans "Creation date" %}</dt><dd>{{ object.creation_date }}</dd>
     <dt>{% trans "Created by" %}</dt><dd>{{ object.network.user }}</dd>
     <dt>{% trans "Admins" %}</dt><dd>{{ object.network.admins.all|join:", " }}</dd>

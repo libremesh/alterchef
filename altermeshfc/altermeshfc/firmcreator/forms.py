@@ -102,7 +102,7 @@ def make_base_on_choices(user):
 
 
 def _create_ssh_keys_field(data, kwargs, user):
-    HT = _(u"<span class='text-warning'>WARNING: if you select a key, telnet access will be disabled.\n</br> If unsure leave all boxes unchecked.</span>")
+    HT = _(u"<span class='text-warning'>WARNING: if any key is selected, telnet access will be disabled. If unsure leave all boxes unchecked.</span>")
     kwds = {}
     instance = kwargs.get('instance', None)
     if instance:
