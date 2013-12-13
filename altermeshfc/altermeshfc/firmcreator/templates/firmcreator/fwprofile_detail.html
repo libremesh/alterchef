@@ -35,8 +35,7 @@
     </ul>
   {% endif %}
   {% if last_job.status == "FAILED" %}
-  {% trans "The last cook of this profile has failed." %}
-  <a href="{% url 'fwjob-detail' last_job.pk %}">{{ failed_job }}</a>
+  <a href="{% url 'fwjob-detail' last_job.pk %}">{% trans "The last cook of this profile has failed." %}</a>
   {% endif %}
 </div>
 
