@@ -135,7 +135,8 @@ COMMON_DEVICES = (
 )
 
 ALL_DEVICES = COMMON_DEVICES + tuple(((device, device) for device in \
-                                       Device.list_devices()))
+                                       Device.list_devices() if device not in 
+                                      [common_dev[0] for common_dev in COMMON_DEVICES] ))
 
 def build_revision_choices():
 
@@ -152,10 +153,6 @@ def build_revision_choices():
 class FwProfileCommon(forms.ModelForm):
 
     openwrt_revision = forms.ChoiceField(choices=(("stable", "stable"),))
-    devices = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                        required=False,
-                                        choices=ALL_DEVICES,
-                                        label=_("devices"))
 
     def __init__(self, data=None, *args, **kwargs):
         user = kwargs.pop('user')
@@ -200,6 +197,10 @@ class FwProfileSimpleForm(FwProfileCommon):
     helper.form_tag = False
     helper.form_class = 'form-horizontal'
 
+    devices = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                        required=False,
+                                        choices=COMMON_DEVICES,
+                                        label=_("devices"))
     class Meta:
         model = FwProfile
         exclude = (
@@ -214,6 +215,11 @@ class FwProfileForm(FwProfileCommon):
     helper = FormHelper()
     helper.form_tag = False
     helper.form_class = 'form-horizontal'
+
+    devices = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                        required=False,
+                                        choices=ALL_DEVICES,
+                                        label=_("devices"))
 
     class Meta:
         model = FwProfile
