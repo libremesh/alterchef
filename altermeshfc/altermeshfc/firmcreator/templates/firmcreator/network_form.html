@@ -4,10 +4,8 @@
 
 {% block title %}{% if object %}{% trans "Edit" %}{% else %}{% trans "Create" %}{% endif %}{% trans " Network" %}{% endblock %}
 
-{% block extra_head %}{% include "map_header.html" %}{% endblock %}
-
 {% block content %}
-<div class="span5">
+<div class="row">
 <form class="form-horizontal" method="post" action=".">{% csrf_token %}
 {{ form|crispy }}
 <div class="form-actions">
@@ -16,17 +14,5 @@
 </div>
 </form>
 </div>
-<div class="span4">
-    <div id="map" style="width:512px; height:400px;"></div>
-    <p class="text-center">{% trans "Click on the map to update network GEO coordinates" %}</p>
-</div>
-{% include "map_base.html" %}
-<script defer="defer" type="text/javascript">
-  function onMapClick(e) {
-      $("#id_latitude").val( e.latlng.lat);
-      $("#id_longitude").val( e.latlng.lng);
-  }
-  map.on('click', onMapClick);
-</script>
 {% endblock %}
 

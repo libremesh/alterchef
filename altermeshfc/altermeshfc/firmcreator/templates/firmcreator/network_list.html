@@ -3,25 +3,7 @@
 
 {% block title %}{% trans "List Networks" %}{% endblock %}
 
-{% block extra_head %}{% include "map_header.html" %}{% endblock %}
-
 {% block content %}
-<div class="hero-unit">
-  <div id="map" style="width:512px; height:400px;"></div>
-  {% include "map_base.html" %}
-  <script defer="defer" type="text/javascript">
-  {% spaceless %}
-  {% for object in object_list %}
-    {% if object.latitude and object.longitude %}
-      {% localize off %}
-      var marker = L.marker([{{ object.latitude }}, {{ object.longitude }}]).addTo(map);
-      {% endlocalize %}
-      marker.bindPopup('<b><a href="#{{ object.slug }}">{{ object.name }}</a></b><br><small>{{ object.description }}</small>');
-    {% endif %}
-  {% endfor %}
-  {% endspaceless %}
-  </script>
-</div>
 <div class="row">
 <table class="table table-striped">
 <thead>
