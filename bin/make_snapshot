@@ -15,13 +15,13 @@ netprofile="$1" ; shift
 hwprofiles="${@:-Default}"
 
 root_dir="/home/openwrt"
-imagebuilder_dir="$root_dir/openwrt/image_builders/OpenWrt-ImageBuilder-${platform}*_${rev}"
+imagebuilder_dir="$root_dir/altermeshfc/downloads/ib/${rev}/${platform}"
 [ -f $imagebuilder_dir/.config ] || { echo "ImageBuilder for revision '$rev' and platform '$platform' not found!" ; usage ; exit 4 ; }
 rev="$(sed -n '/REVISION:=/s///p' $imagebuilder_dir/include/version.mk)"
-dest_base="$root_dir/downloads/$network/${rev:?}"
+dest_base="$root_dir/altermeshfc/downloads/$network/${rev:?}"
 dest="$dest_base/$netprofile/$platform"
 bin_dir=bin/$platform/
-network_includes="$root_dir/network_includes/$network/$netprofile" 
+network_includes="/tmp/network_includes/$network/$netprofile" 
 
 rm -rf $dest_base/*${platform}*${rev}-${network}-${netprofile}*.{img,bin}
 rm -rf "$dest" ; mkdir -p "$dest"
@@ -39,24 +39,18 @@ done
 cd $bin_dir
 for file in *.bin ; do
   if [ -e "$file" ] ; then 
-    cp -p "$file" "$dest/"
+    mv "$file" "$dest/"
     rename -f 's/((-factory|-sysupgrade)?).bin/-'"${rev}-${network}-${netprofile}"'$1.bin/;
+               s#ar71xx-generic-##; s#squashfs-##;
                s#/openwrt-#/altermesh-#' "$dest/$file"
   fi
 done
 for file in *.img ; do
   if [ -e "$file" ] ; then
-    cp -p "$file" "$dest/"
+    mv "$file" "$dest/"
     rename -f 's/.img$/-'"${rev}-${network}-${netprofile}"'.img/;
                s#/openwrt-#/altermesh-#' "$dest/$file"
   fi
 done
 ( cd $dest/ && rm -f md5sums && md5sum * >md5sums 2>/dev/null )
 exit 0
-
-#for file in ${dest}/*${rev}-${network}-${netprofile}*.{img,bin} ; do
-#  [ -e "$file" ] && ln -nsf "${file##$dest_base/}" $dest_base/
-#done
-#( cd $dest_base/ && rm -f md5sums && md5sum *.img *.bin >md5sums 2>/dev/null)
-
-#( cd ${dest_base%/$rev} && ln -nsf $(ls -d1 r* |tail -n1) stable )

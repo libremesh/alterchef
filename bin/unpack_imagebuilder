@@ -1,33 +1,22 @@
 #!/bin/bash
 
-platform="$1" ; shift ; [ "$platform" == "" ] && { echo "Usage: $0 <platform>. Please read the source code, sorry!" ; exit 1 ; }
+platform="$1" ; [ -z "$platform" ] && { echo "Usage: $0 <platform> [path-to-tar.bz2] . Please read the source code, sorry!" ; exit 1 ; }
+srcbin="$2" ; [ -z "$srcbin" ] && srcbin="$(ls -1 /home/openwrt/openwrt/trunk/bin/ar71xx/OpenWrt-ImageBuilder-*.tar.bz2|head -n1)"
 
-rootdir="/home/openwrt"
-downloadsdir="$rootdir/downloads"
-bindir="$rootdir/openwrt/trunk/bin/$platform"
-imagebuildersdir="$rootdir/openwrt/image_builders"
-imagebuilder="$(basename $bindir/OpenWrt-ImageBuilder-*.tar.bz2)"
-imagebuilder="${imagebuilder%%.tar.bz2}"
+imagebuildersdir="/home/openwrt/altermeshfc/downloads/ib"
 
 cd $imagebuildersdir || { echo Please adapt hardcoded strings in source code! ; exit 1 ; }
-if tar -xjf $bindir/$imagebuilder.tar.bz2 ; then
-  rev="$(sed -n "s/^REVISION:=\(.*\)/\1/p" $imagebuilder/include/version.mk)"
-  [ -z "$rev" ] && exit 1 
 
-  rm -rf ${imagebuilder}_$rev 
-  mv $imagebuilder ${imagebuilder}_$rev
+tmpdir="/tmp/imagebuilder.$(date +%s)"
+mkdir -p "$tmpdir"
+if tar -xjf "$srcbin" -C "$tmpdir" --strip-components=1 ; then
+  rev="$(sed -n "s/^REVISION:=\(.*\)/\1/p" "$tmpdir/include/version.mk")"
+  [ -z "$rev" ] && exit 1
 
-  echo "Unpacked ${imagebuilder}_$rev"
+  mkdir -p "$imagebuildersdir/$rev/"
+  rm -rf "$imagebuildersdir/$rev/$platform"
+  mv "$tmpdir" "$imagebuildersdir/$rev/$platform"
+  echo "Unpacked $srcbin into $imagebuildersdir/$rev/$platform/"
 
-  (cd ${imagebuilder}_$rev ; make package_index >/dev/null )
-
-  releasedir="$downloadsdir/$rev/$platform/"
-  mkdir -p $releasedir
-  mv $bindir/$imagebuilder.tar.bz2 $releasedir/${imagebuilder}_$rev.tar.bz2
-  cp -p ${imagebuilder}_$rev/.config $releasedir/config
-  ln -nsf ${imagebuilder}_${rev}/packages $releasedir/packages
-  ls -ld $(pwd)/${imagebuilder}_$rev $releasedir/${imagebuilder}_$rev.tar.bz2 $releasedir/config $releasedir/packages
-  echo "After testing this revision, you can update 'stable' links"
-  echo "cd $imagebuildersdir && ln -nsf ${imagebuilder}_$rev ${imagebuilder}_stable"
-  echo "cd $downloadsdir ; ln -nsf $rev stable"
+  mv -v "$srcbin" "$imagebuildersdir/$(basename ${srcbin%%.tar.bz2})_${rev}_@$(date +%s -r $srcbin).tar.bz2"
 fi
