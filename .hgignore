@@ -7,3 +7,4 @@ settings.py
 db.sqlite3
 altermeshfc/static
 *~
+downloads/
