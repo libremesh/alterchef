@@ -132,7 +132,6 @@ INSTALLED_APPS = (
 
     'crispy_forms',
     'django.contrib.admin',
-    'south',
     'registration',
 )
 

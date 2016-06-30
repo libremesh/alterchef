@@ -6,15 +6,15 @@ from django.db import models
 
 
 class Migration(SchemaMigration):
-    
+
     no_dry_run = True
-    
+
     def forwards(self, orm):
         # Adding field 'FwProfile.openwrt_revision'
         db.add_column('firmcreator_fwprofile', 'openwrt_revision',
                       self.gf('django.db.models.fields.CharField')(default='foo', max_length=50),
                       keep_default=False)
-        
+
         from altermeshfc.firmcreator.models import OpenwrtImageBuilder
         profiles = orm['firmcreator.FwProfile'].objects.all()
         for profile in profiles:

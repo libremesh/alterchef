@@ -88,7 +88,3 @@ class PublicKeyField(TextField):
         lines = [" ".join(line.strip().split()) for line in lines]
         value = "\n".join([line for line in lines if line])
         return super(PublicKeyField, self).clean(value, model_instance)
-
-from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], [".*JSONField"])
-add_introspection_rules([], [".*PublicKeyField"])
