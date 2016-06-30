@@ -159,12 +159,15 @@ class Network(models.Model):
 
 User.networks_with_perms = lambda self: Network.objects.with_user_perms(self)
 
+def fwprofile_get_slug(instance):
+    return "%s-%s" % (instance.network.slug, instance.name)
+
 
 class FwProfile(models.Model):
     network = models.ForeignKey(Network, verbose_name=_('network'))
     name = models.SlugField(_("name"), default="node", max_length=15)
     slug = AutoSlugField(_("slug"), always_update=False, unique=True,
-                         populate_from=lambda instance: instance._get_slug())
+                         populate_from=fwprofile_get_slug)
     description = models.TextField(_('description'))
     creation_date = models.DateTimeField(_("creation date"), default=datetime.datetime.now,
                                          editable=False)
@@ -185,9 +188,6 @@ class FwProfile(models.Model):
     @property
     def admins(self):
         return self.network.admins
-
-    def _get_slug(self):
-        return "%s-%s" % (self.network.slug, self.name)
 
     def __unicode__(self):
         return "%s-%s [%s]" % (unicode(self.network), self.name,

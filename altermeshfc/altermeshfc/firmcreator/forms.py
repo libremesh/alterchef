@@ -197,6 +197,7 @@ class FwProfileCommon(forms.ModelForm):
 
     class Meta:
         model = FwProfile
+        fields = '__all__'
 
 class FwProfileSimpleForm(FwProfileCommon):
 
