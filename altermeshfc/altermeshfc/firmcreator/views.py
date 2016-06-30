@@ -43,6 +43,7 @@ class NetworkCreateView(LoginRequiredMixin, CreateView):
 
 class NetworkUpdateView(LoginRequiredMixin, UserOrAdminRequiredMixin, UpdateView):
     model = Network
+    fields = '__all__'
 
 class NetworkDeleteView(LoginRequiredMixin, UserOrAdminRequiredMixin, DeleteView):
     model = Network
