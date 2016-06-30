@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load url from future %}
 <dl class="dl-horizontal">
     <dt>{% trans "Name" %}</dt><dd><a href="{% url 'sshkey-detail' object.pk %}">{{ object.name }}</a></dd>
     <dt>{% trans "Key" %}</dt><dd><pre>{{ object.key }}</pre></dd>

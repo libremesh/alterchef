@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load url from future %}
 <tr>
     <td><a href="{% url 'network-detail' object.slug %}" name="{{object.slug}}">{{ object.name }}</a></td>
     <td>{{ object.description }}</td>
