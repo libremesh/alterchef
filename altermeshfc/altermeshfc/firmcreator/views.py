@@ -2,6 +2,7 @@
 
 import os
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, redirect
@@ -19,7 +20,7 @@ from pygments.lexers import DiffLexer
 from pygments.formatters import HtmlFormatter
 from difflib import unified_diff
 
-from utils import LoginRequiredMixin, UserOrAdminRequiredMixin, UserRequiredMixin
+from utils import UserOrAdminRequiredMixin, UserRequiredMixin
 from models import IncludeFiles, Network, FwProfile, FwJob, SSHKey, OpenwrtImageBuilder
 from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
                    NetworkForm, FwProfileSimpleForm
