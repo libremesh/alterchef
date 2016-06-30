@@ -5,8 +5,8 @@ import datetime
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseRedirect
-from django.core.servers.basehttp import FileWrapper
 from django.http import Http404
+from wsgiref.util import FileWrapper
 
 from django.conf import settings
 
