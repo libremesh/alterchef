@@ -275,8 +275,8 @@ STATUSES = (
 
 class StatusManager(models.Manager):
     _status = None
-    def get_query_set(self):
-        return super(StatusManager, self).get_query_set().filter(status=self._status)
+    def get_queryset(self):
+        return super(StatusManager, self).get_queryset().filter(status=self._status)
 
 class StartedManager(StatusManager):
     _status = 'STARTED'
