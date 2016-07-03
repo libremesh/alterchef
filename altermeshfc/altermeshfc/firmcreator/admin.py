@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Network, FwProfile
+from .models import Network, FwProfile
 
 
 class NetworkAdmin(admin.ModelAdmin):

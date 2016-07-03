@@ -32,14 +32,19 @@ def get_default_profile():
     global _default_slug
 
     if not _default_slug and default_profile_slug:
-        from models import FwProfile
+        from .models import FwProfile
 
         _default_slug = FwProfile.objects.get(slug=default_profile_slug)
     return _default_slug
 
 
 import atexit
-import Queue
+
+try:
+    from Queue import Queue
+except ImportError:
+    from queue import Queue
+
 import threading
 from django.utils.functional import wraps
 
@@ -61,7 +66,7 @@ def to_thread(func):
         queue.put((func, args, kwargs))
     return inner
 
-queue = Queue.Queue()
+queue = Queue()
 
 job_thread = threading.Thread(target=worker_thread)
 job_thread.daemon = True

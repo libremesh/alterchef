@@ -20,8 +20,8 @@ from django.template import Context, Template
 from django.core.mail import send_mail, mail_managers
 from django.contrib.sites.models import Site
 
-from fields import PublicKeyField
-from utils import to_thread
+from .fields import PublicKeyField
+from .utils import to_thread
 
 from django.conf import settings
 

@@ -17,9 +17,9 @@ from pygments.lexers import DiffLexer
 from pygments.formatters import HtmlFormatter
 from difflib import unified_diff
 
-from utils import UserOrAdminRequiredMixin, UserRequiredMixin
-from models import IncludeFiles, Network, FwProfile, FwJob, SSHKey, OpenwrtImageBuilder
-from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, FwProfileSimpleForm
+from .utils import UserOrAdminRequiredMixin, UserRequiredMixin
+from .models import IncludeFiles, Network, FwProfile, FwJob, SSHKey, OpenwrtImageBuilder
+from .forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, FwProfileSimpleForm
 
 
 def index(request):

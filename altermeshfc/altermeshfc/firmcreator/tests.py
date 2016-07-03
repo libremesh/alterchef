@@ -10,8 +10,8 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
-from models import IncludePackages, IncludeFiles, FwJob, FwProfile, Network
-from forms import IncludePackagesForm
+from .models import IncludePackages, IncludeFiles, FwJob, FwProfile, Network
+from .forms import IncludePackagesForm
 
 TEST_DATA_PATH = path.join(path.dirname(__file__), "test_data")
 PROFILES_PATH = path.abspath(path.join(TEST_DATA_PATH, "profiles"))

@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if len(args) != 2:
-            print "invalid arguments, see help with --help"
+            print("invalid arguments, see help with --help")
             sys.exit(1)
         slug, path = args
         profile = FwProfile.objects.get(slug=slug)

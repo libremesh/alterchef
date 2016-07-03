@@ -6,8 +6,8 @@ from django.utils.text import normalize_newlines
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Fieldset
 
-from models import IncludePackages, FwProfile, Network, Device, SSHKey, OpenwrtImageBuilder
-from utils import get_default_profile
+from .models import IncludePackages, FwProfile, Network, Device, SSHKey, OpenwrtImageBuilder
+from .utils import get_default_profile
 
 
 class BaseForm(forms.Form):
