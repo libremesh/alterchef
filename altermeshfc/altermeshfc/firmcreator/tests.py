@@ -6,6 +6,7 @@ import StringIO
 import tempfile
 import subprocess
 
+from test.test_support import EnvironmentVarGuard
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -144,7 +145,7 @@ class FwProfileTest(TestCase):
             "name": "node",
             "description": "foo",
             "openwrt_revision": "stable",
-            "devices": [u"TLMR3220", u"TLWR703"]
+            "devices": [u"TLMR3220", u"UBNT"]
         }
 
     def assertLoginRequired(self, url):
@@ -165,7 +166,7 @@ class FwProfileTest(TestCase):
         self.assertContains(response, "Profile Detail")
 
         profile = FwProfile.objects.all()[0]
-        self.assertItemsEqual(profile.devices, u"TLMR3220 TLWR703")
+        self.assertItemsEqual(profile.devices, u"TLMR3220 UBNT")
 
     def test_simple_creation_with_based_on(self):
         response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
@@ -227,6 +228,8 @@ class JobsTest(TestCase):
         self.client.login(username="ninja", password="password")
         self.cook_url = reverse('cook', kwargs={'slug': self.profile.slug})
         self.job_data = {"devices": ["TLMR3220"], "revision": "stable"}
+        self.env = EnvironmentVarGuard()
+        self.env.set('LANG', '')
 
     def tearDown(self):
         FwJob.set_make_commands_func(FwJob.default_make_commands)
@@ -253,8 +256,9 @@ class JobsTest(TestCase):
 
         FwJob.process_jobs(sync=True)
         self.assertEqual(len(FwJob.failed.all()), 1)
-        fwjob = FwJob.objects.get(pk=fwjob.pk)
-        self.assertTrue("No such file or directory" in fwjob.build_log)
+        with self.env:
+            fwjob = FwJob.objects.get(pk=fwjob.pk)
+            self.assertTrue("No such file or directory" in fwjob.build_log)
 
     def _test_cook(self):
         response = self.client.get(self.cook_url)
