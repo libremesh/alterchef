@@ -8,6 +8,7 @@ import datetime
 import tempfile
 import subprocess
 from collections import defaultdict
+from jsonfield import JSONField
 
 from django.db import models, DatabaseError
 from django.utils.translation import ugettext_lazy as _
@@ -19,7 +20,7 @@ from django.template import Context, Template
 from django.core.mail import send_mail, mail_managers
 from django.contrib.sites.models import Site
 
-from fields import JSONField, PublicKeyField
+from fields import PublicKeyField
 from utils import to_thread
 
 from django.conf import settings
@@ -177,7 +178,7 @@ class FwProfile(models.Model):
                                              " Leave it on default if you are not sure."))
     ssh_keys = models.ManyToManyField("SSHKey", blank=True, verbose_name="SSH keys")
     include_packages = models.TextField(_('include packages'), blank=True)
-    include_files = JSONField(_('include files'), default="{}")
+    include_files = JSONField(_('include files'))
     openwrt_revision = models.CharField(_('openwrt revision'), max_length=50)
     devices = models.TextField(_('devices'), default="TLWDR4300")
 
@@ -294,7 +295,7 @@ class FwJob(models.Model):
                               max_length=10)
     profile = models.ForeignKey(FwProfile, verbose_name=_('profile'))
     user = models.ForeignKey(User, editable=False, verbose_name=_('user'))
-    job_data = JSONField(_('job data'), default="{}")
+    job_data = JSONField(_('job data'))
     build_log = models.TextField(_('build log'), blank=True)
     creation_date = models.DateTimeField(_("creation date"), default=datetime.datetime.now,
                                          editable=False)

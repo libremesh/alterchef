@@ -1,5 +1,6 @@
 django==1.9.7
 django-crispy-forms==1.6.0
 django-autoslug==1.9.3
+django-jsonfield==1.0.0
 django-registration==2.1.2
 Pygments==2.1.3

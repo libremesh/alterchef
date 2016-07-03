@@ -10,6 +10,7 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import django.db.models.manager
+from jsonfield import JSONField
 
 
 class Migration(migrations.Migration):
@@ -26,7 +27,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('status', models.CharField(choices=[(b'WAITING', 'waiting'), (b'STARTED', 'started'), (b'FINISHED', 'finished'), (b'FAILED', 'failed')], default=b'WAITING', max_length=10, verbose_name='satus')),
-                ('job_data', altermeshfc.firmcreator.fields.JSONField(default=b'{}', verbose_name='job data')),
+                ('job_data', JSONField(verbose_name='job data')),
                 ('build_log', models.TextField(blank=True, verbose_name='build log')),
                 ('creation_date', models.DateTimeField(default=datetime.datetime.now, editable=False, verbose_name='creation date')),
             ],
@@ -46,7 +47,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(verbose_name='description')),
                 ('creation_date', models.DateTimeField(default=datetime.datetime.now, editable=False, verbose_name='creation date')),
                 ('include_packages', models.TextField(blank=True, verbose_name='include packages')),
-                ('include_files', altermeshfc.firmcreator.fields.JSONField(default=b'{}', verbose_name='include files')),
+                ('include_files', JSONField(verbose_name='include files')),
                 ('openwrt_revision', models.CharField(max_length=50, verbose_name='openwrt revision')),
                 ('devices', models.TextField(default=b'TLWDR4300', verbose_name='devices')),
                 ('based_on', models.ForeignKey(blank=True, help_text='Create fw profile based on this profile. Leave it on default if you are not sure.', null=True, on_delete=django.db.models.deletion.SET_NULL, to='firmcreator.FwProfile', verbose_name='based on')),
