@@ -3,7 +3,6 @@ import os
 PROJECT_PATH = os.path.dirname(__file__)
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -83,24 +82,6 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '6n))yoapr-+lxb#ao6e8r71t+u*nod_k_m%ngbaxjf@+*^0)df'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.core.context_processors.request',
-    'django.contrib.messages.context_processors.messages'
-)
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -113,12 +94,29 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'altermeshfc.urls'
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(PROJECT_PATH, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'debug': DEBUG,
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.core.context_processors.debug',
+                'django.core.context_processors.i18n',
+                'django.core.context_processors.media',
+                'django.core.context_processors.static',
+                'django.core.context_processors.tz',
+                'django.core.context_processors.request',
+                'django.contrib.messages.context_processors.messages'
+            ],
+        },
+    }
+]
+
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'altermeshfc.wsgi.application'
-
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_PATH, 'templates'),
-)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
