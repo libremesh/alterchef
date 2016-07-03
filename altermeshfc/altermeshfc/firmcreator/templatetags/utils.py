@@ -7,6 +7,7 @@ from django import template
 
 register = template.Library()
 
+
 class PdbNode(template.Node):
     def render(self, context):
         # Access vars at the prompt for an easy reference to
@@ -19,6 +20,7 @@ class PdbNode(template.Node):
         pdb.set_trace()
         # You may access all context variables directly (they are stored in locals())
         return ''
+
 
 @register.tag("pdb_debug")
 def pdbdebug_tag(parser, token):

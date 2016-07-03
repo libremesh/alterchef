@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 from os import path
 import shutil
 import StringIO
@@ -11,18 +10,19 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
-import models
 from models import IncludePackages, IncludeFiles, FwJob, FwProfile, Network
 from forms import IncludePackagesForm
 
 TEST_DATA_PATH = path.join(path.dirname(__file__), "test_data")
-PROFILES_PATH =  path.abspath(path.join(TEST_DATA_PATH, "profiles"))
+PROFILES_PATH = path.abspath(path.join(TEST_DATA_PATH, "profiles"))
 TEST_PROFILE_PATH = path.join(PROFILES_PATH, "test.org.ar")
+
 
 class ViewsTest(TestCase):
     def test_index(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
+
 
 class IncludePackagesTest(TestCase):
     def test_read_from_disk(self):
@@ -73,12 +73,13 @@ class IncludeFilesTest(TestCase):
         inc_files.dump(dest_dir)
         diff = subprocess.check_output(["diff", "-r", dest_dir, path.join(TEST_PROFILE_PATH, "include_files")], stderr=subprocess.STDOUT)
         self.assertEqual(diff, "")
-        shutil.rmtree(dest_dir) # cleaning up
+        shutil.rmtree(dest_dir)  # cleaning up
 
     def test_load_from_tar(self):
 
         def generate_inmemory_tar(content):
-            import StringIO, tarfile
+            import StringIO
+            import tarfile
             tar_sio = StringIO.StringIO()
             with tarfile.TarFile(fileobj=tar_sio, mode="w") as tar:
                 content_sio = StringIO.StringIO()
@@ -110,11 +111,11 @@ class NetworkTest(TestCase):
         self.network = Network.objects.create(name="quintanalibre.org.ar", user=self.owner,
                                               description="desc")
         self.network.admins.add(self.admin)
-        self.network_edit_url = reverse('network-edit', kwargs={"slug":self.network.slug})
+        self.network_edit_url = reverse('network-edit', kwargs={"slug": self.network.slug})
 
     def test_create_network_anonymous(self):
-         response = self.client.get(reverse('network-create'))
-         self.assertEqual(response.status_code, 302)
+        response = self.client.get(reverse('network-create'))
+        self.assertEqual(response.status_code, 302)
 
     def test_edit_owner(self):
         self.client.login(username="owner", password="password")
@@ -134,6 +135,7 @@ class NetworkTest(TestCase):
         response = self.client.post(self.network_edit_url, {"name": "other.org.ar", "description": "desc"})
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Network.objects.get(pk=self.network.pk).name, "quintanalibre.org.ar")
+
 
 class FwProfileTest(TestCase):
     def setUp(self):
@@ -181,7 +183,7 @@ class FwProfileTest(TestCase):
         form_data = {'form-TOTAL_FORMS': 1, 'form-INITIAL_FORMS': 0,
                      'form-0-path': u'/foo/bar', 'form-0-content': u'this is foo'}
         formset = IncludeFilesFormset(form_data)
-        assert formset.is_valid() == True
+        assert formset.is_valid() is True
         self.assertEqual(formset.include_files(), {u"/foo/bar": u'this is foo'})
 
     def test_edit(self):
@@ -200,23 +202,21 @@ class FwProfileTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_network_in_url_empty(self):
-        response = self.client.get(reverse("fwprofile-create-advanced")+"?network=")
+        response = self.client.get(reverse("fwprofile-create-advanced") + "?network=")
         self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse("fwprofile-create-simple")+"?network=")
+        response = self.client.get(reverse("fwprofile-create-simple") + "?network=")
         self.assertEqual(response.status_code, 200)
 
     def test_network_in_url(self):
-        response = self.client.get(reverse("fwprofile-create-advanced")+"?network=1")
+        response = self.client.get(reverse("fwprofile-create-advanced") + "?network=1")
         self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse("fwprofile-create-simple")+"?network=1")
+        response = self.client.get(reverse("fwprofile-create-simple") + "?network=1")
         self.assertEqual(response.status_code, 200)
 
     def test_simple_creation_without_network(self):
         self.data["network"] = ""
-        response = self.client.post(reverse("fwprofile-create-simple")+"?network=", self.data, follow=True)
+        response = self.client.post(reverse("fwprofile-create-simple") + "?network=", self.data, follow=True)
         self.assertEqual(response.status_code, 200)
-
-
 
 
 class JobsTest(TestCase):
@@ -235,8 +235,8 @@ class JobsTest(TestCase):
         FwJob.set_make_commands_func(FwJob.default_make_commands)
 
     def test_process_some_jobs(self):
-        fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
-        fwjob = FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
+        FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
+        FwJob.objects.create(profile=self.profile, user=self.user, job_data=self.job_data)
 
         FwJob.set_make_commands_func(lambda *x: ["sleep 0.1"])
 
@@ -264,7 +264,7 @@ class JobsTest(TestCase):
         response = self.client.get(self.cook_url)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.post(self.cook_url, {"other_devices":"TLMR3020", "openwrt_revision": "stable"})
+        response = self.client.post(self.cook_url, {"other_devices": "TLMR3020", "openwrt_revision": "stable"})
         self.assertEqual(response.status_code, 302)
 
         self.assertEqual(len(FwJob.started.all()), 0)
@@ -290,7 +290,6 @@ class JobsTest(TestCase):
         self.assertContains(self.client.get(reverse("fwjob-detail", kwargs={"pk": fwjob.pk})), "the log")
 
 
-
 class DiffTests(TestCase):
 
     def test_diff_view(self):
@@ -309,4 +308,3 @@ class DiffTests(TestCase):
 
         self.assertContains(response, "+pkg_one", status_code=200)
         self.assertContains(response, "-pkg_three", status_code=200)
-

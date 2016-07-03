@@ -12,9 +12,9 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': os.path.join(PROJECT_PATH, "db.sqlite3"),                     # Or path to database file if using sqlite3.
-#        'TEST_NAME': 'test_db.sqlite3',
+        #'TEST_NAME': 'test_db.sqlite3',
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -76,7 +76,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -178,6 +178,6 @@ NETWORK_INCLUDES_PATH = "/tmp/network_includes"
 LIST_DIR_ROOT = "/tmp/"
 
 # set a default profile to use as based_on when creating a new profile
-DEFAULT_PROFILE_SLUG = '' #'altermesh-default'
+DEFAULT_PROFILE_SLUG = ''  # 'altermesh-default'
 
 LOCALE_PATHS = (os.path.join(PROJECT_PATH, 'locale'), )

@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-import os
-import re
-import string
-
-from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied
+
 
 class UserRequiredMixin(object):
 
@@ -14,6 +10,7 @@ class UserRequiredMixin(object):
             return object
         else:
             raise PermissionDenied
+
 
 class UserOrAdminRequiredMixin(object):
 
@@ -30,6 +27,7 @@ from django.conf import settings
 _default_slug = None
 default_profile_slug = getattr(settings, "DEFAULT_PROFILE_SLUG", None)
 
+
 def get_default_profile():
     global _default_slug
 
@@ -45,6 +43,7 @@ import Queue
 import threading
 from django.utils.functional import wraps
 
+
 def worker_thread():
     while True:
         func, args, kwargs = queue.get()
@@ -54,6 +53,7 @@ def worker_thread():
             raise
         finally:
             queue.task_done()
+
 
 def to_thread(func):
     @wraps(func)
@@ -66,6 +66,7 @@ queue = Queue.Queue()
 job_thread = threading.Thread(target=worker_thread)
 job_thread.daemon = True
 job_thread.start()
+
 
 def cleanup():
     queue.join()

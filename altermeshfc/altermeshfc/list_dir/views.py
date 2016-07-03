@@ -21,6 +21,7 @@ def path_inside_root(path, root):
     common = os.path.commonprefix((abs_root, abs_path))
     return common.startswith(abs_root)
 
+
 def _list_dir(path):
     try:
         _, dnames, fnames = os.walk(path).next()
@@ -43,6 +44,7 @@ def _list_dir(path):
     context = {'directories': directories, 'files': files}
     return render_to_string('list_dir/list.html', context)
 
+
 def list_dir(request, path):
     abspath = os.path.abspath(os.path.join(settings.LIST_DIR_ROOT, path))
 
@@ -56,6 +58,6 @@ def list_dir(request, path):
         response['Content-Disposition'] = 'attachment'
         return response
     return render(request, "list_dir/list_base.html", {
-        "list":_list_dir(abspath),
+        "list": _list_dir(abspath),
         "path": path,
     })

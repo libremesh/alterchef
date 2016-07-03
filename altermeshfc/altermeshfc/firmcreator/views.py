@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import os
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from django.http import Http404, HttpResponseServerError
+from django.http import HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
-from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, UpdateView, DetailView, CreateView, DeleteView
-from django.template import Context, Template, RequestContext
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 import pygments
@@ -22,8 +19,7 @@ from difflib import unified_diff
 
 from utils import UserOrAdminRequiredMixin, UserRequiredMixin
 from models import IncludeFiles, Network, FwProfile, FwJob, SSHKey, OpenwrtImageBuilder
-from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, \
-                   NetworkForm, FwProfileSimpleForm
+from forms import IncludeFilesFormset, IncludePackagesForm, FwProfileForm, FwProfileSimpleForm
 
 
 def index(request):
@@ -42,18 +38,22 @@ class NetworkCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super(NetworkCreateView, self).form_valid(form)
 
+
 class NetworkUpdateView(LoginRequiredMixin, UserOrAdminRequiredMixin, UpdateView):
     model = Network
     fields = '__all__'
+
 
 class NetworkDeleteView(LoginRequiredMixin, UserOrAdminRequiredMixin, DeleteView):
     model = Network
     fields = '__all__'
     success_url = reverse_lazy('network-list')
 
+
 class NetworkDetailView(DetailView):
     model = Network
     fields = '__all__'
+
 
 class NetworkListView(ListView):
     model = Network
@@ -61,6 +61,7 @@ class NetworkListView(ListView):
 
 ##
 # SSHKey views
+
 
 class SSHKeyCreateView(LoginRequiredMixin, CreateView):
     model = SSHKey
@@ -70,18 +71,22 @@ class SSHKeyCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super(SSHKeyCreateView, self).form_valid(form)
 
+
 class SSHKeyUpdateView(LoginRequiredMixin, UserRequiredMixin, UpdateView):
     model = SSHKey
     fields = '__all__'
+
 
 class SSHKeyDeleteView(LoginRequiredMixin, UserRequiredMixin, DeleteView):
     model = SSHKey
     fields = '__all__'
     success_url = reverse_lazy('sshkey-list')
 
+
 class SSHKeyDetailView(DetailView):
     model = SSHKey
     fields = '__all__'
+
 
 class SSHKeyListView(ListView):
     model = SSHKey
@@ -90,12 +95,13 @@ class SSHKeyListView(ListView):
 ##
 # Profile Views
 
+
 class FwProfileDetailView(DetailView):
     model = FwProfile
 
     def get_context_data(self, **kwargs):
         context = super(FwProfileDetailView, self).get_context_data(**kwargs)
-        context['pending_jobs'] = FwJob.objects.filter(status__in = ["WAITING", "STARTED"],
+        context['pending_jobs'] = FwJob.objects.filter(status__in=["WAITING", "STARTED"],
                                                        profile=self.object)
         jobs = FwJob.objects.filter(profile=self.object).order_by('-pk')[:1]
         if jobs:
@@ -108,9 +114,11 @@ class FwProfileDetailView(DetailView):
         context['openwrt_image_builder'] = OpenwrtImageBuilder
         return context
 
+
 class FwProfileDeleteView(LoginRequiredMixin, UserOrAdminRequiredMixin, DeleteView):
     model = FwProfile
     success_url = reverse_lazy('network-list')
+
 
 @login_required
 def create_profile_simple(request):
@@ -139,6 +147,7 @@ def create_profile_simple(request):
         'form': form,
     })
 
+
 @login_required
 def crud_profile_advanced(request, slug=None):
     instance = get_object_or_404(FwProfile, slug=slug) if slug else None
@@ -146,8 +155,7 @@ def crud_profile_advanced(request, slug=None):
         profile_form = FwProfileForm(request.POST, request.FILES, user=request.user, instance=instance)
         include_files_formset = IncludeFilesFormset(request.POST, prefix="include-files")
         include_packages_form = IncludePackagesForm(request.POST)
-        if profile_form.is_valid() and include_files_formset.is_valid() and \
-           include_packages_form.is_valid():
+        if profile_form.is_valid() and include_files_formset.is_valid() and include_packages_form.is_valid():
             fw_profile = profile_form.save()
             fw_profile.include_packages = include_packages_form.to_str()
             files = include_files_formset.include_files()
@@ -157,8 +165,9 @@ def crud_profile_advanced(request, slug=None):
                     files.update(IncludeFiles.load_from_tar(uploaded_files).files)
                 except UnicodeDecodeError:
                     error = _("Encoding Error: Uploaded tarfile must have all it's files encoded in UTF-8.")
-                    return HttpResponseServerError(render_to_string('500.html', {"message": error},
-                                                                     RequestContext(request)))
+                    return HttpResponseServerError(render_to_string('500.html',
+                                                                    {"message": error},
+                                                                    RequestContext(request)))
             fw_profile.include_files = files
             fw_profile.save()
             return redirect("fwprofile-detail", slug=fw_profile.slug)
@@ -207,8 +216,8 @@ def cook(request, slug):
                 "profile_id": profile.pk,
                 "user_id": request.user.pk
             }
-            job = FwJob.objects.create(status="WAITING", profile=profile,
-                                       user=request.user, job_data=job_data)
+            FwJob.objects.create(status="WAITING", profile=profile,
+                                 user=request.user, job_data=job_data)
             return redirect("fwprofile-detail", slug=profile.slug)
     return render(request, "firmcreator/cook.html", context)
 
@@ -216,6 +225,7 @@ def cook(request, slug):
 def view_jobs(request):
     jobs = FwJob.objects.select_related().all()[:100]
     return render(request, "firmcreator/fwjob_list.html", {"jobs": jobs})
+
 
 def diff(request, src_profile, dest_profile):
     src_profile = get_object_or_404(FwProfile, slug=src_profile)

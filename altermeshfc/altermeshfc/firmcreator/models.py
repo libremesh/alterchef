@@ -25,6 +25,7 @@ from utils import to_thread
 
 from django.conf import settings
 
+
 class OpenwrtImageBuilder(object):
 
     @classmethod
@@ -64,7 +65,6 @@ class IncludePackages(object):
     @classmethod
     def load(cls, file_obj):
         return IncludePackages.from_str(file_obj.read())
-
 
     def to_str(self):
         out = ""
@@ -126,6 +126,7 @@ class NetworkManager(models.Manager):
         from django.db.models import Q
         return self.filter(Q(user=user) | Q(admins=user)).distinct()
 
+
 class Network(models.Model):
     user = models.ForeignKey(User, editable=False, related_name="network_user_set")
     name = models.CharField(_('name'), max_length=100, unique=True,
@@ -160,6 +161,7 @@ class Network(models.Model):
 
 User.networks_with_perms = lambda self: Network.objects.with_user_perms(self)
 
+
 def fwprofile_get_slug(instance):
     return "%s-%s" % (instance.network.slug, instance.name)
 
@@ -192,7 +194,7 @@ class FwProfile(models.Model):
 
     def __unicode__(self):
         return "%s-%s [%s]" % (unicode(self.network), self.name,
-                                 self.openwrt_revision)
+                               self.openwrt_revision)
 
     def load_includes_from_disk(self, from_path):
         """
@@ -228,13 +230,13 @@ class FwProfile(models.Model):
         base_path = os.path.join(settings.LIST_DIR_ROOT, self.network.slug)
         revisions = []
         if os.path.exists(base_path):
-            directories = glob.glob(base_path + "/r*" )
+            directories = glob.glob(base_path + "/r*")
             for dname in directories:
                 if os.path.exists(os.path.join(dname, self.name)):
-                  try:
-                      revisions.append(int(os.path.basename(dname).replace("r","")))
-                  except:
-                      pass
+                    try:
+                        revisions.append(int(os.path.basename(dname).replace("r", "")))
+                    except:
+                        pass
         return sorted(revisions, reverse=True)
 
     @models.permalink
@@ -273,22 +275,29 @@ STATUSES = (
     ("FAILED", _("failed")),
 )
 
+
 class StatusManager(models.Manager):
     _status = None
+
     def get_queryset(self):
         return super(StatusManager, self).get_queryset().filter(status=self._status)
+
 
 class StartedManager(StatusManager):
     _status = 'STARTED'
 
+
 class WaitingManager(StatusManager):
     _status = 'WAITING'
+
 
 class FinishedManager(StatusManager):
     _status = 'FINISHED'
 
+
 class FailedManager(StatusManager):
     _status = 'FAILED'
+
 
 class FwJob(models.Model):
     status = models.CharField(verbose_name=_('satus'), choices=STATUSES, default="WAITING",
@@ -330,7 +339,6 @@ class FwJob(models.Model):
             job.save()
             job.process(sync)  # runs in another thread
 
-
     def process(self, sync=False):
         if sync:
             self._process()
@@ -347,7 +355,6 @@ class FwJob(models.Model):
             p = subprocess.Popen(command.split(), stdout=subprocess.PIPE,
                                  stderr=subprocess.STDOUT)
             output += p.communicate()[0].decode("utf-8")
-
 
             if p.returncode != 0:
                 email_msg = "Cook failed for job http://%s%s" % (domain, job_url)
@@ -374,7 +381,7 @@ class FwJob(models.Model):
                     device = device.split("NONE%s" % arch)[1]
                 archs[arch].append(device)
 
-        return ["%s %s %s %s %s %s" % (settings.MAKE_SNAPSHOT, revision, arch, networkname, \
+        return ["%s %s %s %s %s %s" % (settings.MAKE_SNAPSHOT, revision, arch, networkname,
                                        profilename, " ".join(devices)) for (arch, devices) in archs.iteritems()]
 
     @classmethod
@@ -387,17 +394,20 @@ class FwJob(models.Model):
 
     _make_commands_func = default_make_commands
 
+
 class Device(object):
 
     ARCHS = {
         "ar71xx": set([
-                "ath5k","ALFAAP96","HORNETUB","ALFANX","ALL0305","ALL0258N","ALL0315N","AP113","AP121","AP121MINI","AP136","AP81","AP83","AP96","DB120","PB42",
-                "PB44","PB92","A02RBW300N","WZRHPG300NH","WZRHPG300NH2","WZRHPAG300H","WZRHPG450H","WHRG301N","WHRHPG300N","WHRHPGN",
-                "WLAEAG300N","WP543","WPE72","DIR600A1","DIR601A1","DIR615C1","DIR615E4","DIR825B1","EWDORIN","JA76PF","JA76PF2",
-                "JWAP003","WRT160NL","WRT400N","WNDR3700","OM2P","MZKW04NU","MZKW300NH","RW2458N","TLMR11U","TLMR3020","TLMR3040",
-                "TLMR3220","TLMR3420","TLWR703","TLWA701","TLWA901","TLWDR4300","TLWR740","TLWR741","TLWR743","TLWR841","TLWR842",
-                "TLWR941","TLWR1041","TLWR1043","TLWR2543","TEW632BRP","TEW652BRP","TEW673GRU","TEW712BR","UBNTRS","UBNTRSPRO",
-                "UBNTUNIFI","UBNT","ZCN1523H28","ZCN1523H516","NBG_460N_550N_550NH"]),
+            "ath5k", "ALFAAP96", "HORNETUB", "ALFANX", "ALL0305", "ALL0258N", "ALL0315N", "AP113", "AP121",
+            "AP121MINI", "AP136", "AP81", "AP83", "AP96", "DB120", "PB42", "PB44", "PB92", "A02RBW300N",
+            "WZRHPG300NH", "WZRHPG300NH2", "WZRHPAG300H", "WZRHPG450H", "WHRG301N", "WHRHPG300N", "WHRHPGN",
+            "WLAEAG300N", "WP543", "WPE72", "DIR600A1", "DIR601A1", "DIR615C1", "DIR615E4", "DIR825B1",
+            "EWDORIN", "JA76PF", "JA76PF2", "JWAP003", "WRT160NL", "WRT400N", "WNDR3700", "OM2P", "MZKW04NU",
+            "MZKW300NH", "RW2458N", "TLMR11U", "TLMR3020", "TLMR3040", "TLMR3220", "TLMR3420", "TLWR703",
+            "TLWA701", "TLWA901", "TLWDR4300", "TLWR740", "TLWR741", "TLWR743", "TLWR841", "TLWR842",
+            "TLWR941", "TLWR1041", "TLWR1043", "TLWR2543", "TEW632BRP", "TEW652BRP", "TEW673GRU", "TEW712BR",
+            "UBNTRS", "UBNTRSPRO", "UBNTUNIFI", "UBNT", "ZCN1523H28", "ZCN1523H516", "NBG_460N_550N_550NH"]),
         "atheros": set(["NONEatherosDefault"]),
     }
 
@@ -418,8 +428,10 @@ class Device(object):
 
 import threading
 
+
 def thread_process_jobs():
-    import time, random
+    import random
+    import time
     from traceback import format_exc
     sleep = random.randint(5, 15)
     while True:
@@ -432,4 +444,3 @@ def thread_process_jobs():
 process_jobs_thread = threading.Thread(target=thread_process_jobs)
 process_jobs_thread.daemon = True
 process_jobs_thread.start()
-

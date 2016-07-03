@@ -4,38 +4,41 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.utils.text import normalize_newlines
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, Fieldset
+from crispy_forms.layout import Layout, Field, Fieldset
 
 from models import IncludePackages, FwProfile, Network, Device, SSHKey, OpenwrtImageBuilder
 from utils import get_default_profile
+
 
 class BaseForm(forms.Form):
     helper = FormHelper()
     helper.form_tag = False
     helper.form_class = 'form-horizontal'
 
+
 class IncludePackagesForm(BaseForm):
 
     include_exclude = forms.CharField(
-        label = _("Extra include/exclude packages"),
-        help_text = _("list of packages to include or exclude. i.e. to include foo and baz, and exclude bar: <tt>foo -bar baz</tt>"),
+        label=_("Extra include/exclude packages"),
+        help_text=_("list of packages to include or exclude. i.e. to include foo and baz, and exclude bar: <tt>foo -bar baz</tt>"),
         widget=forms.Textarea,
-        required = False,
+        required=False,
     )
 
     @classmethod
     def from_instance(self, instance):
-        return IncludePackagesForm({"include_exclude":instance.to_str()})
+        return IncludePackagesForm({"include_exclude": instance.to_str()})
 
     @classmethod
     def from_str(self, string):
         ip = IncludePackages.from_str(string)
-        return IncludePackagesForm({"include_exclude":ip.to_str()})
+        return IncludePackagesForm({"include_exclude": ip.to_str()})
 
     def to_str(self):
         include_exclude = self.cleaned_data.get("include_exclude")
         ip = IncludePackages.from_str(include_exclude)
         return ip.to_str()
+
 
 class IncludeFileForm(BaseForm):
 
@@ -44,8 +47,8 @@ class IncludeFileForm(BaseForm):
     )
 
     content = forms.CharField(
-        widget = forms.Textarea(),
-        required = False,
+        widget=forms.Textarea(),
+        required=False,
     )
 
     helper = FormHelper()
@@ -53,16 +56,17 @@ class IncludeFileForm(BaseForm):
     helper.form_style = 'inline'
     helper.form_class = 'form-horizontal'
     helper.layout = Layout(
-            Fieldset(_("File"),
-                Field('path', css_class="input-xxlarge"),
-                Field('content', css_class="input-xxlarge pre-scrollable"),
-                Field('DELETE'),
-            )
+        Fieldset(_("File"),
+            Field('path', css_class="input-xxlarge"),
+            Field('content', css_class="input-xxlarge pre-scrollable"),
+            Field('DELETE'),
         )
+    )
 
     @classmethod
     def from_instance(self, instance):
-        return IncludePackagesForm({"include_exclude":instance.to_str()})
+        return IncludePackagesForm({"include_exclude": instance.to_str()})
+
 
 class NetworkForm(forms.ModelForm):
 
@@ -79,6 +83,7 @@ def make_choices(queryset, title=""):
     choices = map(lambda item: (item.pk, base + unicode(item)), queryset)
     choices.insert(0, ('' or title, default))
     return choices
+
 
 def make_base_on_choices(user):
 
@@ -129,8 +134,8 @@ def _create_ssh_keys_field(data, kwargs, user):
             initial = [s.pk for s in ssh_keys.filter(auto_add=True)]
 
     return forms.ModelMultipleChoiceField(
-                queryset=ssh_keys, widget=forms.CheckboxSelectMultiple,
-                help_text=HT, required=False, initial=initial)
+        queryset=ssh_keys, widget=forms.CheckboxSelectMultiple,
+        help_text=HT, required=False, initial=initial)
 
 COMMON_DEVICES = (
     ('TLWDR4300', 'TP-LINK TL-WDR3500/3600/4300/4310'),
@@ -141,21 +146,24 @@ COMMON_DEVICES = (
     ('UBNT', 'Ubiquiti M series: M2, M5 (ar71xx_UBNT)'),
 )
 
-ALL_DEVICES = COMMON_DEVICES + tuple(((device, device) for device in \
-                                       Device.list_devices() if device not in 
-                                      [common_dev[0] for common_dev in COMMON_DEVICES] ))
+ALL_DEVICES = COMMON_DEVICES + tuple((
+    (device, device) for device in Device.list_devices()
+    if device not in [common_dev[0] for common_dev in COMMON_DEVICES]))
+
 
 def build_revision_choices():
 
     stable_revision = OpenwrtImageBuilder.get_stable_version()
+
     def transform_revision(rev):
         if rev == stable_revision:
             return "%d (stable)" % rev
         else:
             return "%d" % rev
-    choices = [("r%d" % r, transform_revision(r)) for r in \
+    choices = [("r%d" % r, transform_revision(r)) for r in
                OpenwrtImageBuilder.get_available_openwrt_revisions()]
     return choices
+
 
 class FwProfileCommon(forms.ModelForm):
 
@@ -171,7 +179,7 @@ class FwProfileCommon(forms.ModelForm):
         revision_choices = build_revision_choices()
         if revision_choices:
             initial = instance.openwrt_revision if instance else \
-                      filter(lambda x: "stable" in x[1], revision_choices)[0][0]
+                filter(lambda x: "stable" in x[1], revision_choices)[0][0]
             self.fields["openwrt_revision"] = forms.ChoiceField(choices=revision_choices,
                                                                 initial=initial)
 
@@ -189,15 +197,14 @@ class FwProfileCommon(forms.ModelForm):
         cleaned_data["devices"] = " ".join(devices)
         return cleaned_data
 
-
     ERROR_ONE_DEVICE = _("You must select at least one device.")
     ERROR_ALPHANUMERIC = _("PROFILE devices must contain only alphanumeric characters.")
     ERROR_NONEXISTENT_DEVICE = _("Nonexistent device %s")
 
-
     class Meta:
         model = FwProfile
         fields = '__all__'
+
 
 class FwProfileSimpleForm(FwProfileCommon):
 
@@ -209,14 +216,16 @@ class FwProfileSimpleForm(FwProfileCommon):
                                         required=False,
                                         choices=COMMON_DEVICES,
                                         label=_("devices"))
+
     class Meta:
         model = FwProfile
         exclude = (
             'creation_date', 'path', 'include_packages', 'include_files',
         )
 
+
 class FwProfileForm(FwProfileCommon):
-    UPLOAD_HELP_TEXT = _(u'Upload a tar/tar.gz with files to include.' \
+    UPLOAD_HELP_TEXT = _(u'Upload a tar/tar.gz with files to include.'
                           ' Files <b>MUST</b> be UTF-8 encoded!')
     upload_files = forms.FileField(required=False, help_text=UPLOAD_HELP_TEXT)
 
@@ -247,6 +256,3 @@ class IncludeFilesBaseFormSet(BaseFormSet):
 
 IncludeFilesFormset = formset_factory(IncludeFileForm, extra=0, can_delete=True,
                                       formset=IncludeFilesBaseFormSet)
-
-
-
