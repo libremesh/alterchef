@@ -36,6 +36,7 @@ def index(request):
 
 class NetworkCreateView(LoginRequiredMixin, CreateView):
     model = Network
+    fields = '__all__'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -47,19 +48,23 @@ class NetworkUpdateView(LoginRequiredMixin, UserOrAdminRequiredMixin, UpdateView
 
 class NetworkDeleteView(LoginRequiredMixin, UserOrAdminRequiredMixin, DeleteView):
     model = Network
+    fields = '__all__'
     success_url = reverse_lazy('network-list')
 
 class NetworkDetailView(DetailView):
     model = Network
+    fields = '__all__'
 
 class NetworkListView(ListView):
     model = Network
+    fields = '__all__'
 
 ##
 # SSHKey views
 
 class SSHKeyCreateView(LoginRequiredMixin, CreateView):
     model = SSHKey
+    fields = '__all__'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -67,16 +72,20 @@ class SSHKeyCreateView(LoginRequiredMixin, CreateView):
 
 class SSHKeyUpdateView(LoginRequiredMixin, UserRequiredMixin, UpdateView):
     model = SSHKey
+    fields = '__all__'
 
 class SSHKeyDeleteView(LoginRequiredMixin, UserRequiredMixin, DeleteView):
     model = SSHKey
+    fields = '__all__'
     success_url = reverse_lazy('sshkey-list')
 
 class SSHKeyDetailView(DetailView):
     model = SSHKey
+    fields = '__all__'
 
 class SSHKeyListView(ListView):
     model = SSHKey
+    fields = '__all__'
 
 ##
 # Profile Views
