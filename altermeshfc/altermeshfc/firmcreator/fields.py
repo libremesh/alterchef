@@ -8,6 +8,7 @@ from django.db.models import TextField
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.translation import ugettext as _
 
+
 class JSONField(models.TextField):
     """
     JSONField is a generic textfield that neatly serializes/unserializes
@@ -26,6 +27,12 @@ class JSONField(models.TextField):
 
     __metaclass__ = models.SubfieldBase
 
+    """
+        TODO: Implement from_db_value() or use django-jsonfield
+
+    def from_db_value(self, value, expression, connection, context):
+        pass
+    """
     def to_python(self, value):
         if value == "":
             return None
