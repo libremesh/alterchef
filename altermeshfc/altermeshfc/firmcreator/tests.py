@@ -2,7 +2,6 @@
 from os import path
 import shutil
 
- 
 try:
     from test.test_support import EnvironmentVarGuard
     from StringIO import StringIO
@@ -185,7 +184,7 @@ class FwProfileTest(TestCase):
         self.assertContains(response, "Profile Detail")
 
     def test_include_files_formset_files(self):
-        from forms import IncludeFilesFormset
+        from .forms import IncludeFilesFormset
         form_data = {'form-TOTAL_FORMS': 1, 'form-INITIAL_FORMS': 0,
                      'form-0-path': u'/foo/bar', 'form-0-content': u'this is foo'}
         formset = IncludeFilesFormset(form_data)
