@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 from os import path
 import shutil
-import io
+
+ 
+try:
+    from test.test_support import EnvironmentVarGuard
+    from StringIO import StringIO
+except ImportError:
+    from test.support import EnvironmentVarGuard
+    from io import StringIO
+
 import tempfile
 import subprocess
 
-from test.test_support import EnvironmentVarGuard
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -34,7 +41,7 @@ class IncludePackagesTest(TestCase):
     def test_write_to_disk(self):
         ip = IncludePackages(include=["iperf", "safe-reboot"],
                              exclude=["dnsmasq", "qos-scripts"])
-        output = io.StringIO()
+        output = StringIO()
         ip.dump(output)
         self.assertEqual(output.getvalue(), "iperf\nsafe-reboot\n-dnsmasq\n-qos-scripts")
 
@@ -79,9 +86,9 @@ class IncludeFilesTest(TestCase):
 
         def generate_inmemory_tar(content):
             import tarfile
-            tar_sio = io.StringIO()
+            tar_sio = StringIO()
             with tarfile.TarFile(fileobj=tar_sio, mode="w") as tar:
-                content_sio = io.StringIO()
+                content_sio = StringIO()
                 content_sio.write(content)
                 content_sio.seek(0)
                 info = tarfile.TarInfo(name=u"fóø".encode("utf-8"))

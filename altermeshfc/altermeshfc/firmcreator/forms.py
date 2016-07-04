@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.formsets import formset_factory, BaseFormSet
@@ -107,7 +109,7 @@ def make_base_on_choices(user):
 
 
 def _create_ssh_keys_field(data, kwargs, user):
-    HT = _(u"<span class='text-warning'>WARNING: if any key is selected, telnet access will be disabled. If unsure leave all boxes unchecked.</span>")
+    HT = _("<span class='text-warning'>WARNING: if any key is selected, telnet access will be disabled. If unsure leave all boxes unchecked.</span>")
     kwds = {}
     instance = kwargs.get('instance', None)
     if instance:
@@ -225,7 +227,7 @@ class FwProfileSimpleForm(FwProfileCommon):
 
 
 class FwProfileForm(FwProfileCommon):
-    UPLOAD_HELP_TEXT = _(u'Upload a tar/tar.gz with files to include.'
+    UPLOAD_HELP_TEXT = _('Upload a tar/tar.gz with files to include.'
                           ' Files <b>MUST</b> be UTF-8 encoded!')
     upload_files = forms.FileField(required=False, help_text=UPLOAD_HELP_TEXT)
 

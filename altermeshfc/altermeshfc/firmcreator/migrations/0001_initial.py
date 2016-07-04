@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             name='FwJob',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[(b'WAITING', 'waiting'), (b'STARTED', 'started'), (b'FINISHED', 'finished'), (b'FAILED', 'failed')], default=b'WAITING', max_length=10, verbose_name='satus')),
+                ('status', models.CharField(choices=[('WAITING', 'waiting'), ('STARTED', 'started'), ('FINISHED', 'finished'), ('FAILED', 'failed')], default='WAITING', max_length=10, verbose_name='satus')),
                 ('job_data', JSONField(verbose_name='job data')),
                 ('build_log', models.TextField(blank=True, verbose_name='build log')),
                 ('creation_date', models.DateTimeField(default=datetime.datetime.now, editable=False, verbose_name='creation date')),
@@ -42,14 +42,14 @@ class Migration(migrations.Migration):
             name='FwProfile',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.SlugField(default=b'node', max_length=15, verbose_name='name')),
+                ('name', models.SlugField(default='node', max_length=15, verbose_name='name')),
                 ('slug', autoslug.fields.AutoSlugField(editable=False, populate_from=altermeshfc.firmcreator.models.fwprofile_get_slug, unique=True, verbose_name='slug')),
                 ('description', models.TextField(verbose_name='description')),
                 ('creation_date', models.DateTimeField(default=datetime.datetime.now, editable=False, verbose_name='creation date')),
                 ('include_packages', models.TextField(blank=True, verbose_name='include packages')),
                 ('include_files', JSONField(verbose_name='include files')),
                 ('openwrt_revision', models.CharField(max_length=50, verbose_name='openwrt revision')),
-                ('devices', models.TextField(default=b'TLWDR4300', verbose_name='devices')),
+                ('devices', models.TextField(default='TLWDR4300', verbose_name='devices')),
                 ('based_on', models.ForeignKey(blank=True, help_text='Create fw profile based on this profile. Leave it on default if you are not sure.', null=True, on_delete=django.db.models.deletion.SET_NULL, to='firmcreator.FwProfile', verbose_name='based on')),
             ],
             options={
@@ -64,7 +64,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(help_text='also acts as the default public ESSID. Eg: quintanalibre.org.ar', max_length=100, unique=True, verbose_name='name')),
                 ('web', models.CharField(blank=True, max_length=200)),
-                ('slug', autoslug.fields.AutoSlugField(blank=True, editable=False, populate_from=b'name', unique=True)),
+                ('slug', autoslug.fields.AutoSlugField(blank=True, editable=False, populate_from='name', unique=True)),
                 ('description', models.TextField(verbose_name='description')),
                 ('latitude', models.FloatField(blank=True, null=True, verbose_name='GEO latitude')),
                 ('longitude', models.FloatField(blank=True, null=True, verbose_name='GEO longitude')),
@@ -99,7 +99,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='fwprofile',
             name='ssh_keys',
-            field=models.ManyToManyField(blank=True, to='firmcreator.SSHKey', verbose_name=b'SSH keys'),
+            field=models.ManyToManyField(blank=True, to='firmcreator.SSHKey', verbose_name='SSH keys'),
         ),
         migrations.AddField(
             model_name='fwjob',
