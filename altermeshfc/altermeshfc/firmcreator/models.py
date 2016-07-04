@@ -101,7 +101,7 @@ class IncludeFiles(object):
             path = os.path.join(tmpdir, "include_files")
             os.mkdir(path)
             tar = tarfile.open(fileobj=f)
-            tar.extractall(path=path)
+            tar.extractall(path=str(path))
             inc_files = cls.load(path)
         finally:
             shutil.rmtree(tmpdir)
@@ -195,7 +195,7 @@ class FwProfile(models.Model):
         return self.network.admins
 
     def __str__(self):
-        return "%s-%s [%s]" % (unicode(self.network), self.name,
+        return "%s-%s [%s]" % (str(self.network), self.name,
                                self.openwrt_revision)
 
     def load_includes_from_disk(self, from_path):
@@ -254,17 +254,17 @@ class FwProfile(models.Model):
 
 @python_2_unicode_compatible
 class SSHKey(models.Model):
-    user = models.ForeignKey(User, verbose_name=_(u"user"), editable=False)
-    name = models.CharField(_(u"name"), max_length=40)
-    key = PublicKeyField(_(u"ssh key"))
-    auto_add = models.BooleanField(_(u"automaticaly add this key to my profiles"),
+    user = models.ForeignKey(User, verbose_name=_("user"), editable=False)
+    name = models.CharField(_("name"), max_length=40)
+    key = PublicKeyField(_("ssh key"))
+    auto_add = models.BooleanField(_("automaticaly add this key to my profiles"),
                                    default=False)
 
     def get_absolute_url(self):
         return reverse('sshkey-detail', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return u"%s-%s" % (self.user, self.name)
+        return "%s-%s" % (self.user, self.name)
 
     class Meta:
         verbose_name = _("SSH key")
@@ -322,7 +322,7 @@ class FwJob(models.Model):
         ordering = ['-pk']
 
     def __str__(self):
-        return u"%s (%s)" % (self.profile, self.status)
+        return "%s (%s)" % (self.profile, self.status)
 
     @classmethod
     def process_jobs(cls, sync=False):
@@ -350,7 +350,7 @@ class FwJob(models.Model):
             to_thread(self._process)()
 
     def _process(self, *args, **kwargs):
-        output = u"%s\n" % self.job_data
+        output = "%s\n" % self.job_data
         job_url = reverse('fwjob-detail', kwargs={'pk': self.pk})
         domain = Site.objects.all()[0].domain
 
