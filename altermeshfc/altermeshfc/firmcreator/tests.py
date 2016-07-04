@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from os import path
 import shutil
-import StringIO
+import io
 import tempfile
 import subprocess
 
@@ -34,7 +34,7 @@ class IncludePackagesTest(TestCase):
     def test_write_to_disk(self):
         ip = IncludePackages(include=["iperf", "safe-reboot"],
                              exclude=["dnsmasq", "qos-scripts"])
-        output = StringIO.StringIO()
+        output = io.StringIO()
         ip.dump(output)
         self.assertEqual(output.getvalue(), "iperf\nsafe-reboot\n-dnsmasq\n-qos-scripts")
 
@@ -78,11 +78,10 @@ class IncludeFilesTest(TestCase):
     def test_load_from_tar(self):
 
         def generate_inmemory_tar(content):
-            import StringIO
             import tarfile
-            tar_sio = StringIO.StringIO()
+            tar_sio = io.StringIO()
             with tarfile.TarFile(fileobj=tar_sio, mode="w") as tar:
-                content_sio = StringIO.StringIO()
+                content_sio = io.StringIO()
                 content_sio.write(content)
                 content_sio.seek(0)
                 info = tarfile.TarInfo(name=u"fóø".encode("utf-8"))
@@ -94,7 +93,7 @@ class IncludeFilesTest(TestCase):
 
         content = u"testing únicódè"
         inc_files = IncludeFiles.load_from_tar(generate_inmemory_tar(content.encode("utf-8")))
-        self.assertEqual(inc_files.files.values()[0], content)
+        self.assertEqual(list(inc_files.files.values())[0], content)
 
         # if encoding is not utf-8 then we cant load the file
         self.assertRaises(UnicodeDecodeError, IncludeFiles.load_from_tar,

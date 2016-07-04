@@ -80,7 +80,7 @@ class NetworkForm(forms.ModelForm):
 def make_choices(queryset, title=""):
     base = "--   " if title else ""
     default = title if title else '------'
-    choices = map(lambda item: (item.pk, base + unicode(item)), queryset)
+    choices = [(item.pk, base + str(item)) for item in queryset]
     choices.insert(0, ('' or title, default))
     return choices
 
@@ -188,7 +188,7 @@ class FwProfileCommon(forms.ModelForm):
 
         devices = cleaned_data.get("devices")
 
-        if not all(map(lambda x: x.isalnum(), devices)):
+        if not all([x.isalnum() for x in devices]):
             raise forms.ValidationError(self.ERROR_ALPHANUMERIC)
 
         for device in devices:

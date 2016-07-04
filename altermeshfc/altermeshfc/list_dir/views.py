@@ -24,7 +24,7 @@ def path_inside_root(path, root):
 
 def _list_dir(path):
     try:
-        _, dnames, fnames = os.walk(path).next()
+        _, dnames, fnames = next(os.walk(path))
     except StopIteration:
         raise Http404
     directories = []
@@ -37,9 +37,9 @@ def _list_dir(path):
         return [name for name in names if os.path.exists(os.path.join(path, name))]
 
     fnames = remove_broken_symlinks(fnames)
-    files = map(get_attrs, sorted(fnames))
+    files = list(map(get_attrs, sorted(fnames)))
     dnames = remove_broken_symlinks(dnames)
-    directories = map(get_attrs, sorted(dnames))
+    directories = list(map(get_attrs, sorted(dnames)))
 
     context = {'directories': directories, 'files': files}
     return render_to_string('list_dir/list.html', context)

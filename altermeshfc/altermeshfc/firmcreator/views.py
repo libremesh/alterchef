@@ -182,7 +182,7 @@ def crud_profile_advanced(request, slug=None):
             based_on = get_object_or_404(FwProfile, pk=based_on)
 
         def get_initial_files(obj):
-            return [{"path": path, "content": content} for path, content in obj.include_files.iteritems()]
+            return [{"path": path, "content": content} for path, content in obj.include_files.items()]
 
         inherited = instance or based_on
         initial_files = get_initial_files(inherited) if inherited else None

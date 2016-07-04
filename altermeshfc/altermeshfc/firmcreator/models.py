@@ -11,6 +11,7 @@ from collections import defaultdict
 from jsonfield import JSONField
 
 from django.db import models, DatabaseError
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -112,7 +113,7 @@ class IncludeFiles(object):
         """
         if os.path.exists(to_path):
             shutil.rmtree(to_path)
-        for abspath, filecontent in self.files.iteritems():
+        for abspath, filecontent in self.files.items():
             to_dir = os.path.join(to_path, os.path.dirname(abspath[1:]))
             filename = os.path.basename(abspath)
             if not os.path.exists(to_dir):
@@ -151,7 +152,7 @@ class Network(models.Model):
     def get_absolute_url(self):
         return reverse('network-detail', kwargs={'slug': self.slug})
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -166,6 +167,7 @@ def fwprofile_get_slug(instance):
     return "%s-%s" % (instance.network.slug, instance.name)
 
 
+@python_2_unicode_compatible
 class FwProfile(models.Model):
     network = models.ForeignKey(Network, verbose_name=_('network'))
     name = models.SlugField(_("name"), default="node", max_length=15)
@@ -192,7 +194,7 @@ class FwProfile(models.Model):
     def admins(self):
         return self.network.admins
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s-%s [%s]" % (unicode(self.network), self.name,
                                self.openwrt_revision)
 
@@ -216,7 +218,7 @@ class FwProfile(models.Model):
         inc_packages = IncludePackages.from_str(self.include_packages)
         inc_packages.dump(open(os.path.join(to_path, "include_packages"), "w"))
         files = {}
-        for fname, content in self.include_files.iteritems():
+        for fname, content in self.include_files.items():
             t = Template(content)
             c = Context({"NETWORK_NAME": self.network.name,
                          "SSH_KEYS": "\n".join([k.key for k in self.ssh_keys.all()])},
@@ -250,6 +252,7 @@ class FwProfile(models.Model):
         ordering = ['network__name', 'name']
 
 
+@python_2_unicode_compatible
 class SSHKey(models.Model):
     user = models.ForeignKey(User, verbose_name=_(u"user"), editable=False)
     name = models.CharField(_(u"name"), max_length=40)
@@ -260,7 +263,7 @@ class SSHKey(models.Model):
     def get_absolute_url(self):
         return reverse('sshkey-detail', kwargs={'pk': self.pk})
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s-%s" % (self.user, self.name)
 
     class Meta:
@@ -299,6 +302,7 @@ class FailedManager(StatusManager):
     _status = 'FAILED'
 
 
+@python_2_unicode_compatible
 class FwJob(models.Model):
     status = models.CharField(verbose_name=_('satus'), choices=STATUSES, default="WAITING",
                               max_length=10)
@@ -317,7 +321,7 @@ class FwJob(models.Model):
     class Meta:
         ordering = ['-pk']
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s (%s)" % (self.profile, self.status)
 
     @classmethod
@@ -382,7 +386,7 @@ class FwJob(models.Model):
                 archs[arch].append(device)
 
         return ["%s %s %s %s %s %s" % (settings.MAKE_SNAPSHOT, revision, arch, networkname,
-                                       profilename, " ".join(devices)) for (arch, devices) in archs.iteritems()]
+                                       profilename, " ".join(devices)) for (arch, devices) in archs.items()]
 
     @classmethod
     def make_commands(cls, networkname, profilename, devices, revision):
@@ -413,7 +417,7 @@ class Device(object):
 
     @classmethod
     def get_arch(cls, device):
-        for arch, devices in cls.ARCHS.iteritems():
+        for arch, devices in cls.ARCHS.items():
             if device in devices:
                 return arch
 
