@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from os import path
 import shutil
 
@@ -90,14 +92,14 @@ class IncludeFilesTest(TestCase):
                 content_sio = StringIO()
                 content_sio.write(content)
                 content_sio.seek(0)
-                info = tarfile.TarInfo(name=u"fóø".encode("utf-8"))
+                info = tarfile.TarInfo(name="fóø")
                 info.size = len(content_sio.buf)
                 tar.addfile(tarinfo=info, fileobj=content_sio)
             tar_sio.seek(0)
             tar_sio.name = "foo"
             return tar_sio
 
-        content = u"testing únicódè"
+        content = "testing únicódè"
         inc_files = IncludeFiles.load_from_tar(generate_inmemory_tar(content.encode("utf-8")))
         self.assertEqual(list(inc_files.files.values())[0], content)
 
@@ -152,7 +154,7 @@ class FwProfileTest(TestCase):
             "name": "node",
             "description": "foo",
             "openwrt_revision": "stable",
-            "devices": [u"TLMR3220", u"UBNT"]
+            "devices": ["TLMR3220", "UBNT"]
         }
 
     def assertLoginRequired(self, url):
@@ -173,7 +175,7 @@ class FwProfileTest(TestCase):
         self.assertContains(response, "Profile Detail")
 
         profile = FwProfile.objects.all()[0]
-        self.assertItemsEqual(profile.devices, u"TLMR3220 UBNT")
+        self.assertItemsEqual(profile.devices, "TLMR3220 UBNT")
 
     def test_simple_creation_with_based_on(self):
         response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
@@ -186,18 +188,18 @@ class FwProfileTest(TestCase):
     def test_include_files_formset_files(self):
         from .forms import IncludeFilesFormset
         form_data = {'form-TOTAL_FORMS': 1, 'form-INITIAL_FORMS': 0,
-                     'form-0-path': u'/foo/bar', 'form-0-content': u'this is foo'}
+                     'form-0-path': '/foo/bar', 'form-0-content': 'this is foo'}
         formset = IncludeFilesFormset(form_data)
         assert formset.is_valid() is True
-        self.assertEqual(formset.include_files(), {u"/foo/bar": u'this is foo'})
+        self.assertEqual(formset.include_files(), {"/foo/bar": 'this is foo'})
 
     def test_edit(self):
         response = self.client.post(reverse("fwprofile-create-simple"), self.data, follow=True)
         url = reverse("fwprofile-edit-advanced", kwargs={"slug": FwProfile.objects.all()[0].slug})
         response = self.client.get(url)
         data = self.data.copy()
-        data.update({'include-files-INITIAL_FORMS': u'0', 'include-files-MAX_NUM_FORMS': u'',
-                    'include-files-TOTAL_FORMS': u'0', 'description': 'new_description'})
+        data.update({'include-files-INITIAL_FORMS': '0', 'include-files-MAX_NUM_FORMS': '',
+                    'include-files-TOTAL_FORMS': '0', 'description': 'new_description'})
         response = self.client.post(url, data)
         self.assertEqual(FwProfile.objects.all()[0].description, 'new_description')
 
