@@ -9,6 +9,23 @@ Install
 This app is composed of two different parts, the web frontend made using django and
 the firmware builder that are bash scripts that uses OpenWrt ImageBuilder.
 
+Installing for development
+--------------------------
+
+If you want to run Chef using the Django development server first install Chef's dependencies in a virtual environment::
+
+    mkvirtualenv alterchef
+    pip install -r requirements.txt
+
+Then run Django's web server:: 
+
+    cd altermeshfc
+    ./manage.py runserver --settings=altermeshfc.dev_settings
+
+If everything went good, you can now visit your Chef instance at http://127.0.0.1:8000/
+
+Next time you don't need to create the virtual environment again, just activate it by typing ``workon alterchef`` and run the web server again.
+
 Installing & configuring the web app
 ------------------------------------
 
