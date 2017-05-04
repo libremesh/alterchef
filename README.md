@@ -11,7 +11,7 @@ This app is composed of two different parts, the web frontend (made using [Djang
 Clone or download the source code (i.e. to the _alterchef_ folder):
 
 ```
-git clone https://github.com/PabloCastellano/alterchef.git
+git clone https://github.com/libremesh/alterchef.git
 ```
 
 If you want to run Chef using the Django development server first install Chef's dependencies in a virtual environment:
