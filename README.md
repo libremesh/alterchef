@@ -1,3 +1,7 @@
+# Chef has been completely rewritten, this repository is now deprecated. The repository for the new Chef can be found at https://github.com/libremesh/chef/
+
+---
+
 # License
 
 This software is licensed under AGPL.
